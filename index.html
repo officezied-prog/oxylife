@@ -782,6 +782,20 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .atl em{font-style:normal;font-size:12px;align-self:flex-start;border-radius:99px;padding:1px 8px}.atl em.ok{background:var(--ok-bg)}.atl em.late{background:var(--watch-bg)}
 .alink.risk{border-color:var(--urgent)}.tag.ok{background:var(--ok-bg);color:var(--ink)}
 .stleave{border-color:var(--line)}
+/* D-084: من يرى ماذا، والدردشة المراقَبة */
+.vist{width:100%;border-collapse:collapse;font-size:13.5px}.vist th,.vist td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:center}.vist tbody th{text-align:start;font-weight:500}
+.vist input{width:20px;height:20px}.vcard .crow b{font-size:14px}
+.chentry{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:18px;padding:14px;font:inherit;color:inherit;cursor:pointer}
+.chentry .m{display:flex;flex-direction:column;gap:2px}.chentry b{font-family:var(--display);font-size:16px}.chentry small{color:var(--ink-soft)}
+.chrules{background:#FFF6E0;color:#4A3A10;border:1.5px solid #E7C55E;border-radius:16px;padding:12px 14px}.chrules ul{margin:6px 0;padding-inline-start:18px;line-height:1.7;font-size:14px}.chrules small{color:#7A6420}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .chrules{background:#3A3217;color:#F1E3B5;border-color:#6B5A20}:root:not([data-theme=light]) .chrules small{color:#D9C27A}}
+:root[data-theme=dark] .chrules{background:#3A3217;color:#F1E3B5;border-color:#6B5A20}
+.chgroups{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chg{display:flex;flex-direction:column;gap:2px;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px;font:inherit;color:inherit;cursor:pointer}.chg small{color:var(--ink-soft);font-size:12px}.chg.mine{border-color:var(--accent);background:var(--accent-soft)}
+.chtitle{margin-top:4px}.chlist{display:flex;flex-direction:column;gap:8px}
+.chm{align-self:flex-start;max-width:88%;background:var(--surface);border:1px solid var(--line);border-radius:16px 16px 16px 4px;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.chm.me{align-self:flex-end;background:var(--accent-soft);border-color:transparent;border-radius:16px 16px 4px 16px}.chm p{margin:0;line-height:1.6}.chm small{color:var(--ink-faint);font-size:11px}
+.chn{border:0;background:none;padding:0;font:inherit;font-weight:600;font-size:13px;color:var(--accent);cursor:pointer;text-align:start}.chn i{font-style:normal;font-weight:400;color:var(--ink-faint);font-size:11px;margin-inline-start:6px}
+.chcomp{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;position:sticky;bottom:0;background:var(--ground);padding:8px 0}.chcomp textarea{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px;width:100%;resize:none}.chcomp .btn{width:auto}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -6516,4 +6530,113 @@ Object.assign(ACT,{
   mkDecide(b){const L=mkPosts(), x=L.find(y=>y.id===b.dataset.id); x.status=b.dataset.v; mkSave(L); audit(b.dataset.v==='approved'?'وافق على منشور':'رفض منشورًا',x.country); rerender()},
 });
 if(['ocountries','odash'].includes(route)&&role==='owner') rerender();
+
+/* ============ المريض يختار من يرى ماذا، والدردشة المراقَبة (المدير، 2026-10-02 — D-084) ============
+   1) «من يرى ماذا؟»: المريض وحده يختار ما تراه العائلة، وما يراه الأصدقاء، وما يراه الجميع: وزني، أعراضي، مرضي وعلاجي،
+      وجباتي، تقدّمي في العلاج. كل شيء مغلق في البداية. العائلة والأصدقاء يرون ما اختاره فقط (بطاقة «ما شاركه معكم»)،
+      ولا يرون تطبيقه. «الجميع» يرون «بطاقته» في الدردشة. (يحلّ محلّ D-081 الذي أزال هذه الخيارات.)
+   2) الدردشة: «الخط العالمي» يدخله أي شخص ليتحدّث مع المرضى ويشجّعهم، و«مجموعات المرض» للمرضى حسب نوع المرض.
+      كل رسالة يفحصها التطبيق قبل أن تصل:
+      - مسّ بكرامة المريض أو تنكيل أو شتم أو ابتزاز ← تُحذف الرسالة ويُحذف حساب صاحبها في الدردشة فورًا.
+      - نصيحة دواء، أو نصيحة شخصية، أو طلب تواصل خاص (هاتف، رابط) ← تُحذف الرسالة، ويُنبَّه صاحبها: الدواء اختصاص الطبيب.
+        بعد 3 تنبيهات يُوقف 7 أيام.
+      القواعد في أعلى صفحة الدردشة دائمًا. كل حذف مسجّل ويراه المدير والمراقب القانوني.
+      المرضى: يُحذف حسابهم في الدردشة فقط، لا ملفهم الطبي. الفحص هنا قواعد ثابتة؛ في الخادم تُضاف طبقة ذكاء اصطناعي
+      ومراجعة بشرية للحالات غير الواضحة. */
+const VIS_ITEMS=[['weight','وزني'],['symptoms','أعراضي وحالتي اليومية'],['diagnosis','مرضي وعلاجي'],['meals','وجباتي وشربي للماء'],['journey','تقدّمي في العلاج']];
+const VIS_AUD=[['family','العائلة'],['friends','الأصدقاء'],['public','الجميع']];
+function visGet(){const v=store.get('visScopes',null)||{family:{},friends:{},public:{}}; v.family=Object.assign({},store.get('famScopes',{}),v.family); return v}
+function visSet(aud,k,on){const v=visGet(); v[aud][k]=on; store.set('visScopes',v); if(aud==='family'){const f=store.get('famScopes',{}); f[k]=on; store.set('famScopes',f)}}
+function visMatrixHTML(){const v=visGet();
+  return '<div class="card vismx"><h3>من يرى ماذا؟</h3><p class="muted">أنت وحدك تختار. كل شيء مغلق حتى تفتحه. لا يرى أحد تطبيقك، بل ما تختاره فقط.</p>'+
+   '<table class="vist"><thead><tr><th></th>'+VIS_AUD.map(([a,t])=>'<th>'+t+'</th>').join('')+'</tr></thead><tbody>'+
+   VIS_ITEMS.map(([k,t])=>'<tr><th>'+t+'</th>'+VIS_AUD.map(([a])=>'<td><input type="checkbox" aria-label="'+esc(t+' · '+VIS_AUD.find(x=>x[0]===a)[1])+'" data-act="visTog" data-a="'+a+'" data-k="'+k+'"'+(v[a][k]?' checked':'')+'></td>').join('')+'</tr>').join('')+'</tbody></table>'+
+   '<label class="tgl"><input type="checkbox" data-act="visTog" data-a="family" data-k="logMeals"'+(store.get('famScopes',{}).logMeals!==false?' checked':'')+'><span>تسجّل عائلتي ما أكلته (وصفًا)</span></label>'+
+   '<p class="note">الأصدقاء: من دعوتهم إلى دائرتك بصفة «صديق». الجميع: من يرى بطاقتك في الدردشة.</p></div>'}
+ACT.visTog=b=>{const v=visGet(), a=b.dataset.a, k=b.dataset.k; if(k==='logMeals'){const f=store.get('famScopes',{}); f.logMeals=!(f.logMeals!==false); store.set('famScopes',f)} else visSet(a,k,!v[a][k]); rerender()};
+/* «فريقي وعائلتي»: الجدول بدل الخيارات القديمة. */
+{const t0=SCREENS.hteam.html; SCREENS.hteam.html=a=>{let h=t0(a).replace(/<label class="row hswitch"><input type="checkbox" data-fam="[^"]*"[^>]*> <span>[^<]*<\/span><\/label>/g,'').replace('عائلتك لا ترى تطبيقك ولا بياناتك. أنت تقرّر ما تستطيع فعله:','');
+  const i=h.indexOf('<p class="note">لا تصل نتائج التحاليل'); return i<0?h+visMatrixHTML():h.slice(0,i)+visMatrixHTML()+h.slice(i)}}
+/* ما يُعرض لكل جمهور: ملخّص فقط. */
+function visData(k){const p=meP(), lt=lifeToday(), s=typeof symDay==='function'?symDay(TODAY):null, w=hgWeighIns();
+  if(k==='weight') return w.length?wFmt(w[w.length-1].kg)+' ('+fmtD(w[w.length-1].date,{day:'numeric',month:'short'})+')':'لم يُسجَّل';
+  if(k==='symptoms') return s&&s.codes.length?s.codes.map(c=>SYM_T[c]||SYM_RED[c]).join('، '):s&&s.none?'لا شيء اليوم':'لم يُسجَّل اليوم';
+  if(k==='diagnosis') return (DX_AR[p.dx]||p.dx||'')+(p.treat?' · '+p.treat:'');
+  if(k==='meals') return trf('{0} من 5 وجبات · {1} من 8 كؤوس',Object.values(lt.meals||{}).filter(v=>v!=='no').length,lt.water||0);
+  if(k==='journey') return p.treat||'—'; return ''}
+function visCardHTML(aud,title){const v=visGet()[aud]||{}, on=VIS_ITEMS.filter(([k])=>v[k]);
+  return '<div class="card vcard"><h3>'+esc(title)+'</h3>'+(on.length?on.map(([k,t])=>'<div class="crow"><span><small>'+t+'</small><b>'+esc(visData(k))+'</b></span></div>').join(''):'<p class="note">لم يختر مشاركة شيء بعد.</p>')+'</div>'}
+{const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>{const h=h0(a); if(!famIn()) return h; const me=famMe(), aud=me&&me.relation==='friend'?'friends':'family';
+  const card=visCardHTML(aud,'ما شاركه '+famPatient().name+' معكم');
+  const i=h.indexOf('<button class="lnentry fmentry"'); return (i<0?h:h.slice(0,i)+card+h.slice(i)).replace('لا ترون تطبيقه ولا بياناته الطبية.','ترون فقط ما يختار مشاركته معكم، لا تطبيقه.')}}
+
+/* ---------- الدردشة ---------- */
+const CH_GROUPS=[['breast','سرطان الثدي'],['colon','سرطان القولون'],['lung','سرطان الرئة'],['liver','سرطان الكبد'],['lymphoma','لمفوما'],['prostate','سرطان البروستاتا'],['hcv','التهاب الكبد C'],['covid','ما بعد كورونا'],['care','العائلات ومقدّمو الرعاية']];
+const CH={tab:'global',room:null};
+const chNorm=t=>hNorm(t).replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ؤئ]/g,'ء');
+const MOD={
+ abuse:/(غبي|حمار|كلب|حقير|تافه|قبيح|وسخ|مقرف|احمق|اخرس|زباله|عاله عل|تستاهل|تستحق المرض|ستموت|راح تموت|موت قريب|الله ياخذك|عقاب من الله|ملعون|لعنه|منحوس|معاق|شماته|اضحك عليك|idiot|stupid|ugly|loser)/,
+ blackmail:/(ادفع|حول لي|حولي لي|ابعث فلوس|ابعث لي فلوس|سانشر|ساكشف|سافضح|فضيحه|صورك|رقم حسابك|بطاقتك البنكيه|اربح المال|استثمار مضمون|ضاعف (مالك|فلوسك)|او انشر|والا نشرت)/,
+ medical:/((^|\s)(خذ|خذي|تناول|تناولي|جرب|جربي|استعمل|استعملي|زيد|زيدي|قلل|قللي|ضاعف)\s[^.!؟]{0,30}(دواء|ادويه|حبوب|حبه|حبتين|حبات|اقراص|قرص|كبسول|جرعه|ملغ|mg|عشبه|اعشاب|فيتامين|مكمل|حقنه|ابره|باراسيتامول|ايبوبروفين|اسبرين|مسكن|مضاد حيوي|كورتيزون))|((انصحك|انصحكم|نصيحتي)[^.!؟]{0,30}(دواء|حبوب|عشبه|اعشاب|فيتامين|مكمل|جرعه))|((اوقف|اوقفي|توقف عن|توقفي عن|اترك|اتركي|لا تكمل|لا تاخذ|لا تاخذي)\s*(ال)?(علاج|دواء|كيماوي|جرعه|حبوب))|((دواء|حبوب|عشبه|اعشاب|زيت|مكمل)[^.!؟]{0,30}(يعالج|يشفي|افضل من العلاج|بدل العلاج))|(\d+\s*(ملغ|mg|حبه|حبات))/,
+ personal:/(راسلني|كلمني خاص|على الخاص|واتس|whatsapp|telegram|تلغرام|تيليجرام|انستغرام|سناب|رقمي|رقم هاتفي|https?:|www\.|\+?\d[\d\s]{7,}|انصحك|نصيحتي لك|يجب عليك|لازم تعمل)/};
+const MOD_T={abuse:'مسّ بكرامة المريض أو كلام جارح',blackmail:'ابتزاز أو احتيال',medical:'نصيحة دواء أو علاج',personal:'نصيحة شخصية أو طلب تواصل خاص'};
+function modCheck(text){const t=chNorm(text);
+  for(const k of ['abuse','blackmail']) if(MOD[k].test(t)) return {ok:false,reason:k,action:'ban'};
+  for(const k of ['medical','personal']) if(MOD[k].test(t)) return {ok:false,reason:k,action:'warn'};
+  return {ok:true}}
+const chAcc=()=>store.get('chatAcc',{});
+function chMe(){ if(role==='patient') return {id:'u-p1',name:((meP().name||'').split(' ')[0]||'مريض'),kind:'patient',dx:meP().dx};
+  if(role==='family'){const w=famWho(); return {id:'u-fam',name:w.name,kind:'family'}} const v=store.get('chatVisitor',null); return v?{id:v.id,name:v.name,kind:'visitor'}:null}
+const chState=id=>{const a=chAcc()[id]||{status:'active',strikes:0}; if(a.status==='suspended'&&a.until&&a.until<TODAY) a.status='active'; return a};
+function chSeed(){const at=(d,h)=>addDays(TODAY,d)+'T'+h+':00Z';
+  return {global:[{id:'g1',by:'u-v1',name:'سارة من تونس',kind:'visitor',text:'صباح الخير لكل الأبطال هنا 🌸 أفكّر فيكم اليوم.',at:at(-1,'08:10')},{id:'g2',by:'u-p2',name:'منير',kind:'patient',dx:'colon',text:'شكرًا على الكلمات الطيبة، تعطيني طاقة قبل الجلسة.',at:at(-1,'09:02')},{id:'g3',by:'u-v2',name:'أحمد',kind:'visitor',text:'لستم وحدكم. ندعو لكم بالشفاء.',at:at(0,'07:45')}],
+   breast:[{id:'b1',by:'u-p3',name:'فاطمة',kind:'patient',dx:'breast',text:'من يحبّ المشي الصباحي؟ أمشي عشر دقائق وأشعر بتحسّن في مزاجي.',at:at(-2,'10:00')},{id:'b2',by:'u-p9',name:'ليلى',kind:'patient',dx:'breast',text:'أنا! نلتقي هنا كل صباح ونحكي 😊',at:at(-2,'10:20')}],
+   liver:[{id:'l1',by:'u-p10',name:'سمير',kind:'patient',dx:'liver',text:'مرحبًا بالجميع، أنا جديد هنا.',at:at(-1,'18:00')}],
+   care:[{id:'c1',by:'u-f1',name:'مريم',kind:'family',text:'أمي تحبّ الشاي مع الحكايات القديمة. ما الذي يُضحك أحبّاءكم؟',at:at(-3,'20:00')}]}}
+const chMsgs=()=>store.get('chatMsgs',null)||chSeed();
+const modLog=()=>store.get('modLog',[]);
+function chRulesHTML(){return '<div class="chrules"><b>قبل أن تكتب</b><ul><li>هنا مساحة للتحدّث والترفيه والتشجيع فقط.</li><li>لا نصائح في الدواء أو العلاج: الدواء اختصاص الطبيب.</li><li>كل كلام يمسّ كرامة المريض أو يجرحه، وكل ابتزاز: تُحذف الرسالة ويُحذف الحساب فورًا.</li><li>لا أرقام هواتف ولا روابط ولا طلب تواصل خاص.</li></ul><small>يفحص التطبيق كل رسالة قبل أن تصل.</small></div>'}
+SCREENS.chat={title:'الدردشة',tab:'home',get bare(){return !role},html:()=>{const me=chMe(), M=chMsgs();
+  const head=(role?'':'<div class="row sp"><h2 style="margin:0">الدردشة</h2><button class="lnk" data-act="nav" data-r="everyone">رجوع</button></div>')+chRulesHTML()+
+   '<div class="seg"><button data-act="chTab" data-val="global" aria-pressed="'+(CH.tab==='global')+'">الخط العالمي</button><button data-act="chTab" data-val="groups" aria-pressed="'+(CH.tab==='groups')+'">مجموعات المرض</button></div>';
+  if(CH.tab==='groups'&&!CH.room){ if(role!=='patient'&&role!=='family') return head+'<div class="card"><p class="muted">مجموعات المرض للمرضى وعائلاتهم فقط. يمكنك التحدّث وتشجيع المرضى في «الخط العالمي».</p></div>';
+    const mine=role==='patient'?(meP().dx):'care';
+    return head+'<div class="chgroups">'+CH_GROUPS.map(([k,t])=>'<button class="chg'+(k===mine?' mine':'')+'" data-act="chRoom" data-val="'+k+'"><b>'+t+'</b><small>'+esc(trf('{0} رسالة',(M[k]||[]).length))+(k===mine?' · مجموعتك':'')+'</small></button>').join('')+'</div>'}
+  const room=CH.tab==='global'?'global':CH.room, L=(M[room]||[]).slice(-60), title=room==='global'?'الخط العالمي':(CH_GROUPS.find(x=>x[0]===room)||[])[1];
+  const st=me?chState(me.id):null;
+  const comp=!me?'<div class="card chjoin"><h3>ادخل لتتحدّث وتشجّع</h3><label class="field"><span>اسمك كما يظهر</span><input id="ch-name" maxlength="30" dir="auto"></label><label class="tgl"><input type="checkbox" id="ch-ok"><span>قرأت القواعد وأوافق عليها</span></label><button class="btn" data-act="chJoin">دخول الدردشة</button></div>':
+   st.status==='deleted'?'<div class="alert u">حُذف حسابك في الدردشة بسبب كلام يمسّ كرامة المرضى أو ابتزاز. لا يمكنك الكتابة هنا.</div>':
+   st.status==='suspended'?'<div class="alert w">حسابك موقوف حتى '+esc(st.until)+' بعد 3 تنبيهات.</div>':
+   '<div class="chcomp"><textarea id="ch-in" rows="2" maxlength="500" dir="auto" placeholder="كلمة طيبة، حكاية، شيء يُضحك…"></textarea><button class="btn" data-act="chSend">إرسال</button></div>'+(st.strikes?'<p class="note">'+esc(trf('عندك {0} تنبيه من 3',st.strikes))+'</p>':'');
+  return head+(room!=='global'?'<button class="lnk" data-act="chRoom" data-val="">← كل المجموعات</button>':'')+'<h3 class="chtitle">'+esc(title)+'</h3>'+
+   '<div class="chlist">'+L.map(m=>'<div class="chm'+(me&&m.by===me.id?' me':'')+'"><button class="chn" data-act="chWho" data-id="'+esc(m.by)+'" data-k="'+m.kind+'">'+esc(m.name)+'<i>'+({patient:'مريض',family:'عائلة',visitor:'زائر'}[m.kind]||'')+'</i></button><p>'+esc(m.text)+'</p><small class="num">'+esc(String(m.at).slice(5,16).replace('T',' '))+'</small></div>').join('')+'</div>'+comp}};
+Object.assign(ACT,{
+  chTab(b){CH.tab=b.dataset.val; CH.room=null; rerender()},
+  chRoom(b){CH.room=b.dataset.val||null; if(!CH.room) CH.tab='groups'; rerender()},
+  chJoin(){const n=($('#ch-name').value||'').trim(); if(!n){toast('اكتب اسمك'); return} if(!$('#ch-ok').checked){toast('وافق على القواعد أولًا'); return}
+    const c=modCheck(n); if(!c.ok){toast('اختر اسمًا آخر'); return} store.set('chatVisitor',{id:'u-v'+Date.now().toString(36),name:n}); rerender()},
+  chSend(){const me=chMe(); if(!me) return; const st=chState(me.id); if(st.status!=='active') return; const t=($('#ch-in').value||'').trim(); if(!t) return;
+    const room=CH.tab==='global'?'global':CH.room, c=modCheck(t), A=chAcc(), a=A[me.id]=Object.assign({status:'active',strikes:0},A[me.id]||{});
+    if(!c.ok){const L=modLog(); L.push({at:new Date().toISOString(),room,by:me.id,name:me.name,kind:me.kind,reason:c.reason,action:c.action,text:t}); store.set('modLog',L);
+      if(c.action==='ban'){a.status='deleted'; a.deletedAt=new Date().toISOString(); if(me.kind==='visitor') store.set('chatVisitor',null); store.set('chatAcc',A);
+        sheet('<div class="redhead">'+I.alert+'<h3>حُذفت رسالتك وحُذف حسابك</h3></div><p>رسالتك فيها '+esc(MOD_T[c.reason])+'. هذه المساحة لتشجيع المرضى واحترام كرامتهم، ولا مكان فيها لهذا الكلام.</p>'); rerender(); return}
+      a.strikes=(a.strikes||0)+1; if(a.strikes>=3){a.status='suspended'; a.until=addDays(TODAY,7)} store.set('chatAcc',A);
+      sheet('<h3>لم تُرسل رسالتك</h3><p>رسالتك فيها '+esc(MOD_T[c.reason])+'. '+(c.reason==='medical'?'الدواء اختصاص الطبيب وحده. ':'')+'هنا مساحة للتحدّث والترفيه والتشجيع فقط. لا تُعِد هذا الكلام.</p><p class="note">'+esc(trf('تنبيه {0} من 3. بعد 3 تنبيهات يُوقف الحساب 7 أيام.',a.strikes))+'</p>'); rerender(); return}
+    const M=chMsgs(); (M[room]=M[room]||[]).push({id:'m'+Date.now().toString(36),by:me.id,name:me.name,kind:me.kind,dx:me.dx,text:t,at:new Date().toISOString()}); store.set('chatMsgs',M); rerender()},
+  chWho(b){ if(b.dataset.k!=='patient'){toast(b.dataset.k==='visitor'?'زائر يشجّع المرضى':'من عائلة مريض'); return}
+    if(b.dataset.id==='u-p1') sheet(visCardHTML('public','بطاقة '+((meP().name||'').split(' ')[0])+' كما يراها الجميع')); else sheet('<div class="card"><h3>'+esc(b.textContent.replace(/مريض$/,''))+'</h3><p class="note">لم يختر مشاركة شيء مع الجميع.</p></div>')},
+  goChat(){CH.tab='global'; CH.room=null; go('chat')},
+});
+/* المداخل: «نحن كلنا معك» (للجميع، حتى من دون حساب)، ومكان العائلة. */
+{const e0=SCREENS.everyone.html; SCREENS.everyone.html=a=>{const h=e0(a), btn='<button class="chentry" data-act="goChat"><span class="ckei" aria-hidden="true">💬</span><span class="m"><b>تحدّث معهم وشجّعهم</b><small>الخط العالمي ومجموعات المرض · كل رسالة تُفحص قبل أن تصل</small></span></button>';
+  const i=h.indexOf('<div class="card motiv">'); if(i<0) return btn+h; const j=h.indexOf('</div>',i)+6; return h.slice(0,j)+btn+h.slice(j)}}
+{const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>{const h=h0(a); if(!famIn()) return h; return h.replace('<button class="lnentry fmentry"','<button class="chentry" data-act="goChat"><span class="ckei" aria-hidden="true">💬</span><span class="m"><b>الدردشة</b><small>شجّعوا المرضى وتحدّثوا مع عائلات أخرى</small></span></button><button class="lnentry fmentry"')}}
+/* المدير والمراقب القانوني: الرقابة على الدردشة. */
+SCREENS.omod={title:'الرقابة على الدردشة',get tab(){return role==='legal'?'lgdash':'odash'},html:()=>{const L=modLog().slice().reverse(), A=chAcc(), by={}; L.forEach(x=>{by[x.reason]=(by[x.reason]||0)+1});
+  const del=Object.entries(A).filter(([k,a])=>a.status==='deleted'), sus=Object.entries(A).filter(([k,a])=>a.status==='suspended');
+  return '<p class="muted">كل رسالة تُفحص قبل أن تصل. هنا ما حُذف ولماذا، والحسابات المحذوفة والموقوفة.</p>'+
+   '<div class="akpis">'+Object.keys(MOD_T).map(k=>'<div class="akpi'+(k==='abuse'||k==='blackmail'?' red':'')+'"><b class="num">'+(by[k]||0)+'</b><small>'+MOD_T[k]+'</small></div>').join('')+'<div class="akpi"><b class="num">'+del.length+'</b><small>حسابات محذوفة</small></div><div class="akpi"><b class="num">'+sus.length+'</b><small>موقوفة 7 أيام</small></div></div>'+
+   '<div class="card"><h3>الرسائل المحذوفة</h3>'+(L.length?L.slice(0,50).map(x=>'<div class="atl '+(x.action==='ban'?'red':'late')+'"><small class="num">'+esc(x.at.slice(0,16).replace('T',' '))+' · '+esc(x.room==='global'?'الخط العالمي':(CH_GROUPS.find(g=>g[0]===x.room)||[])[1]||x.room)+'</small><b>'+esc(x.name)+' · '+esc(MOD_T[x.reason])+'</b><span>'+esc(x.text)+'</span><em class="'+(x.action==='ban'?'late':'ok')+'">'+(x.action==='ban'?'حُذف الحساب':'تنبيه')+'</em></div>').join(''):'<p class="note">لا شيء حُذف بعد.</p>')+'</div>'}};
+{const m0=SCREENS.omore.html; SCREENS.omore.html=a=>m0(a).replace('<div class="admtiles big">','<div class="admtiles big"><button class="admrole" data-act="nav" data-r="omod"><span class="ri">'+I.users+'</span><span class="m"><b>الرقابة على الدردشة</b></span></button>')}
+{const l0=SCREENS.lgdash.html; SCREENS.lgdash.html=a=>l0(a)+'<button class="btn ghost" data-act="nav" data-r="omod">الرقابة على الدردشة</button>'}
 </script>
