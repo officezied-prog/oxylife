@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#EAF1F8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@300;400;500;600&family=Amiri:wght@400;700&family=Lora:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@300;400;500;600&family=Amiri:wght@400;700&family=Lora:wght@500;600&family=Playfair+Display:ital,wght@1,700&display=swap">
 <style>
 /* حياتي — نسخة مصغّرة. أزرق هوائي للهوية؛ الأخضر والأصفر لمدى التحاليل فقط (طبيعي / خارج المدى). */
 :root{
@@ -110,6 +110,8 @@ p{margin:0;line-height:1.75}
 /* الشعار */
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:24px;font-weight:500}
 .logo svg{width:46px;height:46px}
+.logo.brand svg{width:64px;height:64px}
+.goldname{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:700;font-size:52px;line-height:1.1;letter-spacing:.5px;padding:0 6px;background:linear-gradient(180deg,#F6E7A8 0%,#E2B84A 38%,#B8862B 62%,#E9C766 82%,#9C6F1E 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 3px rgba(140,98,20,.28))}
 
 /* التعريف */
 .slide{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center;padding-block:10px}
@@ -648,6 +650,40 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .hlsnapi{width:44px;height:44px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}.hlsnapi svg{width:24px;height:24px}
 .hlsnap .m{display:flex;flex-direction:column;gap:2px}.hlsnap b{font-family:var(--display);font-size:16px}.hlsnap small{color:var(--ink-soft)}
 .hobnone{font-weight:600}
+/* المرحلة 5: «دليلي» (قراءة بأسلوب الكتاب، من اليمين إلى اليسار) و«كيف تشعر اليوم؟» */
+.symcard .symchips .chip,.symcard .symred .chip{padding:10px 14px;min-height:44px}
+.symred{border-top:1px dashed var(--line);padding-top:8px}.symred .chip.red{border-color:var(--urgent)}.symred .chip.red[aria-pressed="true"]{background:var(--urgent);border-color:var(--urgent);color:#fff}
+.symtips{display:flex;flex-direction:column;gap:8px}.symtip{background:var(--ground);border-radius:12px;padding:8px 12px}.symtip ul{margin:4px 0;padding-inline-start:18px;line-height:1.7;font-size:14px}
+.symnext{display:flex;flex-direction:column;gap:2px;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer}.symnext small{color:var(--ink-soft)}
+.lnentry{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1px solid var(--line);background:linear-gradient(135deg,#F2F7EE,#E3EEDB);border-radius:18px;padding:14px;font:inherit;color:inherit;cursor:pointer}
+.lnentry .m{display:flex;flex-direction:column;gap:2px}.lnentry b{font-family:var(--display);font-size:16px}.lnentry small{color:var(--ink-soft)}
+.lnhero{background:linear-gradient(160deg,#FBF6EA,#F1E8D2);color:#3B2F16;border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;gap:8px}
+.lnhero h2{font-family:"Amiri",var(--display);font-size:32px;font-weight:700;line-height:1.2}.lnhero .prog{background:rgba(59,47,22,.15)}.lnhero .prog i{background:#7A6A2E}
+.lnpart{font-family:"Amiri",var(--display);font-size:20px;font-weight:700;margin-top:6px}
+.lntoc{display:flex;flex-direction:column;gap:8px}
+.lnrow{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px;font:inherit;color:inherit;cursor:pointer}
+.lnrow .m{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.lnrow small{color:var(--ink-soft);font-size:12.5px;line-height:1.5}
+.lnn{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center;flex:none;font-family:"Amiri",var(--display);font-size:17px}
+.lnrow.read .lnn{background:var(--ok-bg)}.lnok{color:var(--ok);font-weight:700}
+.lnprog{position:sticky;top:-16px;z-index:2;height:4px;margin:-16px -16px 0;background:var(--line)}.lnprog i{display:block;height:100%;width:0;background:var(--accent);transition:width .1s}
+.lnart{--lnfs:0;font-size:calc(16px + var(--lnfs) * 2px);background:var(--surface);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;line-height:1.9}
+.lnart p{line-height:1.9}.lnlabel{color:var(--ink-faint);letter-spacing:.5px}
+.lnh{font-family:"Amiri",var(--display);font-weight:700;font-size:calc(30px + var(--lnfs) * 2px);line-height:1.3;margin:0;text-wrap:balance}
+/* بديل «الحرف الكبير» في العربية: الحرف الأول المنفصل يقطع اتصال الحروف، فنُكبّر الفقرة الافتتاحية كلها مع خطّ جانبي. */
+.lnlede{font-family:"Amiri",var(--display);font-size:1.25em;line-height:1.8;border-inline-start:4px solid #C9A94E;padding-inline-start:12px;color:var(--ink)}
+.lnfs{display:flex;gap:6px}.lnfs .ib{width:38px;height:34px;font-size:14px;font-weight:600}
+.lncall{border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}.lncall b{font-size:.85em}
+.lncall.tip{background:var(--ok-bg)}.lncall.warn{background:var(--watch-bg)}
+.lncall.myth{background:var(--prod-soft);display:grid;grid-template-columns:1fr;gap:8px}.lncall.myth>div:first-child p{text-decoration:line-through;text-decoration-color:rgba(0,0,0,.35);color:var(--ink-soft)}
+.lnlist{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:6px}
+.lnfoods{display:flex;flex-direction:column;gap:6px}.lnsrc{margin-top:4px}
+.lnnav .btn{font-size:13.5px;padding:11px 10px;min-height:48px}
+.lntocfab{position:sticky;bottom:84px;align-self:flex-start;border:0;border-radius:999px;background:var(--ink);color:var(--ground);padding:10px 16px;font:inherit;font-size:14px;box-shadow:0 8px 20px -8px rgba(0,0,0,.4);cursor:pointer;z-index:2}
+.lnfgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lnfc{display:flex;flex-direction:column;gap:4px;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px;font:inherit;color:inherit;cursor:pointer;min-width:0}.lnfc small{color:var(--ink-soft);font-size:12.5px;line-height:1.5}
+.lnfood p{margin:2px 0 0}.lnconv{width:100%;border-collapse:collapse;font-size:14px}.lnconv th,.lnconv td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:start}.lnconv th{font-weight:500;color:var(--ink-soft)}
+.lnrefs{margin:0;padding-inline-start:18px;font-size:13px;line-height:1.7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lnhero{background:linear-gradient(160deg,#2B2616,#3A3217);color:#EDE3C4}:root:not([data-theme="light"]) .lnentry{background:linear-gradient(135deg,#1C2A1C,#223322)}}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -1602,7 +1638,7 @@ function sheet(html){$('#sheetPanel').innerHTML=html+'<button class="btn ghost" 
 /* ============ الشاشات ============ */
 const SCREENS={};
 SCREENS.login={title:'OxyLife',bare:true,html:()=>`
-  <div class="logo" style="margin-top:28px;justify-content:center">${LOGO}<span dir="ltr">OxyLife</span></div>
+  <div class="logo brand" style="margin-top:28px;justify-content:center;flex-direction:column;gap:6px">${LOGO}<span dir="ltr" class="goldname">OxyLife</span></div>
   <p class="muted" style="text-align:center">متابعة يومية لمرضى الأورام والتهاب الكبد C وما بعد كورونا، مع طبيب يراجع كل شيء.</p>
   <div class="rolepick">
     <button class="rolebtn" data-act="pickRole" data-r="patient"><span class="ri">${I.users}</span><b>مريض</b></button>
@@ -3978,7 +4014,7 @@ ACT.hFoodGo=()=>go('hfood');
   return h}}
 {const f0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>hReconfirmCard()+hGateBanner()+
    '<div class="card hallcard"><div class="row sp"><span><small class="muted">الحساسية من الطعام</small><b style="display:block">'+esc(hAllergySummary())+'</b></span><button class="btn sm ghost" data-act="hAllergyEdit">تعديل</button></div></div>'+
-   hPlanToday()+f0(a)+
+   f0(a)+
    '<div class="card hsoon"><h3>قريبًا في هذا القسم</h3><p class="muted">دفتر الطعام، الوصفات، ودليل التغذية أثناء العلاج.</p></div>'+NUT_FOOT}
 
 /* ============ حياتي: «الحالة النفسية» — المزاج والتنفّس والتشجيع، وقسم الطمأنينة الإيماني باختيار المريض فقط ============
@@ -5547,4 +5583,235 @@ document.head.insertAdjacentHTML('beforeend','<style>.mtrow{display:flex;align-i
 ACT.hlSnap=()=>{HL.slot=hlSlotNow(); HL.date=TODAY; ACT.hlPhotoGo()};
 /* نصيحة القياس في شاشة الصورة: ملعقة أو شوكة بجانب الطبق تساعد على تقدير الكمية. */
 {const p0=SCREENS.hlphoto.html; SCREENS.hlphoto.html=a=>{const h=p0(a); return h.replace('<div class="card hlphotointro">','<div class="card hlphotointro"><p class="note hpmeasure">📏 للقياس: صوّر من الأعلى، وضع ملعقة أو شوكة بجانب الطبق ليقدّر التطبيق الحجم. الكمية تقدير، وتستطيع تعديلها بالغرام.</p>')}}
+
+/* ============ المرحلة 5: «دليلي» (التعلّم) و«كيف تشعر اليوم؟» (وضع الأعراض) — D-077 ============
+   كل النصوص أصلية من OxyLife، مكتوبة على ضوء إرشادات ESPEN (2017، 2021) وتوصيات سلامة الغذاء العامة،
+   وكلها مسودات حتى تراجعها أخصائية تغذية الأورام. في وضع الخادم لا تظهر المسودات أبدًا.
+   لا ادّعاءات علاجية: مرشّح ثابت (lnBanned) يفحص كل نص، مثل مرشّح التسويق (D-052). نصّ «الخرافة» نفسه
+   مستثنى من الفحص لأنه يُعرض تحت عنوان «خرافة» ويليه التصحيح.
+   أنواع الكتل: p فقرة · tip نصيحة · warn تنبيه · myth خرافة وحقيقة · list قائمة مرقّمة. */
+const LN_SRC='أصلي من OxyLife، مبني على إرشادات ESPEN 2017 و2021 · مسودة';
+const LN_INTRO={title:'مقدّمة: لماذا التغذية مهمّة أثناء العلاج؟',lede:'الأكل الجيد لا يعالج المرض، لكنه يساعد جسمك على تحمّل العلاج والتعافي بعده.',
+  blocks:[['p','أثناء علاج الأورام يحتاج الجسم عادةً إلى طاقة وبروتين أكثر من المعتاد، في وقت قد تقلّ فيه الشهية أو يتغيّر الطعم. لذلك هدفنا بسيط: أن تأكل ما يكفي، وأن تحافظ على وزنك وقوّتك قدر الإمكان.'],
+   ['p','هذا الدليل يشرح بلغة بسيطة ما يمكنك فعله في كل مرحلة، وكيف تتعامل مع الأعراض الشائعة في المطبخ. وكل فصل يربطك بوصفات تناسبه.'],
+   ['tip','اقرأ الفصل الذي يهمّك اليوم فقط. لا داعي لقراءة الدليل كله مرة واحدة.'],
+   ['warn','هذه إرشادات عامة. خطتك الفردية يحدّدها فريقك الطبي وأخصائية التغذية، وتعليماتهم تأتي أولًا دائمًا.']]};
+const LN_CH=[
+ {id:'before',phase:['pre_treatment','post_surgery'],title:'قبل بدء العلاج',lede:'الأسابيع التي تسبق العلاج فرصة لتجهيز جسمك ومطبخك.',
+  blocks:[['p','إذا كان وزنك ثابتًا وشهيتك جيدة، فحافظ على أكل متنوّع فيه بروتين في كل وجبة. وإذا كنت قد خسرت وزنًا دون قصد، فأخبر فريقك الآن، قبل أن يبدأ العلاج.'],
+   ['list',['سجّل وزنك مرة في الأسبوع في «وزني».','اكتب الأطعمة التي تحبّها وتسهل عليك.','جهّز وجبات للمجمّد لأيام التعب.','اسأل فريقك عن أي مكمّلات أو أعشاب تتناولها.']],
+   ['myth','يجب أن أخسر وزنًا قبل العلاج حتى يكون جسمي أخفّ.','خسارة الوزن غير المقصودة قبل العلاج قد تضعف قدرتك على تحمّله. الهدف عادةً الحفاظ على الوزن والعضلات، إلا إذا أوصى فريقك بغير ذلك.']]},
+ {id:'during',phase:['chemo','radiotherapy','immunotherapy','maintenance'],title:'أثناء العلاج',lede:'في أيام العلاج، كل لقمة لها قيمة. الأهمّ أن تأكل، حتى لو بكميات صغيرة.',
+  blocks:[['p','وجبات صغيرة متكرّرة أسهل من ثلاث وجبات كبيرة. ضع مصدرًا للبروتين في كل مرة: بيض مطبوخ، لبن، عدس، دجاج، سمك.'],
+   ['tip','إذا كان يومك متعبًا، فوجبة بسيطة جاهزة أفضل من لا شيء. «وصفات جاهزة» فيها خيارات سريعة.'],
+   ['myth','البروتين يُجهد الجسم أثناء العلاج، فالأفضل تقليله.','يحتاج معظم المرضى أثناء العلاج إلى بروتين أكثر من المعتاد للحفاظ على العضلات. الكمية المناسبة لك يحدّدها فريقك، خاصة مع أمراض الكلى.'],
+   ['myth','الصيام أو الحمية الكيتونية تعالج المرض.','لا يوجد دليل كافٍ على أن الصيام أو الكيتو يعالجان السرطان، وقد يؤدّيان إلى خسارة وزن وعضلات. لا تبدأ أي حمية قاسية دون فريقك.'],
+   ['warn','لا تغيّر أدويتك ولا مواعيدها بسبب الأكل. إن كان الأكل صعبًا مع دواء ما، فاسأل فريقك.']]},
+ {id:'after',phase:['survivorship'],title:'بعد انتهاء العلاج',lede:'بعد العلاج يعود الهدف تدريجيًا إلى أكل متوازن يدعم صحتك على المدى الطويل.',
+  blocks:[['p','قد تبقى بعض الأعراض أسابيع. عُد إلى أكلك المعتاد خطوة بخطوة: خضار وفواكه متنوّعة، حبوب كاملة، بروتين معتدل، وماء كافٍ.'],
+   ['list',['أكثر من الخضار والفواكه والبقول.','قلّل اللحوم المصنّعة والمشروبات المحلّاة.','تحرّك يوميًا بما يسمح به طبيبك.','تابع وزنك، وأخبر فريقك بأي تغيّر غير مفهوم.']],
+   ['myth','السكر يغذّي السرطان، فيجب قطع كل السكريات والفواكه.','كل خلايا الجسم تستعمل السكر طاقةً، وقطع الفواكه لا يُجوّع الورم. المفيد هو التقليل من السكر المضاف ضمن أكل متوازن. ومع السكري اتّبع خطة فريقك.']]},
+ {id:'fatigue',sym:'fatigue',need:'energy',title:'التعب',lede:'التعب من أكثر الأعراض شيوعًا. المطبخ يجب أن يكون أسهل في هذه الأيام، لا أصعب.',
+  blocks:[['p','كُل في أوقات نشاطك، غالبًا في الصباح. اجعل الأطعمة الجاهزة قريبة: لبن، تمر، خبز، جبن مبستر، فواكه مغسولة.'],
+   ['tip','اطبخ مرة لعدة أيام وجمّد حصصًا صغيرة. ودع العائلة تساعدك، فهذا ليس عبئًا عليهم.'],
+   ['tip','اشرب بانتظام: قلّة السوائل تزيد الإحساس بالتعب.'],
+   ['warn','إذا كان التعب شديدًا ومفاجئًا، أو معه ضيق تنفّس أو دوخة، فاتصل بفريقك.']]},
+ {id:'nausea',sym:'nausea',need:'light',title:'الغثيان',lede:'الغثيان يجعل رائحة الطعام وحدها صعبة. الحيلة في الكميات الصغيرة والأطعمة الباردة.',
+  blocks:[['list',['كُل كميات صغيرة كل ساعتين إلى ثلاث.','الأكل البارد أو بحرارة الغرفة رائحته أخفّ.','خبز محمّص أو بسكويت جاف صباحًا قبل النهوض.','اشرب بين الوجبات لا معها.','ابتعد عن المطبخ أثناء الطهي إن أمكن.']],
+   ['tip','خذ مضاد الغثيان كما وصفه طبيبك، في موعده، لا بعد أن يشتدّ الغثيان.'],
+   ['myth','الأفضل ألا آكل شيئًا حتى يزول الغثيان.','المعدة الفارغة قد تزيد الغثيان. لقيمات صغيرة جافة ورشفات منتظمة تساعد كثيرين.'],
+   ['warn','إذا لم تستطع الاحتفاظ بالسوائل، أو تقيّأت عدة مرات في اليوم، فاتصل بفريقك الآن.']]},
+ {id:'appetite',sym:'appetite_loss',need:'energy',title:'قلّة الشهية',lede:'حين تقلّ الشهية، نجعل كل لقمة أغنى بالطاقة والبروتين دون أن يكبر الطبق.',
+  blocks:[['list',['ست وجبات صغيرة بدل ثلاث كبيرة.','أضف طاقة دون حجم: ملعقة زيت زيتون، طحينة، مكسّرات مطحونة، تمر.','اشرب سوائل مغذّية: حليب، لبن مخفوق، شوربة.','كُل أولًا الجزء الغني بالبروتين من الطبق.']],
+   ['tip','لا تنتظر الجوع. ضع منبّهًا لمواعيد الأكل كما تفعل مع الدواء.'],
+   ['myth','إذا لم أشعر بالجوع فجسمي لا يحتاج إلى الأكل.','العلاج نفسه قد يُضعف إشارة الجوع، بينما يبقى الجسم محتاجًا إلى الطاقة. الأكل في مواعيد ثابتة يساعد.'],
+   ['warn','إذا كنت تأكل أقل من نصف المعتاد لعدة أيام، أو ينقص وزنك، فأخبر فريقك.']]},
+ {id:'taste',sym:'taste_changes',need:'light',title:'تغيّر الطعم',lede:'قد يصبح الطعام معدنيًا أو بلا طعم. جرّب نكهات جديدة بدل الاستسلام.',
+  blocks:[['list',['استعمل أدوات بلاستيكية إن كان للطعام طعم معدني.','أضف نكهة: ليمون، أعشاب طازجة، نعناع، بهارات خفيفة، إن لم يكن في فمك تقرّحات.','جرّب البروتين البارد، أو الدجاج والبيض والبقول بدل اللحم الأحمر.','نظّف فمك قبل الأكل بماء وملح خفيف.']],
+   ['tip','ما لم يعجبك الأسبوع الماضي قد يعجبك الآن. أعد التجربة.']]},
+ {id:'mouth',sym:'mouth_sores',need:'soft',title:'تقرّحات الفم',lede:'مع تقرّحات الفم نختار الطري والرطب، ونبتعد عمّا يلسع.',
+  blocks:[['list',['أطعمة طرية ورطبة: شوربة، بطاطا مهروسة، لبن، بيض مطبوخ طري.','تجنّب الحار والحامض والمالح جدًا والمقرمش.','الطعام الفاتر أريح من الساخن.','استعمل مصّاصة للسوائل.']],
+   ['tip','اغسل فمك بانتظام بالمحلول الذي أوصى به فريقك، أو بماء وملح خفيف.'],
+   ['warn','إذا منعتك التقرّحات من الأكل أو الشرب، أو ظهرت معها حمّى، فاتصل بفريقك.']]},
+ {id:'drymouth',sym:'dry_mouth',need:'soft',title:'جفاف الفم',lede:'الريق يساعد على المضغ والبلع؛ حين يقلّ، نضيف الرطوبة إلى كل طبق.',
+  blocks:[['list',['رشفات ماء متكرّرة طوال اليوم.','أضف المرق أو الصلصة أو اللبن إلى الأكل.','الفواكه المائية المغسولة جيدًا تساعد، ما لم يمنعها فريقك.','قلّل القهوة والمشروبات التي تجفّف الفم.']],
+   ['tip','احمل قارورة ماء صغيرة معك دائمًا.']]},
+ {id:'swallow',sym:'swallowing',need:'soft',title:'صعوبة البلع',lede:'حين يصعب البلع، نغيّر قوام الطعام لا قيمته.',
+  blocks:[['list',['اختر القوام الذي يسهل عليك: طري، مهروس، أو سائل.','اجلس مستقيمًا أثناء الأكل وبعده بنصف ساعة.','لقيمات صغيرة، وخذ وقتك.','اخلط الطعام مع مرق أو حليب ليصبح أنعم.']],
+   ['warn','إذا كنت تسعل أو تختنق أثناء الأكل أو الشرب، فأخبر فريقك؛ قد تحتاج إلى تقييم أخصائي البلع.']]},
+ {id:'diarrhoea',sym:'diarrhoea',title:'الإسهال',lede:'مع الإسهال يفقد الجسم سوائل وأملاحًا، فالشرب أولًا.',
+  blocks:[['list',['اشرب كثيرًا: ماء، مرق صافٍ، ماء الأرز.','أطعمة خفيفة: موز، أرز أبيض، تفاح مطبوخ، خبز محمّص.','خفّف مؤقتًا الدهون والقلي والحليب والبقول.','وجبات صغيرة متكرّرة.']],
+   ['warn','إذا استمرّ الإسهال أكثر من يوم، أو كان شديدًا، أو معه حمّى أو دوخة، فاتصل بفريقك الآن.']]},
+ {id:'constipation',sym:'constipation',title:'الإمساك',lede:'بعض أدوية الألم والغثيان تبطئ الأمعاء. السوائل والحركة والألياف تساعد.',
+  blocks:[['list',['اشرب أكثر على مدار اليوم.','أضف الألياف تدريجيًا: شوفان، خضار مطبوخة، فواكه، بقول.','مشي خفيف يوميًا إن سمح طبيبك.','مشروب دافئ صباحًا يساعد بعض الناس.']],
+   ['warn','لا تأخذ مليّنًا دون سؤال فريقك. وإذا مرّت ثلاثة أيام دون إخراج، أو كان معه ألم بطن أو تقيّؤ، فاتصل بفريقك.']]},
+ {id:'immunity',sym:'low_immunity',need:'immune',title:'ضعف المناعة وسلامة الطعام',lede:'حين تنخفض المناعة، تصبح نظافة الطعام وطهيه الجيد جزءًا من حمايتك.',
+  blocks:[['list',['اغسل يديك قبل تحضير الطعام وقبل الأكل.','اطبخ اللحم والدجاج والسمك والبيض حتى تنضج تمامًا.','الحليب والأجبان مبسترة فقط.','اغسل الخضار والفواكه جيدًا.','لا تترك الطعام المطبوخ خارج الثلاجة أكثر من ساعتين.']],
+   ['tip','عند تفعيل «وضع نقص المناعة» من فريقك، يعلّم التطبيق الأطعمة الأعلى خطرًا، وتظهر الوصفات المطبوخة فقط.'],
+   ['myth','مع ضعف المناعة يجب تجنّب كل الفواكه والخضار.','في معظم الحالات تُسمح الفواكه والخضار المغسولة جيدًا. فريقك يحدّد ما يناسبك.'],
+   ['warn','الحمّى مع ضعف المناعة حالة عاجلة: اتصل بفريقك أو بالطوارئ فورًا.']]},
+ {id:'kitchen',need:'energy',title:'مطبخ لأيام التعب',lede:'رفوف مجهّزة اليوم توفّر عليك الجهد في الأيام الصعبة.',
+  blocks:[['list',['في الخزانة: أرز، شوفان، عدس، معكرونة، تمر، طحينة، مرق.','في الثلاجة: لبن، بيض، جبن مبستر، خضار مغسولة.','في المجمّد: خضار مقطّعة، حصص شوربة ووجبات جاهزة.','أدوات تسهّل العمل: خلّاط، قدر واحد، أكياس تجميد بتاريخ.']],
+   ['tip','اكتب تاريخ الطهي على كل علبة في المجمّد، واستعملها خلال الوقت الموصى به.']]},
+ {id:'activity',title:'النشاط البدني',lede:'الحركة الخفيفة تساعد على الشهية والنوم والمزاج، بقدر ما يسمح به جسمك.',
+  blocks:[['p','المشي القصير أو تمارين التمدّد الخفيفة تفيد كثيرين أثناء العلاج وبعده. ابدأ بدقائق قليلة وزِد تدريجيًا.'],
+   ['warn','استشر طبيبك قبل أي نشاط جديد، خاصة مع انخفاض الدم أو الصفائح أو بعد جراحة.']]},
+ {id:'support',title:'الدعم والحالة النفسية',lede:'الخوف والحزن والتعب النفسي جزء طبيعي من الرحلة، ولست وحدك فيها.',
+  blocks:[['p','قد تؤثّر الحالة النفسية في الشهية، والعكس صحيح. تحدّث مع من تثق بهم، ودع العائلة تشاركك الطبخ والأكل.'],
+   ['tip','في قسم «الحالة النفسية» تجد تمرين التنفّس، و«احكي» للتعبير عمّا تشعر به.'],
+   ['warn','إذا شعرت بحزن شديد مستمرّ أو أفكار مؤذية، فتواصل مع فريقك أو مع خطّ المساعدة فورًا.']]},
+ {id:'plan',title:'خطة العلاج وما بعده',lede:'خطة مكتوبة تساعدك على تذكّر ما اتّفقت عليه مع فريقك.',
+  blocks:[['list',['اكتب مواعيد العلاج والتحاليل.','دوّن أسئلتك للطبيب وأخصائية التغذية قبل الزيارة.','احتفظ بقائمة أدويتك ومكمّلاتك محدّثة في «علاجي».','بعد العلاج: مواعيد المتابعة، وعلامات تستدعي الاتصال.']],
+   ['myth','المكمّلات العشبية آمنة دائمًا لأنها طبيعية.','بعض الأعشاب والمكمّلات قد تتداخل مع العلاج. أضف كل ما تتناوله إلى «علاجي» واسأل فريقك قبل البدء.']]}
+];
+/* «أطعمة تستمتع بها»: حقائق فقط، دون ادّعاءات علاجية. rule: قاعدة تداخل من HS_RULES؛ q: كلمة للبحث في الوصفات. */
+const LN_FOODS=[
+ {id:'yogurt',n:'اللبن والزبادي',f:'مصدر للبروتين والكالسيوم، قوامه طري وبارد.',sym:['mouth_sores','swallowing','nausea','appetite_loss'],q:'لبن',note:'مبستر فقط.'},
+ {id:'egg',n:'البيض المطبوخ',f:'بروتين عالي الجودة بحصة صغيرة، سهل التحضير.',sym:['appetite_loss','fatigue','taste_changes'],q:'بيض',note:'يُطهى حتى يتماسك الصفار.'},
+ {id:'lentil',n:'العدس',f:'بروتين نباتي وألياف وحديد، يصلح للشوربة الطرية.',sym:['constipation','appetite_loss'],q:'عدس'},
+ {id:'chickpea',n:'الحمّص',f:'بروتين نباتي وألياف؛ الحمّص المهروس طري.',sym:['constipation','swallowing'],q:'حمص'},
+ {id:'dates',n:'التمر',f:'طاقة سريعة من السكريات الطبيعية، وفيه ألياف وبوتاسيوم.',sym:['appetite_loss','fatigue','constipation'],q:'تمر',note:'مع السكري أو أمراض الكلى اسأل فريقك عن الكمية.'},
+ {id:'banana',n:'الموز',f:'طري وسهل الهضم، وفيه بوتاسيوم.',sym:['diarrhoea','mouth_sores','nausea'],q:'موز',note:'غني بالبوتاسيوم: مع أمراض الكلى اسأل فريقك.'},
+ {id:'rice',n:'الأرز الأبيض',f:'نشويات خفيفة سهلة الهضم.',sym:['diarrhoea','nausea'],q:'أرز'},
+ {id:'oats',n:'الشوفان',f:'نشويات وألياف ذائبة، يُطهى طريًا مع الحليب.',sym:['constipation','swallowing','fatigue'],q:'شوفان'},
+ {id:'potato',n:'البطاطا',f:'نشويات وبوتاسيوم، تُهرس بسهولة.',sym:['mouth_sores','swallowing','diarrhoea'],q:'بطاطا'},
+ {id:'chicken',n:'الدجاج',f:'بروتين عالي الجودة، طعمه خفيف.',sym:['taste_changes','appetite_loss'],q:'دجاج',note:'يُطهى حتى ينضج تمامًا.'},
+ {id:'fish',n:'السمك',f:'بروتين، وبعض أنواعه فيها دهون أوميغا 3.',sym:['taste_changes','appetite_loss'],q:'سمك',note:'يُطهى حتى ينضج تمامًا.'},
+ {id:'olive',n:'زيت الزيتون',f:'دهون غير مشبعة وطاقة عالية بحجم صغير.',sym:['appetite_loss'],q:'زيت زيتون'},
+ {id:'tahini',n:'الطحينة',f:'طاقة وبروتين ودهون غير مشبعة، تُضاف إلى الصلصات.',sym:['appetite_loss'],q:'طحينة'},
+ {id:'nuts',n:'المكسّرات المطحونة',f:'طاقة وبروتين بحجم صغير؛ الطحن يجعلها أسهل.',sym:['appetite_loss'],q:'لوز',note:'تحتوي مسبّبات حساسية شائعة.'},
+ {id:'ginger',n:'الزنجبيل في الطبخ',f:'نكهة قوية يجدها بعض الناس مريحة مع الغثيان.',sym:['nausea','taste_changes'],q:'زنجبيل',note:'في الطبخ فقط؛ كبسولات الزنجبيل مكمّل عشبي يُسأل عنه الفريق.'},
+ {id:'mint',n:'النعناع',f:'رائحة منعشة تساعد بعض الناس مع تغيّر الطعم.',sym:['taste_changes','nausea'],q:'نعناع'},
+ {id:'apple',n:'التفاح المطبوخ',f:'ألياف ذائبة وقوام طري.',sym:['diarrhoea','swallowing'],q:'تفاح'},
+ {id:'carrot',n:'الجزر المطبوخ',f:'ألياف وفيتامين أ، يصبح طريًا بالطهي.',sym:['swallowing','constipation'],q:'جزر'},
+ {id:'toast',n:'الخبز المحمّص',f:'جاف وخفيف، يتحمّله كثيرون مع الغثيان.',sym:['nausea','diarrhoea'],q:'خبز'},
+ {id:'broth',n:'المرق',f:'سوائل وأملاح، دافئ وخفيف.',sym:['diarrhoea','dry_mouth','nausea'],q:'شوربة'},
+ {id:'milk',n:'الحليب',f:'بروتين وكالسيوم وسوائل، يُضاف إلى الشوفان والمخفوقات.',sym:['appetite_loss','dry_mouth'],q:'حليب',note:'مع الإسهال قد يُخفَّف مؤقتًا.'},
+ {id:'cheese',n:'الجبن المبستر',f:'بروتين وكالسيوم بحصة صغيرة.',sym:['appetite_loss'],q:'جبن',note:'المبستر فقط.'},
+ {id:'avocado',n:'الأفوكادو',f:'طاقة ودهون غير مشبعة، قوامه طري.',sym:['appetite_loss','mouth_sores','swallowing'],q:'أفوكادو'},
+ {id:'watermelon',n:'البطيخ',f:'غني بالماء، منعش وبارد.',sym:['dry_mouth','nausea'],q:'بطيخ',note:'يُغسل من الخارج قبل التقطيع.'},
+ {id:'spinach',n:'السبانخ',f:'ألياف وحمض الفوليك وفيتامين ك.',sym:['constipation'],q:'سبانخ',rule:'vitamin_k_high'},
+ {id:'grapefruit',n:'الجريب فروت',f:'فاكهة حمضية غنية بالماء وفيتامين ج.',sym:[],q:'جريب',rule:'grapefruit'}
+];
+const LN_CONV=[['كوب','240 مل تقريبًا'],['ملعقة كبيرة','15 مل'],['ملعقة صغيرة','5 مل'],['أونصة','28 غرامًا تقريبًا'],['رطل','454 غرامًا تقريبًا'],['درجة الحرارة','°م = (°ف − 32) × 5 ÷ 9']];
+const LN_ORGS=[['منظمة الصحة العالمية','إرشادات عامة للأكل الصحي وسلامة الغذاء'],['الجمعية الأوروبية للتغذية السريرية (ESPEN)','إرشادات التغذية لمرضى الأورام'],['الجمعية الأمريكية للسرطان (ACS)','إرشادات الأكل أثناء العلاج وبعده'],['مركز الأورام في بلدك','فريقك وأخصائية التغذية أول مرجع لك']];
+const LN_REFS=[['Arends J, et al. ESPEN guidelines on nutrition in cancer patients. Clin Nutr 2017','10.1016/j.clnu.2016.07.015'],['Muscaritoli M, et al. ESPEN practical guideline: Clinical Nutrition in cancer. Clin Nutr 2021','10.1016/j.clnu.2021.02.005']];
+/* المرشّح الثابت للنصوص الممنوعة (المرحلة 5 §4.9). */
+const LN_BAN=/يعالج السرطان|يشفي من|علاج للسرطان|مضاد للسرطان|يقتل (?:الخلايا|الورم)|يمنع السرطان|سوبر ?فود|superfood|anti-?cancer|cure|توقّف عن (?:الدواء|العلاج)|أوقف (?:الدواء|العلاج)|ضاعف الجرعة/i;
+function lnTexts(){const out=[]; const blk=b=>b.forEach(x=>{ if(x[0]==='myth') out.push(x[2]); else if(x[0]==='list') out.push(...x[1]); else out.push(x[1])});
+  out.push(LN_INTRO.title,LN_INTRO.lede); blk(LN_INTRO.blocks); LN_CH.forEach(c=>{out.push(c.title,c.lede); blk(c.blocks)}); LN_FOODS.forEach(f=>out.push(f.n,f.f,f.note||'')); return out.filter(Boolean)}
+const lnBanned=t=>LN_BAN.test(String(t||''));
+function lnDraftsVisible(){return !(typeof srvPatientOn==='function'&&srvPatientOn())}
+
+/* ---------- وضع الأعراض ---------- */
+const SYM_RED={fever:'حمّى',fluids_out:'لا أستطيع الاحتفاظ بالسوائل'};
+const SYM_RED_SIGN={fever:'حمّى',fluids_out:'لا يحتفظ بالسوائل'};
+if(!RED_SIGNS.includes('لا يحتفظ بالسوائل')) RED_SIGNS.push('لا يحتفظ بالسوائل');
+/* إلى علامات اليوم (الرئيسية، اقتراح الوصفات، تقرير الطبيب) بنفس الكلمات الموجودة. */
+const SYM_SIGN={nausea:'غثيان',mouth_sores:'تقرّحات الفم',diarrhoea:'إسهال',swallowing:'صعوبة البلع'};
+const SYM_NEED={fatigue:['energy'],nausea:['light'],appetite_loss:['energy','protein'],taste_changes:['light'],mouth_sores:['soft'],dry_mouth:['soft'],swallowing:['soft'],low_immunity:['immune']};
+const symAll=()=>store.get('hSymDays',{});
+function symDay(d){return symAll()[d||TODAY]||null}
+function symSet(d,codes,none){const all=symAll(); all[d]={codes:codes.slice(),none:!!none,at:new Date().toISOString()}; store.set('hSymDays',all);
+  if(d===TODAY) saveLife(t=>{const mine=Object.values(SYM_SIGN).concat(Object.values(SYM_RED_SIGN)); const prev=(t.symSigns||[]);
+    t.signs=(t.signs||[]).filter(s=>!prev.includes(s)); const add=codes.map(c=>SYM_SIGN[c]||SYM_RED_SIGN[c]).filter(Boolean).filter(s=>!t.signs.includes(s)); t.signs=t.signs.concat(add); t.symSigns=add})}
+function symRedNow(){const s=symDay(TODAY); if(!s) return []; return s.codes.filter(c=>c==='fluids_out'||(c==='fever'))}
+const symChName=c=>(LN_CH.find(x=>x.sym===c)||{}).title;
+function symTips(codes){return codes.map(c=>{const ch=LN_CH.find(x=>x.sym===c); if(!ch) return null; const l=ch.blocks.find(b=>b[0]==='list'); const tips=(l?l[1]:ch.blocks.filter(b=>b[0]==='tip').map(b=>b[1])).slice(0,2); return {c,ch,tips}}).filter(Boolean)}
+/* فكرة الوجبة القادمة: وصفة تناسب أعراض اليوم والحساسية ووضع المناعة والوجبة القادمة. */
+function symNextMeal(){const s=symDay(TODAY); const needs=[...new Set((s?s.codes:[]).flatMap(c=>SYM_NEED[c]||[]))];
+  const slot={breakfast:'breakfast',lunch:'lunch',dinner:'dinner',snack1:'snack'}[hlSlotNow()]||'lunch', prof=hgProf()||{}, cu=(prof.cuisines||[]).includes('arabic')?'arab':null;
+  const ok=r=>needs.every(n=>r.needs.includes(n))&&(!hlLowImm()||r.needs.includes('immune'))&&ckAllergyOk(r).level!=='contains';
+  const pool=HREC.filter(ok); const pick=pool.find(r=>r.slot===slot&&(!cu||r.cuisine===cu))||pool.find(r=>r.slot===slot)||pool[0]; return pick||null}
+function symCardHTML(){const s=symDay(TODAY), codes=s?s.codes:[], red=symRedNow();
+  const chip=(k,t,cls)=>'<button class="chip'+(cls||'')+'" data-act="symTog" data-val="'+k+'" aria-pressed="'+codes.includes(k)+'">'+t+'</button>';
+  let h='<div class="card symcard"><div class="row sp"><h3>كيف تشعر اليوم؟</h3>'+(s?'<small class="muted">'+tr('محفوظ')+'</small>':'')+'</div>'+
+   '<div class="chips symchips"><button class="chip hobnone" data-act="symNone" aria-pressed="'+!!(s&&s.none)+'">لا شيء اليوم</button>'+Object.entries(SYM_T).map(([k,t])=>chip(k,t)).join('')+'</div>'+
+   '<div class="chips symred">'+chip('fever','حمّى (38° أو أكثر)',' red')+chip('fluids_out',SYM_RED.fluids_out,' red')+'</div>';
+  if(red.length) h+='<div class="alert u symalert" data-red="1">'+I.alert+' <b>'+esc(red.map(c=>SYM_RED[c]).join('، '))+'</b><br>'+(red.includes('fever')&&hlLowImm()?'الحمّى مع ضعف المناعة حالة عاجلة. ':'')+'اتصل بفريقك الطبي الآن. إن كانت الحالة شديدة فاتصل بالطوارئ:'+emerHTML()+'</div>';
+  const tips=symTips(codes.filter(c=>SYM_T[c]));
+  if(tips.length) h+='<div class="symtips"><b>نصائح اليوم</b>'+tips.map(x=>'<div class="symtip"><small class="muted">'+esc(SYM_T[x.c])+'</small><ul>'+x.tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul><button class="lnk" data-act="lnOpen" data-id="'+x.ch.id+'">اقرأ فصل «'+esc(x.ch.title)+'»</button></div>').join('')+'</div>';
+  const nm=codes.length&&!red.length?symNextMeal():null;
+  if(nm) h+='<button class="symnext" data-act="ckOpen" data-id="'+esc(nm.id)+'"><small>فكرة للوجبة القادمة</small><b>'+esc(nm.name)+'</b></button>';
+  if(codes.some(c=>SYM_NEED[c])) h+='<button class="btn sm ghost" data-act="symRecipes">وصفات تناسب اليوم</button>';
+  return h+'</div>'}
+Object.assign(ACT,{
+  symTog(b){const v=b.dataset.val, s=symDay(TODAY), cur=s?s.codes.slice():[]; const i=cur.indexOf(v); i<0?cur.push(v):cur.splice(i,1); symSet(TODAY,cur,false);
+    if(i<0&&(v==='fever'||v==='fluids_out')) toast('اتصل بفريقك الطبي الآن'); rerender()},
+  symNone(){symSet(TODAY,[],true); rerender()},
+  symRecipes(){const s=symDay(TODAY); CK={cuisine:null,slot:null,needs:null,q:'',pre:[...new Set((s?s.codes:[]).flatMap(c=>SYM_NEED[c]||[]))]}; go('hrecipes')},
+});
+/* اختيار المطبخ لا يمسح حاجة اليوم أو حاجة الفصل. */
+{const c0=ACT.ckCuis; ACT.ckCuis=b=>{const pre=CK.pre; c0(b); if(pre&&pre.length&&CK.cuisine){CK.needs=pre.slice(); CK.pre=pre}}}
+/* أعراض اليوم تدخل اقتراحات الوصفات. */
+{const s0=ckSuggest; ckSuggest=function(){const r=s0(), s=symDay(TODAY); if(!s) return r;
+  s.codes.forEach(c=>(SYM_NEED[c]||[]).forEach(n=>{ if(!r.needs.includes(n)) r.needs.push(n); (r.why[n]=r.why[n]||[]).push('سجّلت اليوم: '+SYM_T[c])})); return r}}
+/* أعراض اليوم الحمراء في الرئيسية أيضًا (حمّى، لا يحتفظ بالسوائل): نفس شريط الخطر. */
+
+/* ---------- «دليلي»: واجهة القراءة ---------- */
+const LN={ch:null};
+const lnRead=()=>store.get('learnRead',{});
+const lnFs=()=>store.get('learnFs',0);
+function lnOrder(){const ph=(hgProf()||{}).treatmentPhase, chs=LN_CH.slice();
+  if(hlLowImm()){const i=chs.findIndex(c=>c.id==='immunity'); chs.unshift(chs.splice(i,1)[0])} return chs.map(c=>Object.assign({mine:!!(ph&&c.phase&&c.phase.includes(ph))||(hlLowImm()&&c.id==='immunity')},c))}
+function lnBlocks(b){return b.map(x=>x[0]==='p'?'<p>'+esc(x[1])+'</p>':
+  x[0]==='tip'?'<div class="lncall tip"><b>نصيحة</b><p>'+esc(x[1])+'</p></div>':
+  x[0]==='warn'?'<div class="lncall warn"><b>تنبيه</b><p>'+esc(x[1])+'</p></div>':
+  x[0]==='myth'?'<div class="lncall myth"><div><b>خرافة</b><p>'+esc(x[1])+'</p></div><div><b>الحقيقة</b><p>'+esc(x[2])+'</p></div></div>':
+  x[0]==='list'?'<ol class="lnlist">'+x[1].map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol>':'').join('')}
+const lnFsBar=()=>'<div class="lnfs" role="group" aria-label="حجم الخط"><button class="ib" data-act="lnFs" data-d="-1" aria-label="تصغير الخط">أ−</button><button class="ib" data-act="lnFs" data-d="1" aria-label="تكبير الخط">أ+</button></div>';
+const lnHidden=()=>'<div class="card"><h3>دليلي</h3><p class="muted">محتوى الدليل بانتظار مراجعة أخصائية التغذية، وسيظهر هنا بعد اعتماده.</p></div>'+NUT_FOOT;
+SCREENS.learn={title:'دليلي',tab:'hnut',html:()=>{ if(!lnDraftsVisible()) return lnHidden();
+  const rd=lnRead(), chs=lnOrder(), done=chs.filter(c=>rd[c.id]).length;
+  return draftBand('diet')+'<div class="lnhero"><small>دليل التغذية أثناء العلاج</small><h2>دليلي</h2><p>فصول قصيرة بلغة بسيطة، وكل فصل يربطك بوصفات تناسبه.</p>'+
+   '<div class="prog"><i style="width:'+Math.round(done/chs.length*100)+'%"></i></div><small class="num">'+esc(trf('قرأت {0} من {1} فصلًا',done,chs.length))+'</small></div>'+
+   '<button class="lnrow lnintro" data-act="lnOpen" data-id="intro"><span class="lnn">✦</span><span class="m"><b>'+esc(LN_INTRO.title)+'</b></span></button>'+
+   '<h3 class="lnpart">الجزء الأول: التغذية في رحلتك</h3><div class="lntoc">'+chs.map((c,i)=>'<button class="lnrow'+(rd[c.id]?' read':'')+'" data-act="lnOpen" data-id="'+c.id+'"><span class="lnn num">'+(i+1)+'</span><span class="m"><b>'+esc(c.title)+'</b><small>'+esc(c.lede)+'</small></span>'+(c.mine?'<span class="tag watch">'+(c.id==='immunity'&&hlLowImm()?'مهمّ لك الآن':'لمرحلتك')+'</span>':'')+(rd[c.id]?'<span class="lnok" aria-label="مقروء">✓</span>':'')+'</button>').join('')+'</div>'+
+   '<h3 class="lnpart">الجزء الثاني: الوصفات</h3><button class="ckentry" data-act="ckGo"><span class="ckei" aria-hidden="true">🍲</span><span class="m"><b>وصفات جاهزة</b><small>'+esc(trf('{0} وصفة بالمقادير وطريقة الطبخ',HREC.length))+'</small></span></button>'+
+   '<h3 class="lnpart">أطعمة تستمتع بها</h3><button class="lnrow" data-act="nav" data-r="learnFoods"><span class="lnn">🥣</span><span class="m"><b>'+esc(trf('{0} بطاقة طعام',LN_FOODS.length))+'</b><small>الخصائص، والأعراض التي قد تريحك معها، والتنبيهات</small></span></button>'+
+   '<h3 class="lnpart">مراجع</h3><button class="lnrow" data-act="nav" data-r="learnRef"><span class="lnn">§</span><span class="m"><b>جدول التحويل، منظمات موثوقة، المراجع</b></span></button>'+NUT_FOOT}};
+SCREENS.learnCh={title:'دليلي',tab:'hnut',html:a=>{ if(!lnDraftsVisible()) return lnHidden();
+  const id=a||LN.ch, chs=lnOrder(), i=chs.findIndex(c=>c.id===id), c=id==='intro'?LN_INTRO:chs[i]; if(!c) return lnHidden(); LN.ch=id;
+  const prev=id==='intro'?null:i>0?chs[i-1]:{id:'intro',title:LN_INTRO.title}, next=id==='intro'?chs[0]:chs[i+1];
+  const recipes=c.need?'<button class="btn ghost" data-act="lnRecipes" data-need="'+c.need+'">'+esc('وصفات تناسب «'+c.title+'»')+'</button>':'';
+  const foods=c.sym?LN_FOODS.filter(f=>f.sym.includes(c.sym)):[];
+  return '<div class="lnprog" aria-hidden="true"><i id="lnbar"></i></div>'+draftBand('diet')+
+   '<article class="lnart" style="--lnfs:'+lnFs()+'"><div class="row sp"><small class="lnlabel">'+(id==='intro'?'مقدّمة':esc(trf('الفصل {0}',i+1)))+'</small>'+lnFsBar()+'</div>'+
+   '<h1 class="lnh">'+esc(c.title)+'</h1><p class="lnlede">'+esc(c.lede)+'</p>'+lnBlocks(c.blocks)+
+   (foods.length?'<div class="lnfoods"><b>أطعمة قد تريحك</b><div class="chips">'+foods.map(f=>'<button class="chip" data-act="lnFood" data-id="'+f.id+'">'+esc(f.n)+'</button>').join('')+'</div></div>':'')+
+   recipes+'<p class="note lnsrc">'+esc(LN_SRC)+'</p></article>'+
+   '<div class="grid2 lnnav">'+(prev?'<button class="btn ghost" data-act="lnOpen" data-id="'+prev.id+'">→ '+esc(prev.title)+'</button>':'<span></span>')+(next?'<button class="btn" data-act="lnOpen" data-id="'+next.id+'">'+esc(next.title)+' ←</button>':'<button class="btn" data-act="nav" data-r="learn">الفهرس</button>')+'</div>'+
+   '<button class="lntocfab" data-act="lnToc" aria-label="الفهرس">☰ الفهرس</button>'+NUT_FOOT}};
+SCREENS.learnFoods={title:'أطعمة تستمتع بها',tab:'hnut',html:()=>{ if(!lnDraftsVisible()) return lnHidden();
+  return draftBand('diet')+'<p class="muted">حقائق غذائية عامة، دون ادّعاءات علاجية. اختر بطاقة لترى التفاصيل والوصفات.</p><div class="lnfgrid">'+
+   LN_FOODS.map(f=>'<button class="lnfc" data-act="lnFood" data-id="'+f.id+'"><b>'+esc(f.n)+'</b><small>'+esc(f.f)+'</small>'+(f.rule&&lnRuleOn(f)?'<span class="hsint">تداخل محتمل مع علاجك</span>':'')+'</button>').join('')+'</div>'+NUT_FOOT}};
+function lnRuleOn(f){ if(!f.rule) return false; try{return hsWarnings({names:{ar:f.n},safety:[f.rule]}).length>0}catch(e){return false}}
+SCREENS.learnFood={title:'بطاقة طعام',tab:'hnut',html:a=>{ if(!lnDraftsVisible()) return lnHidden(); const f=LN_FOODS.find(x=>x.id===a); if(!f) return lnHidden();
+  let w=[]; try{w=hsWarnings({names:{ar:f.n},safety:f.rule?[f.rule]:[]})}catch(e){}
+  const rec=HREC.filter(r=>hNorm(r.name).includes(hNorm(f.q))||(r.ingredients||[]).some(x=>{const fd=HFOOD_BY[x.food]; return fd&&hNorm(fd.names.ar||'').includes(hNorm(f.q))})).filter(r=>!hlLowImm()||r.needs.includes('immune')).slice(0,4);
+  return draftBand('diet')+'<div class="card lnfood"><h2>'+esc(f.n)+'</h2><div><small class="muted">الخصائص</small><p>'+esc(f.f)+'</p></div>'+
+   (f.sym.length?'<div><small class="muted">قد يريحك مع</small><div class="tags">'+f.sym.map(s=>'<em>'+esc(SYM_T[s])+'</em>').join('')+'</div></div>':'')+
+   (f.note?'<p class="note">'+esc(f.note)+'</p>':'')+(w.length?w.map(x=>'<div class="alert w hswarn">'+esc(x.text)+'</div>').join(''):'')+'</div>'+
+   (rec.length?'<h3>وصفات فيها '+esc(f.n)+'</h3>'+rec.map(r=>'<button class="lnrow" data-act="ckOpen" data-id="'+esc(r.id)+'"><span class="lnn">🍲</span><span class="m"><b>'+esc(r.name)+'</b></span></button>').join(''):'')+NUT_FOOT}};
+SCREENS.learnRef={title:'مراجع',tab:'hnut',html:()=>{ if(!lnDraftsVisible()) return lnHidden();
+  return draftBand('diet')+'<div class="card"><h3>جدول التحويل</h3><table class="lnconv"><tbody>'+LN_CONV.map(([a,b])=>'<tr><th>'+esc(a)+'</th><td>'+esc(b)+'</td></tr>').join('')+'</tbody></table></div>'+
+   '<div class="card"><h3>منظمات موثوقة</h3>'+LN_ORGS.map(([a,b])=>'<div class="crow"><span><b>'+esc(a)+'</b><small>'+esc(b)+'</small></span></div>').join('')+'</div>'+
+   '<div class="card"><h3>المراجع</h3><ol class="lnrefs">'+LN_REFS.map(([t,d])=>'<li><bdi dir="ltr">'+esc(t)+'. doi:'+esc(d)+'</bdi></li>').join('')+'</ol><p class="note">تُراجع المراجع وأرقامها قبل الإطلاق.</p></div>'+NUT_FOOT}};
+Object.assign(ACT,{
+  lnOpen(b){const id=b.dataset.id; LN.ch=id; const r=lnRead(); if(id!=='intro'){r[id]=1; store.set('learnRead',r)} go('learnCh',id)},
+  lnToc(){go('learn')},
+  lnFs(b){store.set('learnFs',Math.max(-1,Math.min(3,lnFs()+(+b.dataset.d)))); rerender()},
+  lnFood(b){go('learnFood',b.dataset.id)},
+  lnRecipes(b){CK={cuisine:null,slot:null,needs:null,q:'',pre:[b.dataset.need]}; go('hrecipes')},
+});
+/* شريط تقدّم القراءة. */
+document.addEventListener('scroll',e=>{const bar=document.getElementById('lnbar'); if(!bar||!e.target||!e.target.classList||!e.target.classList.contains('screen')) return; const el=e.target, max=el.scrollHeight-el.clientHeight; bar.style.width=(max>0?Math.round(el.scrollTop/max*100):100)+'%'},true);
+
+/* ---------- المداخل في «طعامي» ---------- */
+{const l0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>{let h=l0(a);
+  /* «قريبًا»: لم يبق شيء قادم في هذا القسم. */
+  h=h.replace(/<div class="card hsoon">[\s\S]*?<\/div>/,'');
+  const ln='<button class="lnentry" data-act="nav" data-r="learn"><span class="ckei" aria-hidden="true">📖</span><span class="m"><b>دليلي</b><small>'+esc(trf('{0} فصلًا عن التغذية أثناء العلاج والأعراض',LN_CH.length))+'</small></span></button>';
+  const i=h.indexOf('<button class="ckentry"'); if(i>=0){const e=h.indexOf('</button>',i)+9; h=h.slice(0,e)+ln+h.slice(e)} else h=ln+h;
+  const j=h.indexOf('<div class="card hlnutcard'); return j<0?symCardHTML()+h:h.slice(0,j)+symCardHTML()+h.slice(j)}}
 </script>
