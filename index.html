@@ -684,6 +684,20 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .lnfood p{margin:2px 0 0}.lnconv{width:100%;border-collapse:collapse;font-size:14px}.lnconv th,.lnconv td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:start}.lnconv th{font-weight:500;color:var(--ink-soft)}
 .lnrefs{margin:0;padding-inline-start:18px;font-size:13px;line-height:1.7}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lnhero{background:linear-gradient(160deg,#2B2616,#3A3217);color:#EDE3C4}:root:not([data-theme="light"]) .lnentry{background:linear-gradient(135deg,#1C2A1C,#223322)}}
+/* صفحات التعريف الخمس (D-078) */
+.itop{display:flex;justify-content:space-between;align-items:center}.istep{font-size:13px;color:var(--ink-faint)}
+.islide{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:8px 4px;border-radius:28px;animation:iin .35s ease}
+@keyframes iin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.iart{width:min(220px,58vw);height:auto;filter:drop-shadow(0 12px 22px rgba(19,35,58,.12))}
+.ititle{font-family:var(--display);font-size:26px;font-weight:600;line-height:1.35;margin:0}
+.ibrand{font-size:58px;margin-top:-10px}
+.isub{font-size:16px;line-height:1.85;color:var(--ink-soft);max-width:34ch}
+.ipts{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px}
+.ipts li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14.5px;text-align:start}
+.ipts li::before{content:"";width:10px;height:10px;border-radius:99px;flex:none;background:var(--accent)}
+.is-hello .ipts li::before{background:#D9A93F}.is-labs .ipts li::before{background:#2B7C74}.is-life .ipts li::before{background:#86702A}.is-team .ipts li::before{background:#6A4FA0}
+.idots{gap:8px}.idots button{width:9px;height:9px;border-radius:99px;border:0;padding:0;background:var(--line);cursor:pointer}.idots button.on{width:26px;background:var(--accent)}
+.inav{display:flex;gap:10px}.inav .btn{min-height:52px;font-size:16px}.inav .btn.ghost{flex:0 0 34%}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -5814,4 +5828,33 @@ document.addEventListener('scroll',e=>{const bar=document.getElementById('lnbar'
   const ln='<button class="lnentry" data-act="nav" data-r="learn"><span class="ckei" aria-hidden="true">📖</span><span class="m"><b>دليلي</b><small>'+esc(trf('{0} فصلًا عن التغذية أثناء العلاج والأعراض',LN_CH.length))+'</small></span></button>';
   const i=h.indexOf('<button class="ckentry"'); if(i>=0){const e=h.indexOf('</button>',i)+9; h=h.slice(0,e)+ln+h.slice(e)} else h=ln+h;
   const j=h.indexOf('<div class="card hlnutcard'); return j<0?symCardHTML()+h:h.slice(0,j)+symCardHTML()+h.slice(j)}}
+
+/* ============ خمس صفحات للتعريف بالتطبيق (المالك، 2026-10-02 — D-078) ============
+   تحلّ محلّ الشرائح الأربع القديمة. عربية فقط (D-065)، فلا أزرار لغة هنا. سحب بالإصبع يمينًا ويسارًا،
+   ونقاط قابلة للضغط، و«تخطّي» في كل صفحة. الرسوم أصلية (SVG داخل الصفحة)، دون صور. */
+const INTRO=[
+ {k:'hello',t:'مرحبًا بك في',brand:true,s:'رفيقك اليومي في رحلة العلاج. تسجّل يومك في دقيقة، وطبيبك يتابع كل شيء.',pts:['لمرضى الأورام والتهاب الكبد C وما بعد كورونا','طبيب حقيقي يراجع كل ما تسجّله','بياناتك محفوظة ولا تُشارَك إلا بإذنك'],
+  art:'<defs><radialGradient id="ig1" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#FFF6D8"/><stop offset="1" stop-color="#F1D78A" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="100" r="92" fill="url(#ig1)"/><circle cx="100" cy="100" r="66" fill="var(--surface)" opacity=".9"/><circle cx="92" cy="94" r="36" fill="none" stroke="var(--accent)" stroke-width="11"/><circle cx="140" cy="142" r="16" fill="#D9A93F"/><circle cx="84" cy="86" r="8" fill="var(--accent)" opacity=".25"/><path d="M40 52l6 0M43 49l0 6M158 44l8 0M162 40l0 8M150 72l5 0M152.5 69.5l0 5" stroke="#D9A93F" stroke-width="2.4" stroke-linecap="round"/>'},
+ {k:'treat',t:'علاجك في وقته',s:'تذكير بمواعيد أدويتك، وصورة سريعة للجرعة تكفي ليعرف التطبيق متى أخذتها بالضبط.',pts:['تذكير لكل دواء في موعده','«في وقتها» أو «متأخرة»، والساعة بالضبط','أضف دواءً بالكتابة أو بكاميرا الهاتف'],
+  art:'<circle cx="100" cy="100" r="86" fill="#E6EEFB"/><rect x="58" y="34" width="84" height="138" rx="16" fill="var(--surface)" stroke="#2A68AE" stroke-width="4"/><rect x="70" y="52" width="60" height="38" rx="10" fill="#DCE8F5"/><g transform="rotate(-30 100 71)"><rect x="80" y="63" width="40" height="16" rx="8" fill="#fff" stroke="#2A68AE" stroke-width="3"/><path d="M100 63v16" stroke="#2A68AE" stroke-width="3"/><rect x="100" y="64.5" width="18.5" height="13" rx="6.5" fill="#6A4FA0" opacity=".85"/></g><rect x="70" y="102" width="60" height="9" rx="4.5" fill="#E2F3E8"/><rect x="70" y="118" width="44" height="9" rx="4.5" fill="#E2F3E8"/><rect x="70" y="134" width="52" height="9" rx="4.5" fill="#FBF2CF"/><circle cx="148" cy="148" r="24" fill="#2E9B57"/><path d="M137 148l8 8 14-15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'},
+ {k:'labs',t:'تحاليلك واضحة',s:'صوّر ورقة التحليل فيقرؤها هاتفك، ويراجعها طبيبك، ثم تظهر لك مرتّبة مع المدى الطبيعي.',pts:['قراءة الورقة بالكاميرا','الأخضر طبيعي، والأصفر خارج المدى','طبيبك يعتمد كل نتيجة قبل أن تظهر'],
+  art:'<circle cx="100" cy="100" r="86" fill="#DFF3F1"/><rect x="50" y="36" width="100" height="128" rx="12" fill="var(--surface)" stroke="#2B7C74" stroke-width="4"/><rect x="64" y="54" width="46" height="8" rx="4" fill="#2B7C74" opacity=".55"/><rect x="64" y="72" width="72" height="10" rx="2" fill="#E4BD2E"/><rect x="82" y="72" width="36" height="10" fill="#2E9B57"/><path d="M96 66l5 5 5-5z" fill="#13233A"/><rect x="64" y="96" width="72" height="10" rx="2" fill="#E4BD2E"/><rect x="82" y="96" width="36" height="10" fill="#2E9B57"/><path d="M122 90l5 5 5-5z" fill="#13233A"/><rect x="64" y="120" width="56" height="7" rx="3.5" fill="#EEF1F5"/><rect x="64" y="134" width="40" height="7" rx="3.5" fill="#EEF1F5"/><g transform="translate(118 122)"><rect x="0" y="6" width="44" height="32" rx="8" fill="#13233A"/><rect x="14" y="0" width="16" height="9" rx="3" fill="#13233A"/><circle cx="22" cy="22" r="10" fill="#fff"/><circle cx="22" cy="22" r="5.5" fill="#2B7C74"/></g>'},
+ {k:'life',t:'حياتي: أكلك ونفسيتك',s:'دفتر طعام بالكاميرا، و347 وصفة تراعي تحاليلك، ودليل تغذية، ومساحة تعبّر فيها عمّا تشعر به.',pts:['صوّر طبقك فيقدّر الأكل والكمية','وصفات عربية وغربية وآسيوية لحالتك','«كيف تشعر اليوم؟» و«احكي» وتمرين التنفّس'],
+  art:'<circle cx="100" cy="100" r="86" fill="#F6F0DC"/><path d="M42 104h116c0 34-26 56-58 56s-58-22-58-56z" fill="var(--surface)" stroke="#86702A" stroke-width="4"/><path d="M56 104c4-16 18-26 30-24 6-14 26-16 34-4 14-4 28 10 26 28" fill="#F3E3B0" stroke="#86702A" stroke-width="3"/><circle cx="82" cy="94" r="6" fill="#B4553F"/><circle cx="104" cy="88" r="5" fill="#2E9B57"/><circle cx="122" cy="96" r="6" fill="#E4BD2E"/><path d="M152 40c10 13 14 20 14 27a14 14 0 0 1-28 0c0-7 4-14 14-27z" fill="#2A68AE" opacity=".8"/><path d="M52 52c-8-9-22-3-18 9 3 9 18 17 18 17s15-8 18-17c4-12-10-18-18-9z" fill="#A8457A" opacity=".85"/>'},
+ {k:'team',t:'لست وحدك',s:'طبيبك يراجع ما تسجّله، وعائلتك ترسل لك التشجيع، ورقم الطوارئ قريب دائمًا عند أي علامة خطر.',pts:['مراسلة فريقك الطبي من التطبيق','رسائل تشجيع من العائلة، وأنت تتحكّم','تنبيه واضح مع رقم الطوارئ عند الخطر'],
+  art:'<circle cx="100" cy="100" r="86" fill="#ECE6F6"/><circle cx="72" cy="78" r="18" fill="#6A4FA0" opacity=".85"/><path d="M42 140c2-24 14-38 30-38s28 14 30 38z" fill="#6A4FA0" opacity=".85"/><circle cx="130" cy="74" r="20" fill="#2A68AE"/><path d="M98 142c2-26 15-42 32-42s30 16 32 42z" fill="#2A68AE"/><path d="M118 112c0 10 12 10 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="118" cy="110" r="3" fill="#fff"/><path d="M100 56c-5-6-14-2-11 5 2 5 11 10 11 10s9-5 11-10c3-7-6-11-11-5z" fill="#D9A93F"/><circle cx="150" cy="150" r="20" fill="#B42D2D"/><path d="M142 146c2 8 6 12 14 14l4-4-5-4-3 3c-3-1-5-3-6-6l3-3-4-5z" fill="#fff"/>'}
+];
+SLIDES.length=0; INTRO.forEach(x=>SLIDES.push([x.t,x.s,x.art]));
+SCREENS.welcome={title:'مرحبًا',bare:true,html:()=>{const i=Math.min(welcomeIdx,INTRO.length-1), s=INTRO[i], last=i===INTRO.length-1;
+  return '<div class="itop"><span class="num istep">'+(i+1)+' / '+INTRO.length+'</span>'+(last?'':'<button class="lnk" data-act="wskip">تخطّي</button>')+'</div>'+
+   '<div class="islide is-'+s.k+'" id="islide"><svg class="iart" viewBox="0 0 200 200" aria-hidden="true">'+s.art+'</svg>'+
+   (s.brand?'<h2 class="ititle">'+s.t+'</h2><div class="goldname ibrand" dir="ltr">OxyLife</div>':'<h2 class="ititle">'+s.t+'</h2>')+
+   '<p class="isub">'+s.s+'</p><ul class="ipts">'+s.pts.map(p=>'<li>'+p+'</li>').join('')+'</ul></div>'+
+   '<div class="dots idots">'+INTRO.map((_,j)=>'<button class="'+(j===i?'on':'')+'" data-act="wgo" data-i="'+j+'" aria-label="الصفحة '+(j+1)+'"'+(j===i?' aria-current="step"':'')+'></button>').join('')+'</div>'+
+   '<div class="inav">'+(i?'<button class="btn ghost" data-act="wprev">السابق</button>':'')+'<button class="btn" data-act="wnext">'+(last?'ابدأ الآن':'التالي')+'</button></div>'}};
+ACT.wgo=b=>{welcomeIdx=+b.dataset.i; rerender()};
+/* السحب بالإصبع: في الواجهة العربية السحب نحو اليمين يعني التالي. */
+{let x0=null; document.addEventListener('touchstart',e=>{x0=route==='welcome'&&e.touches[0]?e.touches[0].clientX:null},{passive:true});
+ document.addEventListener('touchend',e=>{ if(x0==null||route!=='welcome') return; const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)<50) return;
+   if(dx>0) ACT.wnext(); else ACT.wprev()},{passive:true})}
 </script>
