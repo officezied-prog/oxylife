@@ -621,7 +621,7 @@ table.hnut{width:100%;border-collapse:collapse;font-size:14px} table.hnut td{pad
 .hsint,.hslow{margin-inline-start:4px}.hsask{margin:4px 0 8px}.hsteam{border-color:var(--accent)}
 .dash{display:flex;flex-direction:column;gap:10px}
 .dsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.dstat{border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{flex-direction:row;justify-content:center;gap:10px}.dstat{border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
 .dstat b{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.1}.dstat small{font-size:12px;color:var(--ink-soft);line-height:1.3}
 .dstat.dr{background:var(--urgent-bg)}.dstat.dr b{color:var(--urgent)}.dstat.dy{background:var(--out-bg)}.dstat.dy b{color:var(--out-line)}.dstat.dg{background:var(--ok-bg)}.dstat.dg b{color:var(--ok)}
 .dcard{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:14px;box-shadow:0 6px 18px -14px rgba(19,35,58,.5)}
@@ -5242,7 +5242,15 @@ const DASH_SUB={status:'من يحتاج اتصالًا أو متابعة الي�
 function dashHTML(){const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.id,classify(p)])), st=tally('status',ps,cs);
   const pill=(k,n)=>'<span class="dpill d'+k+'"><b class="num">'+n+'</b><small>'+esc(COL_T[k])+'</small></span>';
   const card=(k,cls)=>{const t=tally(k,ps,cs); return '<button class="dcard'+(cls?' '+cls:'')+'" data-act="openGroup" data-val="'+k+'"><span class="dic">'+GI[k]+'</span><span class="dt"><b>'+GROUPS[k].t+'</b><small>'+esc(DASH_SUB[k])+'</small><span class="dpills">'+pill('r',t.r)+pill('y',t.y)+pill('g',t.g)+'</span></span><span class="dgo" aria-hidden="true">‹</span></button>'};
-  return '<div class="dash"><div class="dsum"><div class="dstat dr"><b class="num">'+st.r+'</b><small>'+esc(COL_T.r)+'</small></div><div class="dstat dy"><b class="num">'+st.y+'</b><small>'+esc(COL_T.y)+'</small></div><div class="dstat dg"><b class="num">'+st.g+'</b><small>'+esc(COL_T.g)+'</small></div></div>'+
+  const stat=k=>'<button class="dstat d'+k+'" data-act="dashCol" data-val="'+k+'"><b class="num">'+st[k]+'</b><small>'+esc(COL_T[k])+'</small></button>';
+  return '<div class="dash"><div class="dsum">'+stat('r')+stat('y')+stat('g')+'</div>'+
     card('status')+card('prod','dprod')+card('dx')+card('trend')+card('adh')+'</div>'}
 {const p0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=p0(a), i=h.indexOf('<div class="hub">'), j=h.indexOf('<div class="legend">'); return i>=0&&j>i?h.slice(0,i)+dashHTML()+h.slice(j):h}}
+
+/* D-072 (طلب المالك): الضغط على رقم في ملخّص «المرضى» يفتح قائمة المرضى في ذلك اللون (حسب «حالات المرضى اليوم»). */
+SCREENS.dashCol={title:k=>COL_T[k]||'المرضى',tab:'patients',html:k=>{const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.id,classify(p)]));
+  const list=ps.filter(p=>colorOf('status',p,cs[p.id])===k).sort((a,b)=>ST_O[cs[a.id].status]-ST_O[cs[b.id].status]);
+  return '<div class="dstat d'+k+' dhead"><b class="num">'+list.length+'</b><small>'+esc(COL_T[k])+'</small></div>'+
+   (list.length?list.map(p=>prow(p,cs[p.id])).join(''):'<div class="card"><p class="muted">لا مرضى في هذا القسم الآن.</p></div>')}};
+ACT.dashCol=b=>go('dashCol',b.dataset.val);
 </script>
