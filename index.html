@@ -1,7 +1,4 @@
-<!doctype html>
-<html lang="ar" dir="rtl"><head>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta charset="utf-8">
 <title>OxyLife</title>
 <meta name="theme-color" content="#EAF1F8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -647,6 +644,10 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .ckvals{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ckvals span{background:var(--ground);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column}.ckvals small{color:var(--ink-soft);font-size:12px}
 .ckserv{gap:6px}.ckserv .btn{padding:4px 12px}.ckdraft{text-align:center}
 @media (prefers-color-scheme:dark){.ckentry{background:linear-gradient(135deg,#2E2814,#3A3217);border-color:#6B5A20}.ckc-arab{background:var(--o-cbc)}.ckc-western{background:var(--o-liver)}.ckc-asian{background:var(--o-marker)}}
+.hlsnap{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:16px;padding:12px;font:inherit;color:inherit;cursor:pointer}
+.hlsnapi{width:44px;height:44px;border-radius:14px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}.hlsnapi svg{width:24px;height:24px}
+.hlsnap .m{display:flex;flex-direction:column;gap:2px}.hlsnap b{font-family:var(--display);font-size:16px}.hlsnap small{color:var(--ink-soft)}
+.hobnone{font-weight:600}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -4206,8 +4207,8 @@ function hobWheelSet(k,v){const a=HOB.a; v=+v;
 function hobWeightWheels(pre,field,label){const cur=HOB.a[field]??HOB.a.currentWeightKg??65, int=Math.floor(cur+1e-9), dec=Math.round((cur-int)*10);
   return '<div class="hwpair">'+hWheel(pre+'kg',range(30,220),int,v=>String(v),label)+'<span class="hwdot">.</span>'+hWheel(pre+'dec',range(0,9),dec,v=>String(v),label)+'<span class="hwunit">'+tr('كغ')+'</span></div>'}
 function hobChips(field,T,noneKey,noneLabel){const a=HOB.a, L=a[field]||[];
-  return '<div class="chips hobchips">'+Object.entries(T).map(([k,t])=>'<button class="chip" data-act="hobMulti" data-f="'+field+'" data-n="'+noneKey+'" data-val="'+k+'" aria-pressed="'+L.includes(k)+'">'+t+'</button>').join('')+
-   (noneKey?'<button class="chip" data-act="hobNone" data-f="'+field+'" data-n="'+noneKey+'" aria-pressed="'+!!a[noneKey]+'">'+noneLabel+'</button>':'')+'</div>'}
+  return '<div class="chips hobchips">'+(noneKey?'<button class="chip hobnone" data-act="hobNone" data-f="'+field+'" data-n="'+noneKey+'" aria-pressed="'+!!a[noneKey]+'">'+noneLabel+'</button>':'')+
+   Object.entries(T).map(([k,t])=>'<button class="chip" data-act="hobMulti" data-f="'+field+'" data-n="'+noneKey+'" data-val="'+k+'" aria-pressed="'+L.includes(k)+'">'+t+'</button>').join('')+'</div>'}
 const hobBig=(act,val,cur,title,sub,ic)=>'<button class="haopt hobopt" data-act="'+act+'" data-val="'+val+'" aria-pressed="'+(cur===val)+'">'+(ic?'<span class="hobic" aria-hidden="true">'+ic+'</span>':'')+'<span><b>'+title+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</span></button>';
 function hobQ(k){const a=HOB.a;
   const q=(h,p)=>'<div class="hobq"><h2>'+h+'</h2>'+(p?'<p class="muted">'+p+'</p>':'')+'</div>';
@@ -5484,7 +5485,7 @@ Object.assign(ACT,{
 main.addEventListener('input',e=>{ if(e.target.id!=='ck-q') return; CK.q=e.target.value; clearTimeout(CK.t); CK.t=setTimeout(()=>{const pos=e.target.selectionStart; rerender(); const i=$('#ck-q'); if(i){i.focus(); try{i.setSelectionRange(pos,pos)}catch(x){}}},250)});
 /* المداخل: أعلى «ابحث عن طعام» وفي «طعامي». */
 {const f0=SCREENS.hfood.html; SCREENS.hfood.html=a=>'<button class="ckentry" data-act="ckGo"><span class="ckei" aria-hidden="true">🍲</span><span class="m"><b>وصفات جاهزة</b><small>'+esc(trf('{0} وصفة بالمقادير وطريقة الطبخ، تراعي بياناتك',HREC.length))+'</small></span></button>'+f0(a)}
-{const l0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>{const h=l0(a); return h.replace('<div class="card hsoon">','<button class="ckentry" data-act="ckGo"><span class="ckei" aria-hidden="true">🍲</span><span class="m"><b>وصفات جاهزة</b><small>'+esc(trf('{0} وصفة',HREC.length))+'</small></span></button><div class="card hsoon">')}}
+/* في «طعامي» تحت «دفتر طعامي» مباشرة (المالك، 2026-10-02): انظر hlNutCard في كتلة الكاميرا (D-076). */
 
 /* ============ وقت أخذ الدواء بالضبط (D-075) ============
    طلب المالك: بعد تصوير الجرعة يعرف التطبيق هل أُخذت في وقتها، ويسجّل الساعة بالضبط وجزء اليوم (صباحًا، بعد
@@ -5535,4 +5536,15 @@ function mtDoctorHTML(){const days=[...Array(7)].map((_,i)=>D(-i));
 {const d0=SCREENS.daily.html; SCREENS.daily.html=(sel,inFile)=>{const h=d0(sel,inFile); return sel==='p1'?h+mtDoctorHTML():h}}
 document.head.insertAdjacentHTML('beforeend','<style>.mtrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.mtrow:last-of-type{border-bottom:0}.mtrow .m{display:flex;flex-direction:column;min-width:0}.mtrow small{color:var(--ink-faint);font-size:12px}'+
  '.tag.mt-ok{background:var(--ok-bg)}.tag.mt-late,.tag.mt-early{background:var(--watch-bg)}.tag.mt-miss{background:var(--urgent-bg)}.tag.mt-extra{background:var(--prod-soft)}.tag.mt-due,.tag.mt-none{background:var(--line)}</style>');
+
+/* ============ «طعامي»: الكاميرا والوصفات تحت «دفتر طعامي» (D-076) ============
+   طلب المالك: الكاميرا تتعرّف على الطعام وتقدّر الكمية، والوصفات الجاهزة مباشرة تحت «دفتر طعامي».
+   الكاميرا تفتح «صورة الطبق» الموجودة (المرحلة 3): الذكاء الاصطناعي يقترح الأطعمة وغراماتها التقريبية فقط،
+   القيم الغذائية من قاعدة الطعام، ولا يُسجَّل شيء قبل أن يختار المريض ويعدّل ويضغط «سجّل». */
+{const c0=hlNutCard; hlNutCard=function(){const h=c0(), e=h.lastIndexOf('</div>');
+  return h.slice(0,e)+'<button class="hlsnap" data-act="hlSnap"><span class="hlsnapi" aria-hidden="true">'+HL_ICON.camera+'</span><span class="m"><b>صوّر طبقك</b><small>يتعرّف على الطعام ويقدّر الكمية، وأنت تؤكّد</small></span></button>'+h.slice(e)+
+   '<button class="ckentry" data-act="ckGo"><span class="ckei" aria-hidden="true">🍲</span><span class="m"><b>وصفات جاهزة</b><small>'+esc(trf('{0} وصفة بالمقادير وطريقة الطبخ، تراعي بياناتك',HREC.length))+'</small></span></button>'}}
+ACT.hlSnap=()=>{HL.slot=hlSlotNow(); HL.date=TODAY; ACT.hlPhotoGo()};
+/* نصيحة القياس في شاشة الصورة: ملعقة أو شوكة بجانب الطبق تساعد على تقدير الكمية. */
+{const p0=SCREENS.hlphoto.html; SCREENS.hlphoto.html=a=>{const h=p0(a); return h.replace('<div class="card hlphotointro">','<div class="card hlphotointro"><p class="note hpmeasure">📏 للقياس: صوّر من الأعلى، وضع ملعقة أو شوكة بجانب الطبق ليقدّر التطبيق الحجم. الكمية تقدير، وتستطيع تعديلها بالغرام.</p>')}}
 </script>
