@@ -6749,3 +6749,17 @@ document.head.insertAdjacentHTML('beforeend','<style>'+
  '</style>');
 if(['home','login','everyone','survivors'].includes(route)) rerender();
 </script>
+<script>
+/* ============ الرئيسية: الأقسام في الشريط السفلي فقط (D-089) ============
+   بطاقات «حياتي» و«العلاج» و«الحالة النفسية» و«فريقي وعائلتي» تكرّر أزرار الشريط السفلي، فأُزيلت من الصفحة الرئيسية.
+   ما كانت تنبّه إليه يبقى ظاهرًا: سؤال حساسية الطعام إن لم يُجب، وطلب جديد من الطبيب. */
+function homeNotices(){let out=''; try{
+  const g=hGate(); if(!g.personal) out+='<div class="alert w hnote">'+tr('اقتراحات الطعام متوقفة: أكمل سؤال الحساسية')+' <button class="lnk" data-act="nav" data-r="hnut">'+tr('حياتي')+'</button></div>';
+  const reqN=reqs().filter(q=>q.pid==='p1'&&q.status==='open').length; if(reqN) out+='<div class="alert i hnote">'+tr('طلب جديد من الطبيب')+' <button class="lnk" data-act="nav" data-r="htreat">'+tr('العلاج')+'</button></div>';
+ }catch(e){} return out}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>{let h=h0(a);
+  h=h.replace(/<button class="hsec hsec-(hnut|htreat|hmind|hteam)"[\s\S]*?<\/button>/g,'');
+  const i=h.indexOf('<div class="hsecs">'); return i<0?h+homeNotices():h.slice(0,i)+homeNotices()+h.slice(i)}}
+document.head.insertAdjacentHTML('beforeend','<style>.hsecs:empty,.hsecs:not(:has(*)){display:none}</style>');
+if(route==='home') rerender();
+</script>
