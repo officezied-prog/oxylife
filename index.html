@@ -5175,12 +5175,12 @@ function evPosts(){const s=evState(), me=role==='patient'?meP():null;
   const mine=s.consent==='yes'?s.mine.map(m=>({...m,by:'me',name:s.showName&&me?me.name.split(' ')[0]:'',anon:!(s.showName&&me)})):[];
   return [...mine,...EV_SEED].sort((a,b)=>a.at<b.at?1:-1)}
 function evConsentCard(){const s=evState();
-  if(s.consent===null) return '<div class="card evc"><h3>هل تريد مشاركة تجربتك مع الجميع؟</h3>'+
-    '<p class="muted">هذا حقّك وحدك. إن شاركت، يقرأ تجربتك مرضى آخرون وعائلاتهم ليجدوا الأمل والدعم. إن رفضت، لا يظهر منك شيء هنا، وتستطيع القراءة والدعم كالجميع.</p>'+
+  if(s.consent===null) return '<div class="card evc"><h3>هل تريد مشاركة تجربتك في «نحن كلنا معك»؟</h3>'+
+    '<p class="muted">هذا حقّك وحدك. إن شاركت، يقرأ تجربتك مرضى آخرون وعائلاتهم ليجدوا الأمل والدعم. إن رفضت، لا يظهر منك شيء هنا، وتستطيع القراءة والدعم مثل الآخرين.</p>'+
     '<div class="grid2"><button class="btn" data-act="evConsent" data-val="yes">أشارك تجربتي</button><button class="btn ghost" data-act="evConsent" data-val="no">لا أشارك</button></div>'+
     '<p class="note">تستطيع تغيير قرارك في أي وقت من هذه الصفحة.</p></div>';
   if(s.consent==='no') return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">لا أشارك</b></span><button class="btn sm ghost" data-act="evConsent" data-val="yes">أريد المشاركة</button></div><p class="note">لا يظهر منك شيء في «نحن كلنا معك». ما زلت تستطيع القراءة والدعم.</p></div>';
-  return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">أشارك مع الجميع</b></span><button class="btn sm ghost" data-act="evConsent" data-val="no">إيقاف المشاركة</button></div>'+
+  return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">أشارك في «نحن كلنا معك»</b></span><button class="btn sm ghost" data-act="evConsent" data-val="no">إيقاف المشاركة</button></div>'+
     '<label class="tgl"><input type="checkbox" id="ev-name" data-act="evName"'+(s.showName?' checked':'')+'><span>أظهر اسمي الأول. إن ألغيت ذلك تظهر تجربتك باسم «مريض من OxyLife».</span></label>'+
     '<label class="field"><span>اكتب تجربتك أو نصيحة لغيرك</span><textarea id="ev-text" rows="4" maxlength="800" placeholder="ما الذي ساعدك؟ ماذا تقول لمن بدأ العلاج للتو؟"></textarea></label>'+
     '<button class="btn" data-act="evPost">انشر للجميع</button>'+
@@ -5197,7 +5197,7 @@ function evPostHTML(p){const s=evState(), myR=s.myR[p.id], mySay=s.mySay[p.id]||
      '<button class="lnk" data-act="evSayOpen" data-id="'+esc(p.id)+'">أرسل كلمة دعم</button></div>')+'</div>'}
 SCREENS.everyone={title:'نحن كلنا معك',tab:'home',get bare(){return !role},html:()=>{const posts=evPosts();
   return (role?'':'<div class="row sp"><h2 style="margin:0">نحن كلنا معك</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div>')+
-   '<div class="card motiv"><h3>دعم ومساندة</h3><p class="muted">هنا يشارك المرضى الذين اختاروا ذلك تجاربهم، ليجد غيرهم الأمل. اقرأ، وادعم بكلمة طيبة.</p></div>'+
+   '<div class="card motiv"><h3>نحن كلنا معك</h3><p class="muted">هنا يشارك المرضى الذين اختاروا ذلك تجاربهم، ليجد غيرهم الأمل. اقرأ، وادعم بكلمة طيبة.</p></div>'+
    (role==='patient'?evConsentCard():'')+
    (posts.length?posts.map(evPostHTML).join(''):'<p class="muted" style="text-align:center">لا توجد مشاركات بعد.</p>')+
    '<p class="note" style="text-align:center">تجارب شخصية وليست نصيحة طبية. اتّبع دائمًا تعليمات فريقك الطبي.</p>'}};
@@ -5218,7 +5218,7 @@ amalRoleBtns=function(){return '<button class="rolebtn sm" data-act="goEveryone"
   return '<div class="seg" role="group" aria-label="أدخل بصفتي"><button data-act="pickRole" data-r="patient" aria-pressed="'+(r==='patient')+'">المريض</button><button data-act="pickRole" data-r="family" aria-pressed="'+(r==='family')+'">من عائلة المريض</button></div>'+h}}
 {const p0=ACT.pickRole; ACT.pickRole=b=>{ if(route==='signin'&&['patient','family'].includes(b.dataset.r)){arg=b.dataset.r; rerender(); return} p0(b)}}
 /* الوصول من داخل الحساب */
-{const h0=SCREENS.home.html; SCREENS.home.html=a=>h0(a).replace(/(<div class="hsecs">[\s\S]*?)(\n  <\/div>)/,(m,x,y)=>x+hSection('everyone','نحن كلنا معك',tr('مرضى يساندون بعضهم'),I.users)+y)}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>h0(a).replace(/(<div class="hsecs">[\s\S]*?)(\n  <\/div>)/,(m,x,y)=>x+hSection('everyone','نحن كلنا معك','',I.users)+y)}
 if(SCREENS.fhome){const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>h0(a)+'<button class="rep" data-act="goEveryone"><span class="d" style="color:var(--prod)">'+I.users+'</span><span class="m"><b>نحن كلنا معك</b><small>تجارب يشاركها المرضى للدعم والمساندة</small></span></button>'}
 if(['login','signin','home','fhome'].includes(route)) rerender();
 </script>
@@ -5471,7 +5471,7 @@ ACT.hkDel=b=>{store.set('hk',hkList().filter(x=>x.id!==b.dataset.id)); rerender(
 const qbtn=(act,t,s,ic,cls)=>'<button class="qb '+cls+'" data-act="'+act+'"><span class="qi">'+ic+'</span><b>'+t+'</b><small>'+s+'</small></button>';
 function homeQuick(){const fn=(typeof famSurfaced==='function'?(famSurfaced()||[]).length:0);
   return '<div class="qgrid">'+qbtn('goMusanid','مساند','صوّر علاجك أو تحليلك',MI.scan,'q1')+qbtn('goHki','احكي','عبّر عن حالتك',MI.talk,'q2')+
-   qbtn('goFamily','عائلتي','رسائل من أحبّائك',MI.fam,'q3')+qbtn('goEveryone','نحن كلنا معك','مرضى يساندون بعضهم',I.users,'q4')+'</div>'}
+   qbtn('goFamily','عائلتي','رسائل من أحبّائك',MI.fam,'q3')+qbtn('goEveryone','نحن كلنا معك','',I.users,'q4')+'</div>'}
 ACT.goFamily=()=>go('family');
 {const h0=SCREENS.home.html; SCREENS.home.html=a=>{let h=h0(a).replace(/<button class="hsec hsec-everyone"[\s\S]*?<\/button>/,''); const i=h.indexOf('<div class="hsecs">'); return i<0?homeQuick()+h:h.slice(0,i)+homeQuick()+h.slice(i)}}
 document.head.insertAdjacentHTML('beforeend','<style>.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}'+
