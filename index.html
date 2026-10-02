@@ -742,6 +742,26 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .kidhelp{border:0;border-radius:22px;background:#E5484D;color:#fff;font:inherit;font-family:"Baloo Bhaijaan 2",var(--display);font-size:20px;font-weight:800;padding:16px;cursor:pointer;box-shadow:0 6px 0 #B5282D}
 .kidpar{align-self:center}.kidsos{text-align:center;background:#FFF0F0;border-radius:20px;padding:14px}.kidsos h2{font-family:"Baloo Bhaijaan 2",var(--display);font-size:26px;color:#B42D2D}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #app[data-aud=child]{--ground:#1B1A14;--page:#0E0D09}}
+/* D-081: تقدّمي الغذائي والملخّص */
+.npchart{width:100%;height:auto;display:block}.npbar{fill:var(--accent)}.npbar.empty{fill:var(--line)}
+.nptarget{stroke:var(--ink-soft);stroke-dasharray:4 4;stroke-width:1.2}.nplbl{fill:var(--ink-faint);font-size:10px;font-family:var(--body)}
+.npband{fill:var(--accent-soft)}.npwline{fill:none;stroke:var(--ink-soft);stroke-width:2}.npwpt{fill:var(--ink)}
+.npsym{display:flex;flex-direction:column;gap:6px}.npsr{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:8px}.npsr small{font-size:12px;color:var(--ink-soft)}
+.npcells{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:2px}.npcells i{height:14px;border-radius:3px;background:var(--line)}.npcells i.on{background:var(--prod)}
+.nsum{background:#fff;color:#13233A;border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.nsumh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #13233A;padding-bottom:6px}.nsumh b{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:22px;color:#A8751E}
+.nsum h4{margin:8px 0 2px;font-size:14px}.nsumt{width:100%;border-collapse:collapse}.nsumt th,.nsumt td{text-align:start;padding:4px 2px;border-bottom:1px solid #E3E8EF;vertical-align:top}.nsumt th{width:34%;font-weight:500;color:#4E5E77}
+.nsum ul{margin:0;padding-inline-start:18px}.nsumf{font-size:11.5px;color:#6B7A90;border-top:1px solid #E3E8EF;padding-top:6px}
+#nutprint{display:none}
+@media print{body.nutprinting .app{display:none!important}body.nutprinting #nutprint{display:block!important;direction:rtl;padding:12mm}body.nutprinting #nutprint .nsum{border:0}}
+.fmlog{border-color:var(--prod)}
+/* D-082: الإعدادات، الألوان والإضاءة */
+:root[data-color=green]{--accent:#2E8B62;--accent-soft:#DDF0E6}:root[data-color=violet]{--accent:#6A4FA0;--accent-soft:#ECE6F6}:root[data-color=rose]{--accent:#B0507A;--accent-soft:#F7E4EC}:root[data-color=amber]{--accent:#B07A1E;--accent-soft:#F7ECD6}
+:root[data-theme=dark][data-color=green]{--accent:#7DD3A8;--accent-soft:#17352A}:root[data-theme=dark][data-color=violet]{--accent:#BCA5EC;--accent-soft:#2B2442}:root[data-theme=dark][data-color=rose]{--accent:#F0A3C3;--accent-soft:#3A2230}:root[data-theme=dark][data-color=amber]{--accent:#E6C06A;--accent-soft:#3A2F17}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light])[data-color=green]{--accent:#7DD3A8;--accent-soft:#17352A}:root:not([data-theme=light])[data-color=violet]{--accent:#BCA5EC;--accent-soft:#2B2442}:root:not([data-theme=light])[data-color=rose]{--accent:#F0A3C3;--accent-soft:#3A2230}:root:not([data-theme=light])[data-color=amber]{--accent:#E6C06A;--accent-soft:#3A2F17}}
+.stseg button{font-size:13.5px}.stcolors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stcol{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid transparent;background:var(--ground);border-radius:14px;padding:8px 2px;font:inherit;color:inherit;cursor:pointer}
+.stcol i{width:30px;height:30px;border-radius:99px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}.stcol small{font-size:11px}.stcol[aria-pressed=true]{border-color:var(--accent)}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -5364,7 +5384,7 @@ ACT.dashCol=b=>go('dashCol',b.dataset.val);
 
 /* D-073 (طلب المالك): وحدة الوزن حسب بلد الإقامة (ملف البلد: kg أو lb). يُحفظ الوزن دائمًا بالكيلوغرام، ويُعرض ويُدخل بوحدة البلد. */
 const LB=2.20462;
-const WU=()=>{try{return ((regionProf()||{}).units||{}).weight==='lb'?'lb':'kg'}catch(e){return 'kg'}};
+const WU=()=>{const u=store.get('set.weight','auto'); if(u==='kg'||u==='lb') return u; try{return ((regionProf()||{}).units||{}).weight==='lb'?'lb':'kg'}catch(e){return 'kg'}};
 const wShow=kg=>WU()==='lb'?Math.round(kg*LB*10)/10:kg;
 const wFmt=kg=>WU()==='lb'?wShow(kg)+' رطل':kg+' كغ';
 SCREENS.lifeWeight.html=()=>{const lt=lifeToday(), L=S.life, u=WU();
@@ -6095,4 +6115,178 @@ Object.assign(ACT,{
 /* الطبيب: نوع الحساب في صفحة المريض. */
 {const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(pid!=='p1') return h; const a=store.get('hAud','adult'); if(a==='adult') return h;
   const tag='<div class="alert '+(a==='preg'?'p':'i')+' audtag">'+(a==='preg'?'🤰 حامل · الأسبوع '+pregWeek()+' ('+pregTri(pregWeek())+'). أرقام التغذية يضعها الفريق وطبيبة النساء.':'🧒 حساب طفل. أرقام التغذية يضعها فريق طب الأطفال.')+'</div>'; return tag+h}}
+
+/* ============ المرحلة 7: اليوم، «تقدّمي الغذائي»، ملخّص لأخصائية التغذية، والعائلة تسجّل الوجبات — D-081 ============
+   «حياتي» تبقى أبوابها الأربعة (المالك). «اليوم» هو أعلى «طعامي»: كيف تشعر اليوم، دفتر طعامي (البروتين أولًا، الطاقة، الماء)،
+   وفكرة الوجبة القادمة. «تقدّمي الغذائي» يُفتح من «طعامي» ومن «وزني»:
+   - الوزن داخل نطاق ثابت حول الوزن المرجعي (لا ألوان «جيد/سيئ»)، ويمكن إخفاؤه. يكون مخفيًا افتراضيًا إذا اختار الطبيب «رعاية داعمة».
+   - الأكل مقارنةً بالهدف، والبروتين، والماء، وسجلّ الأعراض: أسبوع أو شهر.
+   - لا مدح لنقص الوزن أبدًا، ولا سلاسل أيام ولا شارات للوزن (فحص نصّي في الاختبار).
+   «ملخّص لأخصائية التغذية»: صفحة قراءة واحدة، تُطبع أو تُحفظ PDF من المتصفّح (وفي الخادم يُصدر PDF، §8.3).
+   العائلة (قرار المالك D-079: لا ترى تطبيق المريض): تسجّل ما أكله المريض وصفًا فقط، إذا سمح المريض («يسجّل وجباتي…»)،
+   فيظهر للمريض في «دفتر طعامي» وللطبيب، ويُذكر في الملخّص. خيارات «ما يراه أفراد عائلتك» أُزيلت لأن العائلة لا ترى شيئًا. */
+const NP={per:'week'};
+const npDays=n=>Array.from({length:n},(_,i)=>addDays(TODAY,-(n-1-i)));
+function npSeries(n){return npDays(n).map(d=>{let v=null; try{v=hlDay(d)}catch(e){} const p=v&&v.progress;
+  return {d,kcal:p?p.kcal.eaten:0,kcalT:p?p.kcal.target:null,prot:p?p.protein.eatenG:0,protT:p?p.protein.targetG:null,ml:p?p.water.ml:0,mlT:p?p.water.targetMl:null,logged:!!(v&&v.entries&&v.entries.length)}})}
+const npHideW=()=>{const v=store.get('hideWChart',null); return v==null?!!store.get('hSupportive',false):v};
+function npBand(){const w=hgWeighIns(), g=hgView().goal; if(g&&g.band) return g.band; if(!w.length) return null;
+  const ref=w.filter(x=>x.date>=addDays(TODAY,-30))[0]||w[w.length-1]; return HG.bandOf(ref.kg,(HG.HAYATI_ENGINE_DEFAULTS&&HG.HAYATI_ENGINE_DEFAULTS.bandPct)||5)}
+const npK=v=>wFmt(v);
+/* رسم أعمدة بسيط مع خط الهدف (SVG داخل الصفحة). */
+function npBars(S,key,tkey,unit,fmt){const W=320,H=120,pad=22, n=S.length, bw=Math.max(3,(W-pad*2)/n-3);
+  const t=S.map(x=>x[tkey]).find(v=>v!=null), max=Math.max(1,t||0,...S.map(x=>x[key]))*1.15, y=v=>H-18-(v/max)*(H-34);
+  const bars=S.map((x,i)=>{const X=pad+i*((W-pad*2)/n); return '<rect x="'+X.toFixed(1)+'" y="'+y(x[key]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(H-18-y(x[key])).toFixed(1)+'" rx="2" class="npbar'+(x.logged||key==='ml'?'':' empty')+'"><title>'+x.d+': '+fmt(x[key])+' '+unit+'</title></rect>'}).join('');
+  const tl=t!=null?'<line x1="'+pad+'" x2="'+(W-pad)+'" y1="'+y(t).toFixed(1)+'" y2="'+y(t).toFixed(1)+'" class="nptarget"/><text x="'+(pad+2)+'" y="'+(y(t)-4).toFixed(1)+'" class="nplbl" text-anchor="start" style="direction:ltr">'+fmt(t)+'</text>':'';
+  const dm=d=>(+d.slice(8))+'/'+(+d.slice(5,7)), ax='<text x="'+pad+'" y="'+(H-4)+'" class="nplbl">'+dm(S[0].d)+'</text><text x="'+(W-pad)+'" y="'+(H-4)+'" class="nplbl" text-anchor="end">'+dm(S[n-1].d)+'</text>';
+  return '<svg class="npchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(unit)+'" dir="ltr">'+bars+tl+ax+'</svg>'+(t!=null?'<small class="note">الخط المتقطّع هو هدفك: '+fmt(t)+' '+unit+'</small>':'')}
+function npWeightSVG(){const w=hgWeighIns().filter(x=>x.date>=addDays(TODAY,NP.per==='week'?-30:-90)), b=npBand(); if(!w.length) return '<p class="note">لا أوزان مسجّلة بعد. سجّل وزنك في «وزني».</p>';
+  const W=320,H=130,pad=26, ks=w.map(x=>x.kg).concat(b?[b.lowKg,b.highKg]:[]), lo=Math.min(...ks)-1, hi=Math.max(...ks)+1, y=v=>H-20-((v-lo)/(hi-lo))*(H-36), x=i=>pad+(w.length<2?(W-pad*2)/2:i*(W-pad*2)/(w.length-1));
+  const band=b?'<rect x="'+pad+'" y="'+y(b.highKg).toFixed(1)+'" width="'+(W-pad*2)+'" height="'+(y(b.lowKg)-y(b.highKg)).toFixed(1)+'" class="npband"/><text x="'+(pad+2)+'" y="'+(y(b.highKg)-4).toFixed(1)+'" class="nplbl" text-anchor="start" style="direction:ltr"></text>':'';
+  const line='<polyline class="npwline" points="'+w.map((p,i)=>x(i).toFixed(1)+','+y(p.kg).toFixed(1)).join(' ')+'"/>'+w.map((p,i)=>'<circle cx="'+x(i).toFixed(1)+'" cy="'+y(p.kg).toFixed(1)+'" r="3.5" class="npwpt"><title>'+p.date+': '+esc(npK(p.kg))+'</title></circle>').join('');
+  return '<svg class="npchart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="الوزن" dir="ltr">'+band+line+'<text x="'+pad+'" y="'+(H-4)+'" class="nplbl">'+(+w[0].date.slice(8))+'/'+(+w[0].date.slice(5,7))+'</text><text x="'+(W-pad)+'" y="'+(H-4)+'" class="nplbl" text-anchor="end">'+(+w[w.length-1].date.slice(8))+'/'+(+w[w.length-1].date.slice(5,7))+'</text></svg>'+
+   '<p class="note">آخر وزن: '+esc(npK(w[w.length-1].kg))+'. المساحة الملوّنة هي النطاق الثابت حول وزنك المرجعي'+(b?' ('+esc(npK(b.lowKg))+'–'+esc(npK(b.highKg))+')':'')+'؛ يتابعه فريقك.</p>'}
+function npSymGrid(n){const days=npDays(n), all=symAll(), used=Object.keys(SYM_T).filter(k=>days.some(d=>all[d]&&all[d].codes.includes(k)));
+  if(!used.length) return '<p class="note">'+(days.some(d=>all[d])?'لم تسجّل أعراضًا في هذه الفترة.':'لم تسجّل «كيف تشعر اليوم؟» في هذه الفترة.')+'</p>';
+  return '<div class="npsym" style="--n:'+n+'">'+used.map(k=>'<div class="npsr"><small>'+esc(SYM_T[k])+'</small><div class="npcells">'+days.map(d=>'<i class="'+(all[d]&&all[d].codes.includes(k)?'on':'')+'" title="'+d+'"></i>').join('')+'</div></div>').join('')+'</div>'}
+const npAvg=(S,k)=>{const L=S.filter(x=>x.logged); return L.length?L.reduce((s,x)=>s+x[k],0)/L.length:null};
+SCREENS.nutprog={title:'تقدّمي الغذائي',tab:'hnut',html:()=>{const n=NP.per==='week'?7:30, S=npSeries(n), logged=S.filter(x=>x.logged).length, hide=npHideW();
+  const per='<div class="seg">'+[['week','أسبوع'],['month','شهر']].map(([k,t])=>'<button data-act="npPer" data-val="'+k+'" aria-pressed="'+(NP.per===k)+'">'+t+'</button>').join('')+'</div>';
+  const nf0=v=>v==null?'—':Math.round(v).toLocaleString('ar-u-nu-latn'), avgK=npAvg(S,'kcal'), avgP=npAvg(S,'prot');
+  return per+'<p class="muted num">'+esc(trf('سجّلت أكلك في {0} من {1} يومًا.',logged,n))+'</p>'+
+   '<div class="card"><h3>البروتين</h3>'+npBars(S,'prot','protT','غ',nf0)+'<p class="note">'+(avgP!=null?esc(trf('المتوسط في أيام التسجيل: {0} غ',nf0(avgP))):'لا تسجيل بعد.')+'</p></div>'+
+   '<div class="card"><h3>الطاقة</h3>'+npBars(S,'kcal','kcalT','سعرة',nf0)+'<p class="note">'+(avgK!=null?esc(trf('المتوسط في أيام التسجيل: {0} سعرة',nf0(avgK))):'لا تسجيل بعد.')+'</p></div>'+
+   '<div class="card"><h3>الماء</h3>'+npBars(S,'ml','mlT','مل',nf0)+'</div>'+
+   '<div class="card npwcard"><div class="row sp"><h3>الوزن</h3><button class="lnk" data-act="npHideW">'+(hide?'أظهر منحنى الوزن':'أخفِ منحنى الوزن')+'</button></div>'+(hide?'<p class="note">منحنى الوزن مخفي. يبقى وزنك محفوظًا ويراه فريقك.</p>':npWeightSVG())+'</div>'+
+   '<div class="card"><h3>سجلّ الأعراض</h3>'+npSymGrid(n)+'</div>'+
+   '<button class="btn" data-act="nav" data-r="nutsum">ملخّص لأخصائية التغذية</button>'+NUT_FOOT}};
+Object.assign(ACT,{
+  npPer(b){NP.per=b.dataset.val; rerender()},
+  npHideW(){store.set('hideWChart',!npHideW()); rerender()},
+  npPrint(){document.body.classList.add('nutprinting'); try{window.print()}catch(e){} setTimeout(()=>document.body.classList.remove('nutprinting'),800)},
+});
+
+/* ---------- ملخّص لأخصائية التغذية (للقراءة والطباعة) ---------- */
+function nutSumHTML(){const p=meP(), S=npSeries(7), g=hlGoalNums(), w=hgWeighIns().filter(x=>x.date>=addDays(TODAY,-30)), b=npBand(), al=hAllergy(), prof=hgProf()||{};
+  const nf0=v=>v==null?'—':Math.round(v).toLocaleString('ar-u-nu-latn'), avg=k=>npAvg(S,k), all=symAll();
+  const syms=Object.keys(SYM_T).map(k=>[k,npDays(7).filter(d=>all[d]&&all[d].codes.includes(k)).length]).filter(x=>x[1]);
+  let flags=[]; try{ if(hsIntakeFlag()) flags.push('أكل أقل من نصف الهدف في ثلاثة أيام مسجّلة'); if(hsWeightFlag()) flags.push('نقص في الوزن يستحق المراجعة')}catch(e){}
+  const fm=famMealsFor('p1').filter(m=>m.at.slice(0,10)>=addDays(TODAY,-6));
+  const aud=store.get('hAud','adult');
+  const row=(a,b)=>'<tr><th>'+a+'</th><td>'+b+'</td></tr>';
+  return '<div class="nsum"><div class="nsumh"><b>OxyLife</b><span>ملخّص غذائي · آخر 7 أيام</span></div>'+
+   '<table class="nsumt"><tbody>'+row('المريض',esc(p.name||''))+row('التاريخ',esc(fmtD(TODAY,{day:'numeric',month:'long',year:'numeric'})))+
+    (aud!=='adult'?row('نوع الحساب',aud==='preg'?esc('حامل · الأسبوع '+pregWeek()):'طفل'):'')+
+    row('الحساسية',esc(typeof hAllergySummary==='function'?hAllergySummary():'—'))+row('وضع نقص المناعة',hlLowImm()?'مفعّل من الفريق':'غير مفعّل')+
+    row('الهدف',g?esc(trf('بروتين {0} غ · طاقة {1} سعرة · ماء {2} مل',g.proteinByTeam?'يحدّده الفريق':nf0(g.proteinG),nf0(g.kcal),g.fluidByTeam?'يحدّده الفريق':nf0(g.fluidMl))):'لم يُحدَّد بعد')+
+   '</tbody></table>'+
+   '<h4>الأكل (متوسط أيام التسجيل)</h4><table class="nsumt"><tbody>'+row('أيام التسجيل',esc(S.filter(x=>x.logged).length+' من 7'))+row('البروتين',esc(nf0(avg('prot'))+' غ'))+row('الطاقة',esc(nf0(avg('kcal'))+' سعرة'))+row('الماء',esc(nf0(S.reduce((s,x)=>s+x.ml,0)/7)+' مل في اليوم'))+'</tbody></table>'+
+   '<h4>الوزن (آخر 30 يومًا)</h4>'+(w.length?'<table class="nsumt"><tbody>'+row('الأوزان',esc(w.map(x=>fmtD(x.date,{day:'numeric',month:'short'})+': '+npK(x.kg)).join(' · ')))+(b?row('النطاق الثابت',esc(npK(b.lowKg)+'–'+npK(b.highKg))):'')+'</tbody></table>':'<p>لا أوزان مسجّلة.</p>')+
+   '<h4>الأعراض (عدد الأيام)</h4>'+(syms.length?'<p>'+esc(syms.map(([k,n])=>SYM_T[k]+': '+n).join(' · '))+'</p>':'<p>لا أعراض مسجّلة.</p>')+
+   (flags.length?'<h4>للمراجعة</h4><ul>'+flags.map(f=>'<li>'+esc(f)+'</li>').join('')+'</ul>':'')+
+   (fm.length?'<h4>ما سجّلته العائلة</h4><ul>'+fm.map(m=>'<li>'+esc(fmtD(m.at.slice(0,10),{day:'numeric',month:'short'})+' · '+FM_SLOT[m.slot]+': '+m.text+' ('+FM_PORT[m.portion]+')')+'</li>').join('')+'</ul>':'')+
+   '<p class="nsumf">ملخّص من بيانات سجّلها المريض وعائلته. ليس تشخيصًا. القيم الغذائية من قاعدة الطعام في التطبيق.</p></div>'}
+SCREENS.nutsum={title:'ملخّص لأخصائية التغذية',tab:'hnut',html:()=>'<p class="muted">صفحة واحدة تعرضها على أخصائية التغذية أو طبيبك، أو تطبعها، أو تحفظها PDF من نافذة الطباعة.</p>'+nutSumHTML()+
+  '<button class="btn" data-act="npPrint">طباعة أو حفظ PDF</button><p class="note">إذا لم تفتح نافذة الطباعة هنا، افتح التطبيق في المتصفّح ثم اطبع.</p>'};
+/* نسخة الطباعة خارج التطبيق، حتى لا تخفيها قواعد طباعة الملصقات. */
+window.addEventListener('beforeprint',()=>{ if(!document.body.classList.contains('nutprinting')) return; let el=document.getElementById('nutprint'); if(!el){el=document.createElement('div'); el.id='nutprint'; document.body.appendChild(el)} el.innerHTML=nutSumHTML()});
+
+/* ---------- المداخل: «طعامي» و«وزني» ---------- */
+{const l0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>{const h=l0(a), e='<button class="lnentry npentry" data-act="nav" data-r="nutprog"><span class="ckei" aria-hidden="true">📈</span><span class="m"><b>تقدّمي الغذائي</b><small>البروتين والطاقة والماء والوزن والأعراض، أسبوعًا أو شهرًا</small></span></button>';
+  const i=h.indexOf('<button class="lnentry"'); if(i<0) return e+h; const j=h.indexOf('</button>',i)+9; return h.slice(0,j)+e+h.slice(j)}}
+{const w0=SCREENS.lifeWeight.html; SCREENS.lifeWeight.html=a=>w0(a)+'<button class="lnk" data-act="nav" data-r="nutprog">الوزن داخل النطاق الثابت في «تقدّمي الغذائي»</button>'}
+/* «اليوم»: فكرة الوجبة القادمة تظهر دائمًا (لا فقط مع الأعراض)، إلا مع علامة حمراء. */
+{const s0=symCardHTML; symCardHTML=function(){let h=s0(); if(h.includes('symnext')||symRedNow().length) return h; const nm=symNextMeal(); if(!nm) return h;
+  const i=h.lastIndexOf('</div>'); return h.slice(0,i)+'<button class="symnext" data-act="ckOpen" data-id="'+esc(nm.id)+'"><small>فكرة للوجبة القادمة</small><b>'+esc(nm.name)+'</b></button>'+h.slice(i)}}
+
+/* ---------- الطبيب: «رعاية داعمة» تخفي منحنى الوزن عن المريض افتراضيًا ---------- */
+{const d0=hlDocCard; hlDocCard=function(pid){const h=d0(pid); if(pid!=='p1') return h; const on=!!store.get('hSupportive',false);
+  return h+'<div class="card npsup"><label class="tgl"><input type="checkbox" data-act="npSup"'+(on?' checked':'')+'><span>رعاية داعمة: أخفِ منحنى الوزن عن المريض افتراضيًا (يستطيع إظهاره)</span></label></div>'}}
+ACT.npSup=()=>{store.set('hSupportive',!store.get('hSupportive',false)); rerender()};
+
+/* ---------- العائلة تسجّل ما أكله المريض (وصفًا) ---------- */
+const FM_SLOT={breakfast:'الفطور',lunch:'الغداء',dinner:'العشاء',snack:'وجبة خفيفة'};
+const FM_PORT={all:'أكلها كلها',most:'أكثرها',half:'نصفها',little:'قليلًا منها',none:'لم يأكل'};
+const famMealsAll=()=>store.get('famMeals',[]);
+const famMealsFor=pid=>famMealsAll().filter(m=>m.pid===pid);
+const famMealsOn=()=>!!(store.get('famScopes',{}).logMeals??true);
+SCREENS.fmeal={title:'ماذا أكل اليوم؟',tab:'fobs',html:()=>{ if(!famIn()) return SCREENS.fhome.html(); if(!famMealsOn()) return famOff('تسجيل الوجبات موقوف');
+  const mine=famMealsFor('p1').slice().reverse().slice(0,8);
+  return '<div class="card"><h3>سجّلوا ما أكله '+esc(famPatient().name)+'</h3><p class="muted">وصفًا فقط: الوجبة، وماذا أكل، وكم أكل منها. يراه المريض في دفتره ويراه الطبيب.</p>'+
+   '<div class="chips" id="fm-slot">'+Object.entries(FM_SLOT).map(([k,t],i)=>'<button class="chip" data-act="fmPick" data-g="fm-slot" data-val="'+k+'" aria-pressed="'+(k===({breakfast:'breakfast',lunch:'lunch',dinner:'dinner'}[hlSlotNow()]||'snack'))+'">'+t+'</button>').join('')+'</div>'+
+   '<label class="field"><span>ماذا أكل؟</span><input id="fm-text" maxlength="200" dir="auto" placeholder="مثلًا: شوربة عدس ونصف رغيف"></label>'+
+   '<div class="chips" id="fm-port">'+Object.entries(FM_PORT).map(([k,t])=>'<button class="chip" data-act="fmPick" data-g="fm-port" data-val="'+k+'" aria-pressed="'+(k==='half')+'">'+t+'</button>').join('')+'</div>'+
+   '<button class="btn" data-act="famMealSave">سجّل الوجبة</button></div>'+
+   (mine.length?'<h3>ما سجّلتموه</h3>'+mine.map(m=>'<div class="card fobsitem"><small class="muted">'+esc(famT(m.at))+' · '+esc(m.by)+'</small><b>'+esc(FM_SLOT[m.slot])+': '+esc(m.text)+'</b><small>'+esc(FM_PORT[m.portion])+'</small></div>').join(''):'')}};
+Object.assign(ACT,{
+  fmPick(b){document.querySelectorAll('#'+b.dataset.g+' .chip').forEach(x=>x.setAttribute('aria-pressed',x===b))},
+  famMealSave(){const t=($('#fm-text').value||'').trim(); if(!t){toast('اكتبوا ماذا أكل'); return} const v=id=>(document.querySelector('#'+id+' [aria-pressed=true]')||{}).dataset;
+    const w=famWho(), L=famMealsAll(); L.push({id:'fm'+Date.now().toString(36),pid:'p1',slot:(v('fm-slot')||{}).val||'snack',portion:(v('fm-port')||{}).val||'half',text:t,by:w.name,rel:w.rel,at:new Date().toISOString()}); store.set('famMeals',L); toast('سُجّلت الوجبة'); rerender()},
+});
+/* مدخل في مكان العائلة. */
+{const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>{const h=h0(a); if(!famIn()) return h;
+  return h.replace('</div></div>','</div><button class="lnentry fmentry" data-act="nav" data-r="fmeal"><span class="ckei" aria-hidden="true">🍽️</span><span class="m"><b>ماذا أكل اليوم؟</b><small>'+(famMealsOn()?'سجّلوا وجباته وصفًا':'أوقفها المريض')+'</small></span></button></div>')}}
+/* المريض يرى ما سجّلته عائلته في «دفتر طعامي». */
+{const g0=SCREENS.hlog.html; SCREENS.hlog.html=a=>{const h=g0(a), d=(a&&a.date)||HL.date||TODAY, L=famMealsFor('p1').filter(m=>m.at.slice(0,10)===d); if(!L.length) return h;
+  return '<div class="card fmlog"><h3>سجّلت عائلتك</h3>'+L.map(m=>'<div class="crow"><span><b>'+esc(FM_SLOT[m.slot])+': '+esc(m.text)+'</b><small>'+esc(FM_PORT[m.portion])+' · '+esc(m.by)+'</small></span></div>').join('')+'<p class="note">وصف من عائلتك، لا يدخل في حساب البروتين والطاقة.</p></div>'+h}}
+/* الطبيب: في بطاقة العائلة. */
+{const f0=famDoctorCard; famDoctorCard=function(pid){const h=f0(pid), L=famMealsFor(pid).slice().reverse().slice(0,5); if(!L.length) return h;
+  const block='<b>وجبات سجّلتها العائلة</b>'+L.map(m=>'<div class="fobsitem"><small class="muted">'+esc(famT(m.at))+' · '+esc(m.by)+'</small><span>'+esc(FM_SLOT[m.slot])+': '+esc(m.text)+' — '+esc(FM_PORT[m.portion])+'</span></div>').join('');
+  if(!h) return '<div class="card famdoc"><h3>من عائلة المريض</h3>'+block+'</div>'; const i=h.indexOf('<b>رسائل العائلة</b>'); return i<0?h:h.slice(0,i)+block+h.slice(i)}}
+/* «ما يراه أفراد عائلتك»: لم يبقَ إلا «يسجّل وجباتي نيابةً عني» (العائلة لا ترى تطبيق المريض، D-079). */
+{const keep=FAM_SCOPES.filter(x=>x[0]==='logMeals'); FAM_SCOPES.length=0; keep.forEach(x=>FAM_SCOPES.push([x[0],'تسجّل عائلتي ما أكلته (وصفًا)']))}
+{const t0=SCREENS.hteam.html; SCREENS.hteam.html=a=>t0(a).replace('اختر ما يراه أفراد عائلتك. أنت تقرّر، ويمكنك التغيير في أي وقت.','عائلتك لا ترى تطبيقك ولا بياناتك. أنت تقرّر ما تستطيع فعله:')}
+
+/* ============ بلد الإقامة تلقائيًا، وصفحة «الإعدادات» (المالك، 2026-10-02 — D-082) ============
+   لا تظهر صفحة «أين تقيم؟» بعد الآن: يتعرّف التطبيق على البلد من المنطقة الزمنية للهاتف، ثم من لغة الهاتف،
+   وإلا تونس. لا يُستعمل الموقع (GPS). يُغيَّر البلد من «الإعدادات»، ومعه رقم الطوارئ.
+   «الإعدادات» (زرّ الترس أعلى كل شاشة): البلد، الوحدات (الوزن، الحرارة)، ألوان التطبيق، والإضاءة: تلقائي / نهاري / ليلي.
+   كل ذلك يُحفظ على هذا الجهاز. */
+const TZ_CC={'Africa/Tunis':'TN','Africa/Algiers':'DZ','Africa/Casablanca':'MA','Africa/Tripoli':'LY','Africa/Cairo':'EG','Africa/Khartoum':'SD','Africa/Nouakchott':'MR','Africa/Dakar':'SN','Africa/Lagos':'NG','Africa/Niamey':'NE','Africa/Bamako':'ML','Africa/Ndjamena':'TD','Africa/Mogadishu':'SO','Africa/Djibouti':'DJ','Africa/Conakry':'GN','Africa/Freetown':'SL','Africa/Banjul':'GM','Africa/Ouagadougou':'BF','Indian/Comoro':'KM',
+ 'Asia/Riyadh':'SA','Asia/Dubai':'AE','Asia/Kuwait':'KW','Asia/Qatar':'QA','Asia/Bahrain':'BH','Asia/Muscat':'OM','Asia/Aden':'YE','Asia/Baghdad':'IQ','Asia/Amman':'JO','Asia/Beirut':'LB','Asia/Damascus':'SY','Asia/Gaza':'PS','Asia/Hebron':'PS','Asia/Tehran':'IR','Asia/Kabul':'AF','Asia/Karachi':'PK','Asia/Dhaka':'BD',
+ 'Asia/Jakarta':'ID','Asia/Makassar':'ID','Asia/Jayapura':'ID','Asia/Pontianak':'ID','Asia/Kuala_Lumpur':'MY','Asia/Brunei':'BN','Indian/Maldives':'MV','Asia/Tokyo':'JP','Asia/Baku':'AZ','Asia/Tashkent':'UZ','Asia/Almaty':'KZ','Asia/Bishkek':'KG','Asia/Dushanbe':'TJ','Asia/Ashgabat':'TM',
+ 'Europe/Istanbul':'TR','Europe/London':'GB','Europe/Paris':'FR','Europe/Berlin':'DE','Europe/Tirane':'AL','Europe/Sarajevo':'BA','Europe/Belgrade':'XK'};
+function autoRegion(){let tz=''; try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  if(TZ_CC[tz]&&profOf(TZ_CC[tz])) return TZ_CC[tz]; if(/^America\//.test(tz)&&profOf('US')) return 'US';
+  const g=guessRegion(); return g||(profOf('TN')?'TN':(PROFS.list()[0]||{}).countryCode)}
+function ensureRegion(){ if(srvPatientOn()||regionCode()) return; const c=autoRegion(); if(c) store.set('region',{code:c,setAt:new Date().toISOString(),auto:true})}
+ensureRegion();
+{const a0=afterWelcome; afterWelcome=function(){ensureRegion(); return a0.apply(this,arguments)}}
+/* إن طُلبت صفحة البلد تلقائيًا (لا من «الإعدادات»)، نذهب إلى الرئيسية. */
+{const g0=go; go=function(r,a,push){ if(r==='region'&&!ST.fromSettings&&role==='patient'){ensureRegion(); if(regionCode()) r='home'} ST.fromSettings=false; return g0(r,a,push)}}
+
+/* ---------- الإعدادات ---------- */
+const ST={fromSettings:false};
+const COLORS=[['blue','أزرق هوائي','#2A68AE'],['green','أخضر','#2E8B62'],['violet','بنفسجي','#6A4FA0'],['rose','وردي','#B0507A'],['amber','ذهبي','#B07A1E']];
+const stGet=(k,d)=>store.get('set.'+k,d);
+function applySettings(){const r=document.documentElement, th=stGet('theme','auto'), co=stGet('color','blue');
+  if(th==='auto') r.removeAttribute('data-theme'); else r.dataset.theme=th;
+  if(co==='blue') r.removeAttribute('data-color'); else r.dataset.color=co;
+  const m=document.querySelector('meta[name=theme-color]'); if(m) m.content=th==='dark'?'#0F1724':'#EAF1F8'}
+applySettings();
+const tempUnit=()=>{const u=stGet('temp','auto'); if(u!=='auto') return u; return ((regionProf()||{}).units||{}).temperature==='F'?'F':'C'};
+SCREENS.settings={title:'الإعدادات',tab:null,html:()=>{const c=regionCode(), p=regionProf(), wu=stGet('weight','auto'), tu=stGet('temp','auto'), th=stGet('theme','auto'), co=stGet('color','blue');
+  const seg=(k,v,opts)=>'<div class="seg stseg">'+opts.map(([x,t])=>'<button data-act="stSet" data-k="'+k+'" data-val="'+x+'" aria-pressed="'+(v===x)+'">'+t+'</button>').join('')+'</div>';
+  return '<div class="card"><h3>بلد الإقامة</h3><div class="row sp"><span><b>'+esc(c?cName(c):'—')+'</b><small class="muted" style="display:block">'+(store.get('region',{}).auto?'تعرّف عليه التطبيق تلقائيًا':'اخترته أنت')+'</small></span><button class="btn sm ghost" data-act="stRegion">تغيير</button></div>'+(p?regionFacts(p):'')+'</div>'+
+   '<div class="card"><h3>الوحدات</h3><small class="muted">الوزن</small>'+seg('weight',wu,[['auto','حسب البلد'],['kg','كيلوغرام'],['lb','رطل']])+
+   '<small class="muted">الحرارة</small>'+seg('temp',tu,[['auto','حسب البلد'],['C','مئوية °م'],['F','فهرنهايت °ف']])+'</div>'+
+   '<div class="card"><h3>ألوان التطبيق</h3><div class="stcolors">'+COLORS.map(([k,t,hex])=>'<button class="stcol" data-act="stSet" data-k="color" data-val="'+k+'" aria-pressed="'+(co===k)+'" aria-label="'+t+'"><i style="background:'+hex+'"></i><small>'+t+'</small></button>').join('')+'</div>'+
+   (role==='patient'&&typeof hAud==='function'&&hAud()!=='adult'?'<p class="note">في حساب '+(hAud()==='preg'?'الحمل':'الطفل')+' تبقى ألوانه الخاصة داخل التطبيق.</p>':'')+'</div>'+
+   '<div class="card"><h3>الإضاءة</h3>'+seg('theme',th,[['auto','تلقائي'],['light','☀️ نهاري'],['dark','🌙 ليلي']])+'<p class="note">«تلقائي» يتبع إعداد هاتفك.</p></div>'}};
+Object.assign(ACT,{
+  stSet(b){store.set('set.'+b.dataset.k,b.dataset.val); applySettings(); rerender()},
+  stRegion(){ST.fromSettings=true; RG_PICK=null; go('region')},
+  goSettings(){ if(route!=='settings') go('settings')},
+});
+/* الوزن حسب الإعداد (WU يقرأ الإعداد أولًا)، والحرارة في عبارة الحمّى. */
+{const s0=symCardHTML; symCardHTML=function(){const h=s0(); return tempUnit()==='F'?h.replace('حمّى (38° أو أكثر)','حمّى (100.4°ف أو أكثر)'):h}}
+/* زرّ الترس في الشريط العلوي، في كل شاشة. */
+(function(){ if(document.getElementById('setBtn')) return; const h=document.getElementById('hdr'), t=document.getElementById('title'); if(!h||!t) return;
+  const b=document.createElement('button'); b.className='ib'; b.id='setBtn'; b.setAttribute('aria-label','الإعدادات'); b.title='الإعدادات';
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+  b.addEventListener('click',()=>ACT.goSettings()); t.after(b)})();
+if(['region'].includes(route)&&role==='patient') go('home',null,false);
+/* تغيير البلد يدويًا (من «ملفي» أو أي رابط «بلد الإقامة») يفتح الصفحة. */
+{const r0=ACT.goRegion; ACT.goRegion=b=>{ST.fromSettings=true; r0(b)}}
+
 </script>
