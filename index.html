@@ -762,6 +762,26 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .stseg button{font-size:13.5px}.stcolors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .stcol{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid transparent;background:var(--ground);border-radius:14px;padding:8px 2px;font:inherit;color:inherit;cursor:pointer}
 .stcol i{width:30px;height:30px;border-radius:99px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}.stcol small{font-size:11px}.stcol[aria-pressed=true]{border-color:var(--accent)}
+/* D-083: الإدارة */
+.admpick{display:flex;flex-direction:column;gap:8px}
+.admrole{display:flex;align-items:center;gap:12px;width:100%;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px;font:inherit;color:inherit;cursor:pointer}
+.admrole .ri{width:42px;height:42px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}.admrole .ri svg{width:22px;height:22px}
+.admrole .m{display:flex;flex-direction:column;gap:2px}.admrole small{color:var(--ink-soft);font-size:12.5px}
+.admhead h2{font-size:22px}.admfil{display:flex;flex-direction:column;gap:6px}.admfil .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.admfil .chip{white-space:nowrap;padding:6px 11px;font-size:12.5px}
+.akpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.akpi{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:10px;font:inherit;color:inherit;cursor:pointer;min-width:0}
+.akpi b{font-family:var(--display);font-size:22px;line-height:1.2}.akpi small{font-size:11.5px;color:var(--ink-soft);line-height:1.35}
+.akpi.red{border-color:var(--urgent);background:var(--urgent-bg)}.akpi.warn{border-color:var(--watch);background:var(--watch-bg)}.akpi.ok b{color:var(--ok)}
+.abar{display:grid;grid-template-columns:88px 1fr 34px;align-items:center;gap:8px;font-size:13px;padding:3px 0}.abar i{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.abar i b{display:block;height:100%;background:var(--accent);border-radius:99px}.abar i b.red{background:var(--urgent)}.abar em{font-style:normal;text-align:end}
+.abtn{display:block;width:100%;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:start;cursor:pointer}
+.admtiles{display:flex;flex-wrap:wrap;gap:6px}.admtiles.big{display:grid;grid-template-columns:1fr;gap:8px}
+.admt{min-width:0!important;font-size:12.5px}.admt td.bad,.bad{color:var(--urgent);font-weight:600}
+.atl{display:flex;flex-direction:column;gap:2px;border-inline-start:3px solid var(--line);padding:6px 10px;margin:4px 0}.atl small{color:var(--ink-faint);font-size:11.5px}.atl span{font-size:13.5px}
+.atl.red{border-color:var(--urgent)}.atl.fam{border-color:var(--prod)}.atl.enc{border-color:#E9A6C3}.atl.late{border-color:var(--watch)}
+.atl em{font-style:normal;font-size:12px;align-self:flex-start;border-radius:99px;padding:1px 8px}.atl em.ok{background:var(--ok-bg)}.atl em.late{background:var(--watch-bg)}
+.alink.risk{border-color:var(--urgent)}.tag.ok{background:var(--ok-bg);color:var(--ink)}
+.stleave{border-color:var(--line)}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -1674,7 +1694,7 @@ function trDom(root){ if(LANG==='ar'||!root) return; const w=document.createTree
 function setLang(l){l='ar'; LANG=l; try{localStorage.setItem('hayati.lang',l)}catch(e){} applyLabLang(); const app=$('#app'); app.dir=l==='ar'?'rtl':'ltr'; app.lang=l; $('#langBtn').textContent={ar:'ع',en:'EN',id:'ID'}[l]; rerender()}
 const LANG_NAME={ar:'Arabic',en:'English',id:'Indonesian (Bahasa Indonesia)'};
 /* ============ الموجّه ============ */
-let role=null, route='welcome' /* التعريف في كل فتح للرابط (المالك، 2026-10-02) */, arg=null, stack=[], welcomeIdx=0, seg='over', lsub='labs', ovsub='day', rvsub='doc';
+let role=null, route='welcome' /* التعريف في كل فتح للرابط (المدير، 2026-10-02) */, arg=null, stack=[], welcomeIdx=0, seg='over', lsub='labs', ovsub='day', rvsub='doc';
 const main=$('#main');
 const TABS={patient:[['home','الرئيسية',I.home],['life','حياتي',I.life],['meds','علاجي',I.pill],['prod','مستحضرنا',I.drop],['labs','تحاليلي',I.lab]],
             doctor:[['patients','المرضى',I.users],['daily','التقارير',I.day],['review','المراجعة',I.check],['requests','الطلبات',I.lab],['team','الفريق',I.life]]};
@@ -2941,7 +2961,7 @@ const SHARE_CSS=":root{--ink:#13233A;--soft:#4E5E77;--line:rgba(19,35,58,.12);--
 /* ============ حياتي: المحرّك الإقليمي (بلد الإقامة، رقم الطوارئ) والأدوار الجديدة ============
    بلد الإقامة يختاره المريض عند التسجيل، مملوءًا مسبقًا من منطقة لغة الجهاز (navigator.language)، ولا يُستعمل الموقع (GPS) أبدًا.
    كل ما يتعلّق بالبلد يُحسب من ملفّه عند كل عرض: تغيير البلد يغيّر كل شيء في الحال.
-   ملفات البلدان هنا نسخة محلية للتجربة من ملفات الخادم نفسها (AMAL_PROFILES_SEED)، يعدّلها المالك في وضع التجربة. */
+   ملفات البلدان هنا نسخة محلية للتجربة من ملفات الخادم نفسها (AMAL_PROFILES_SEED)، يعدّلها المدير في وضع التجربة. */
 const SV=(d,extra='')=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"'+extra+'>'+d+'</svg>';
 Object.assign(I,{
   phone:SV('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'),
@@ -3005,20 +3025,20 @@ Object.assign(ACT,{
 });
 main.addEventListener('change',e=>{ if(e.target.id==='rg-sel'){RG_PICK=e.target.value||null; rerender()}});
 
-/* ============ الأدوار: المريض، الطبيب (المشرف على المستحضر)، المسؤول المالي، المالك ============ */
+/* ============ الأدوار: المريض، الطبيب (المشرف على المستحضر)، المسؤول المالي، المدير ============ */
 TABS.finance=[['fpay','المدفوعات',I.card],['forders','الطلبات',I.box]];
 TABS.owner=[['ocountries','الدول',I.globe],['obatches','القوارير',I.qr],['fpay','المدفوعات',I.card],['forders','الطلبات',I.box]];
-const ROLE_T={patient:'مريض',doctor:'طبيب',finance:'المسؤول المالي',owner:'المالك'};
+const ROLE_T={patient:'مريض',doctor:'طبيب',finance:'المسؤول المالي',owner:'المدير'};
 const SEED_STAFF={finance:['20000000-0000-4000-8000-000000000014','Finance Officer (synthetic)'],owner:['20000000-0000-4000-8000-000000000005','Platform Super Admin (synthetic)']};
-/* المالك والمسؤول المالي في مجموعة واحدة: «الإدارة». */
+/* المدير والمسؤول المالي في مجموعة واحدة: «الإدارة». */
 function amalRoleBtns(){return '<button class="rolebtn sm" data-act="pickRole" data-r="family" style="grid-column:1/-1;flex-direction:row;justify-content:center"><span class="ri">'+I.life+'</span><b>العائلة</b></button>'+
   '<button class="rolebtn sm" data-act="pickRole" data-r="admin" style="grid-column:1/-1;flex-direction:row;justify-content:center"><span class="ri">'+I.key+'</span><b>الإدارة</b></button>'}
 {const t0=SCREENS.signin.title, h0=SCREENS.signin.html;
  SCREENS.signin.title=r=>r==='admin'?'دخول الإدارة':r==='finance'||r==='owner'?trf('دخول {0}',ROLE_T[r]):t0(r);
  SCREENS.signin.html=r=>{ if(r==='admin') return '<div class="row sp"><h2 style="margin:0">دخول الإدارة</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div><p class="muted">اختر حسابك في الإدارة.</p>'+
-   '<div class="rolepick"><button class="rolebtn sm" data-act="pickRole" data-r="owner"><span class="ri">'+I.key+'</span><b>المالك</b></button><button class="rolebtn sm" data-act="pickRole" data-r="finance"><span class="ri">'+I.card+'</span><b>المسؤول المالي</b></button></div>';
+   '<div class="rolepick"><button class="rolebtn sm" data-act="pickRole" data-r="owner"><span class="ri">'+I.key+'</span><b>المدير</b></button><button class="rolebtn sm" data-act="pickRole" data-r="finance"><span class="ri">'+I.card+'</span><b>المسؤول المالي</b></button></div>';
   if(r!=='finance'&&r!=='owner') return h0(r); const [u,n]=SEED_STAFF[r];
-  return '<div class="row sp"><h2 style="margin:0">'+(r==='finance'?'دخول المسؤول المالي':'دخول المالك')+'</h2><button class="lnk" data-act="pickRole" data-r="admin">رجوع</button></div>'+
+  return '<div class="row sp"><h2 style="margin:0">'+(r==='finance'?'دخول المسؤول المالي':'دخول المدير')+'</h2><button class="lnk" data-act="pickRole" data-r="admin">رجوع</button></div>'+
    '<p class="muted">'+(r==='finance'?'يؤكّد وصول التحويلات البنكية ويُرسل الطلبات. لا يرى أي بيانات طبية.':'إعدادات الدول، ملصقات القوارير، والمبيعات.')+'</p>'+
    (API.on?'<div class="card"><h3>الدخول في بيئة التطوير</h3><button class="btn ghost" data-act="srvDev" data-u="'+u+'"><span dir="ltr">'+esc(n)+'</span></button><p class="note">حساب اصطناعي. في الإطلاق يكون الدخول بحساب شخصي مع التحقّق بخطوتين.</p></div>':'')+
    '<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق. كل البيانات هنا اصطناعية.</p></div>'}}
@@ -3187,7 +3207,7 @@ function recallsTeamHTML(){const L=srvLive()&&role==='doctor'?(SRV.teamRecalls||
   if(!L.length) return '';
   return '<div class="card recall"><div class="row sp"><h3>قوارير من دفعة مسحوبة</h3><span class="tag urg">'+L.length+'</span></div>'+L.map(n=>'<div class="crow"><span><b>'+esc(n.name||'—')+'</b><small><span dir="ltr">'+esc(n.lot)+' · '+esc(n.serial)+'</span> · '+(n.acknowledgedAt||n.ack?'قرأ التعليمات':'لم يقرأ التعليمات بعد')+'</small></span></div>').join('')+'</div>'}
 
-/* ============ المالك: الدفعات، ورقة الملصقات، السحب ============ */
+/* ============ المدير: الدفعات، ورقة الملصقات، السحب ============ */
 SCREENS.obatches={title:'دفعات القوارير',tab:'obatches',html:()=>{const L=srvLive()?(SRV.batches||null):DEMO_B.batches.slice().reverse();
   return '<div class="card"><h3>دفعة جديدة</h3><p class="muted">لكل قارورة ملصق برمز QR موقّع: الرقم التسلسلي، الدفعة، تاريخ الإنتاج، الكمية، والصلاحية (الإنتاج + 3 أشهر).</p>'+
    '<div class="grid2"><label class="field"><span>رقم الدفعة</span><input id="bt-lot" dir="ltr" autocapitalize="characters" placeholder="AH2610"></label><label class="field"><span>تاريخ الإنتاج</span><input id="bt-p" type="date" value="'+TODAY+'"></label></div>'+
@@ -3224,11 +3244,11 @@ Object.assign(ACT,{
 
 /* ============ الاشتراك وطلبات المستحضر: تحويل بنكي فقط ============
    التطبيق لا يحرّك أي مال: يصدر فاتورة فيها بيانات حساب صاحب التطبيق ورمز مرجع، ويحفظ صورة إيصال التحويل،
-   ويسجّل تأكيد شخص (المالك أو المسؤول المالي) أن المبلغ وصل.
+   ويسجّل تأكيد شخص (المدير أو المسؤول المالي) أن المبلغ وصل.
    قاعدة السلامة: عدم الدفع لا يوقف أبدًا ما يخصّ السلامة (الرسائل مع الفريق، شاشات العلامات الحمراء ورقم الطوارئ،
    الإرسال اليومي، رفع التحاليل والتقارير ومراجعتها، تذكير الجرعات). يتوقّف مؤقتًا فقط: تمرين التنفّس، بطاقة النقاط،
    «تقدّمي في العلاج»، و«تقريري الشهري».
-   المبالغ يراها فقط: المالك، المسؤول المالي، الطبيب المشرف على المستحضر، والمريض لنفسه. */
+   المبالغ يراها فقط: المدير، المسؤول المالي، الطبيب المشرف على المستحضر، والمريض لنفسه. */
 const CUR_D={USD:2,EUR:2,GBP:2,TND:3,IDR:0,SAR:2,AED:2,EGP:2,MAD:2,DZD:2,MYR:2,TRY:2,JPY:0,QAR:2,KWD:3,BHD:3,OMR:3,JOD:3};
 function fmtMoney(minor,cur){const d=CUR_D[cur]??2, a=Math.abs(Math.trunc(minor)); return (d?Math.floor(a/10**d)+'.'+String(a%10**d).padStart(d,'0'):String(a))+' '+cur}
 const toMinor=(txt,cur)=>{const d=CUR_D[cur]??2, v=parseFloat(String(txt).replace(',','.')); return Number.isFinite(v)&&v>0?Math.round(v*10**d):null};
@@ -3296,7 +3316,7 @@ SCREENS.subscription={title:'اشتراكي',tab:'home',html:()=>{const v=subVie
 /* ------------------------------------------------ طلبات المستحضر */
 const ORD_ST={requested:'بانتظار ردّ الطبيب',approved:'وافق الطبيب',declined:'اعتذر الطبيب',invoiced:'بانتظار التحويل',receipt_uploaded:'وصل الإيصال · بانتظار التأكيد',paid_confirmed:'تأكّد الدفع',shipped:'أُرسلت',delivered:'استُلمت',cancelled:'أُلغي'};
 const ORD_TAG={requested:'calm',approved:'calm',declined:'wait',invoiced:'watch',receipt_uploaded:'calm',paid_confirmed:'calm',shipped:'calm',delivered:'calm',cancelled:'wait'};
-const ORD_BY={patient:'المريض',physician:'الطبيب المشرف',finance:'المسؤول المالي',super_admin:'المالك',system:'النظام',owner:'المالك'};
+const ORD_BY={patient:'المريض',physician:'الطبيب المشرف',finance:'المسؤول المالي',super_admin:'المدير',system:'النظام',owner:'المدير'};
 const ORD_NEXT={requested:['approved','declined','cancelled'],approved:['invoiced','shipped','cancelled'],invoiced:['receipt_uploaded','cancelled'],receipt_uploaded:['paid_confirmed','invoiced','cancelled'],paid_confirmed:['shipped'],shipped:['delivered'],declined:[],delivered:[],cancelled:[]};
 function orderMove(id,to,by,note,set={}){const L=DM.orders, o=L.find(x=>x.id===id); if(!o) return null; const mode=set.mode||o.mode;
   if(!ORD_NEXT[o.status].includes(to)||(o.status==='approved'&&to==='shipped'&&mode!=='request_only')||(o.status==='approved'&&to==='invoiced'&&mode!=='sale')) {toast('لا يمكن هذا الانتقال الآن.'); return null}
@@ -3360,7 +3380,7 @@ Object.assign(ACT,{async orderDecide(b){const id=b.dataset.id, approve=b.dataset
   toast(approve?'وصل ردّك إلى المريض.':'وصل اعتذارك إلى المريض.'); rerender()}});
 async function amalDoctorLoad(){try{SRV.prepOrders=await api('GET','v1/prep-orders?status=all')}catch(e){SRV.prepOrders=null} try{SRV.teamRecalls=await api('GET','v1/bottle-recalls')}catch(e){SRV.teamRecalls=[]} if($('#sheet').hidden) rerender()}
 
-/* ------------------------------------------------ المسؤول المالي والمالك */
+/* ------------------------------------------------ المسؤول المالي والمدير */
 let FP_ST='receipt_uploaded', FO_ST='open';
 function finInvoices(){ if(srvLive()) return SRV.fInvoices||null; return DM.inv.map(i=>({...invView(i),name:(allPatients().find(p=>p.id===i.pid)||{}).name||i.pid}))}
 function finOrders(){ if(srvLive()) return SRV.fOrders||null; return DM.orders.map(orderViewDemo)}
@@ -3413,8 +3433,8 @@ Object.assign(ACT,{
     rerender()}
 });
 
-/* ============ المالك: ملفات الدول (المحرّك الإقليمي) وإعدادات البيع لكل بلد ============
-   أرقام الطوارئ المزروعة كلها «تنتظر مراجعة الإدارة» حتى يؤكّدها المالك. البيع موقوف في كل بلد،
+/* ============ المدير: ملفات الدول (المحرّك الإقليمي) وإعدادات البيع لكل بلد ============
+   أرقام الطوارئ المزروعة كلها «تنتظر مراجعة الإدارة» حتى يؤكّدها المدير. البيع موقوف في كل بلد،
    ولا يُفعَّل إلا بعد تأشير الجملة القانونية (مع وثيقة اختيارية). */
 const PRAYER=['MuslimWorldLeague','Egyptian','Karachi','UmmAlQura','Dubai','MoonsightingCommittee','NorthAmerica','Kuwait','Qatar','Singapore','Tehran','Turkey','Other'];
 const EMK=['ambulance','general','police','fire'];
@@ -4098,7 +4118,7 @@ ACT.hFoodGo=()=>go('hfood');
 /* ============ حياتي: «الحالة النفسية» — المزاج والتنفّس والتشجيع، وقسم الطمأنينة الإيماني باختيار المريض فقط ============
    يُعرض السؤال مرة واحدة داخل هذا القسم (ليس في التسجيل)، ولا يُستنتج أبدًا من البلد أو الاسم أو اللغة.
    الاختيار يراه المريض وحده: لا يصل إلى العائلة ولا الطبيب ولا صفحة المشاركة ولا أي تصدير.
-   كل عنصر مسودة حتى يوافق عليه المالك بنفسه (قرار 2026-09-30). النصّ القرآني منسوخ آليًا من مصدره، لا يُكتب باليد. */
+   كل عنصر مسودة حتى يوافق عليه المدير بنفسه (قرار 2026-09-30). النصّ القرآني منسوخ آليًا من مصدره، لا يُكتب باليد. */
 const FAITH_FOOTER='للطمأنينة والدعاء، مع متابعة علاجك مع فريقك الطبي';
 function hFaith(){ if(srvPatientOn()&&SRV.hFaith) return SRV.hFaith; const f=store.get('faith',null); return f?{answered:true,optedIn:!!f.optedIn}:{answered:false,optedIn:false}}
 async function hFaithSet(on){ if(srvPatientOn()){try{SRV.hFaith=await api('PUT','v1/patients/'+API.cfg.sess.patientId+'/faith-prefs',{optedIn:on})}catch(e){srvToast(e); return}}
@@ -4107,7 +4127,7 @@ Object.assign(ACT,{faithYes(){hFaithSet(true)},faithNo(){hFaithSet(false)}});
 /* In server mode no draft ever reaches the patient (only approved content, read from the API). */
 const hideDrafts=()=>API.on||store.get('hideDrafts',false);
 /** شريط «مسودة» على كل محتوى لم يُراجَع (التجربة فقط؛ في وضع الخادم لا يصل المريضَ إلا المعتمد). */
-function draftBand(kind){return '<div class="draftband" data-draft="'+kind+'">'+(kind==='faith'?'مسودة للتجربة — لم يراجعها المراجع الشرعي بعد (بانتظار موافقة المالك)':kind==='care'?'مسودة للتجربة — لم يراجعها مختصّ الدعم النفسي بعد':'مسودة للتجربة — لم تراجعها أخصائية التغذية بعد')+'</div>'}
+function draftBand(kind){return '<div class="draftband" data-draft="'+kind+'">'+(kind==='faith'?'مسودة للتجربة — لم يراجعها المراجع الشرعي بعد (بانتظار موافقة المدير)':kind==='care'?'مسودة للتجربة — لم يراجعها مختصّ الدعم النفسي بعد':'مسودة للتجربة — لم تراجعها أخصائية التغذية بعد')+'</div>'}
 function faithHTML(){const f=hFaith();
   if(!f.answered) return '<div class="card faithask"><h3>هل تريد أن نعرض لك آيات وأذكارًا للطمأنينة؟</h3><p class="note">نسألك مرة واحدة فقط. اختيارك تراه أنت وحدك، ويمكنك تغييره من «ملفي».</p><div class="grid2"><button class="btn sm" data-act="faithYes">نعم</button><button class="btn sm ghost" data-act="faithNo">لا، شكرًا</button></div></div>';
   if(!f.optedIn) return '';
@@ -4218,7 +4238,7 @@ main.addEventListener('change',e=>{ if(e.target.dataset&&e.target.dataset.fam){c
    سؤال واحد في كل شاشة، شريط تقدّم، أزرار كبيرة وعجلات بدل الكتابة. المحرّك هو كود الخادم نفسه (HayatiDomain، من
    packages/domain/src/hayati-goal.ts): الطاقة من سعرات لكل كغ (الحفاظ 25–30، الاستعادة 30–35)، ومعادلة Mifflin-St Jeor
    × النشاط تحدّد الموضع داخل النطاق فقط وتشرح الرقم. البروتين أولًا. لا خيار لإنقاص الوزن أبدًا، ونقص الوزن إشارة لا مديح.
-   أقل من 18 سنة أو حمل أو رضاعة: لا رقم من المحرّك («يحتاج إعدادًا من فريقك الطبي»؛ قرار المالك: مؤقت).
+   أقل من 18 سنة أو حمل أو رضاعة: لا رقم من المحرّك («يحتاج إعدادًا من فريقك الطبي»؛ قرار المدير: مؤقت).
    كل رقم «تقدير أولي حتى تؤكده أخصائية التغذية». في وضع الخادم: الخادم يحسب دائمًا، والصفحة تعرض ما يرسله. */
 const HG=HayatiDomain;
 const hgNow=()=>new Date(TODAY+'T12:00:00Z');
@@ -5297,7 +5317,7 @@ function hsPatientNote(){ if(role!=='patient') return ''; let h='';
   return h}
 ACT.hsIntakeOff=()=>{store.set('hsIntakeOff',TODAY); rerender()};
 {const l0=SCREENS.hlog.html; SCREENS.hlog.html=a=>hsPatientNote()+l0(a)}
-{const n0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>{const h=n0(a), x=hsPatientNote(); return x?x+h:h}} /* «حياتي» تبقى البوابات الأربع فقط (طلب المالك) */
+{const n0=SCREENS.lifeFood.html; SCREENS.lifeFood.html=a=>{const h=n0(a), x=hsPatientNote(); return x?x+h:h}} /* «حياتي» تبقى البوابات الأربع فقط (طلب المدير) */
 /* بطاقة الطعام: الوسمان (جريب فروت، فيتامين K) يظهران عبر القاعدة فقط (مع شرط الدواء)، لا كقائمة للجميع. */
 /* الفريق: بند مراجعة في «الغذاء» لدى المريض، وفي «المراجعة». */
 function hsTeamFlags(){const out=[], f=hsIntakeFlag(), w=hsWeightFlag();
@@ -5361,11 +5381,11 @@ main.parentElement.addEventListener('change',async e=>{ if(!['md-cam','md-gal'].
   const c=L.map(m=>'<div class="rep mdrev"><span class="m"><b>'+esc(allPatients().find(p=>p.id==='p1').name)+'</b><small>'+esc(trf('أضاف دواءً: {0}',m.n+(m.dose?' '+m.dose:'')))+' · <span dir="ltr">'+esc(m.times.join(' · '))+'</span></small></span><button class="btn sm ghost" data-act="medSeen" data-id="'+esc(m.id)+'">اطّلعت</button></div>').join('');
   return c+r0(a)}}
 
-/* D-069 (طلب المالك): شريط «علامة خطر؟» لا يظهر دائمًا في الرئيسية؛ يظهر فقط حين يسجّل المريض أو أحد أفراد عائلته
+/* D-069 (طلب المدير): شريط «علامة خطر؟» لا يظهر دائمًا في الرئيسية؛ يظهر فقط حين يسجّل المريض أو أحد أفراد عائلته
    اليوم علامة خطر (مع رقم الطوارئ). أرقام الطوارئ تبقى دائمًا في «فريقي وعائلتي». */
 {const r0=hRedStrip; hRedStrip=function(red){return red&&red.length?r0(red):''}}
 
-/* D-070 (طلب المالك): واجهة «المرضى» أوضح: ملخّص بالأرقام في الأعلى، ثم بطاقة كبيرة لكل تقسيم بعنوان ووصف قصير وأرقام ملوّنة بكلماتها. */
+/* D-070 (طلب المدير): واجهة «المرضى» أوضح: ملخّص بالأرقام في الأعلى، ثم بطاقة كبيرة لكل تقسيم بعنوان ووصف قصير وأرقام ملوّنة بكلماتها. */
 const DASH_SUB={status:'من يحتاج اتصالًا أو متابعة اليوم',dx:'المرضى حسب نوع المرض',trend:'تطوّر التحاليل والوزن',adh:'الالتزام بأدوية العلاج',prod:'الالتزام بخطة جرعات المستحضر'};
 function dashHTML(){const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.id,classify(p)])), st=tally('status',ps,cs);
   const pill=(k,n)=>'<span class="dpill d'+k+'"><b class="num">'+n+'</b><small>'+esc(COL_T[k])+'</small></span>';
@@ -5375,14 +5395,14 @@ function dashHTML(){const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.i
     card('status')+card('prod','dprod')+card('dx')+card('trend')+card('adh')+'</div>'}
 {const p0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=p0(a), i=h.indexOf('<div class="hub">'), j=h.indexOf('<div class="legend">'); return i>=0&&j>i?h.slice(0,i)+dashHTML()+h.slice(j):h}}
 
-/* D-072 (طلب المالك): الضغط على رقم في ملخّص «المرضى» يفتح قائمة المرضى في ذلك اللون (حسب «حالات المرضى اليوم»). */
+/* D-072 (طلب المدير): الضغط على رقم في ملخّص «المرضى» يفتح قائمة المرضى في ذلك اللون (حسب «حالات المرضى اليوم»). */
 SCREENS.dashCol={title:k=>COL_T[k]||'المرضى',tab:'patients',html:k=>{const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.id,classify(p)]));
   const list=ps.filter(p=>colorOf('status',p,cs[p.id])===k).sort((a,b)=>ST_O[cs[a.id].status]-ST_O[cs[b.id].status]);
   return '<div class="dstat d'+k+' dhead"><b class="num">'+list.length+'</b><small>'+esc(COL_T[k])+'</small></div>'+
    (list.length?list.map(p=>prow(p,cs[p.id])).join(''):'<div class="card"><p class="muted">لا مرضى في هذا القسم الآن.</p></div>')}};
 ACT.dashCol=b=>go('dashCol',b.dataset.val);
 
-/* D-073 (طلب المالك): وحدة الوزن حسب بلد الإقامة (ملف البلد: kg أو lb). يُحفظ الوزن دائمًا بالكيلوغرام، ويُعرض ويُدخل بوحدة البلد. */
+/* D-073 (طلب المدير): وحدة الوزن حسب بلد الإقامة (ملف البلد: kg أو lb). يُحفظ الوزن دائمًا بالكيلوغرام، ويُعرض ويُدخل بوحدة البلد. */
 const LB=2.20462;
 const WU=()=>{const u=store.get('set.weight','auto'); if(u==='kg'||u==='lb') return u; try{return ((regionProf()||{}).units||{}).weight==='lb'?'lb':'kg'}catch(e){return 'kg'}};
 const wShow=kg=>WU()==='lb'?Math.round(kg*LB*10)/10:kg;
@@ -5599,10 +5619,10 @@ Object.assign(ACT,{
 main.addEventListener('input',e=>{ if(e.target.id!=='ck-q') return; CK.q=e.target.value; clearTimeout(CK.t); CK.t=setTimeout(()=>{const pos=e.target.selectionStart; rerender(); const i=$('#ck-q'); if(i){i.focus(); try{i.setSelectionRange(pos,pos)}catch(x){}}},250)});
 /* المداخل: أعلى «ابحث عن طعام» وفي «طعامي». */
 {const f0=SCREENS.hfood.html; SCREENS.hfood.html=a=>'<button class="ckentry" data-act="ckGo"><span class="ckei" aria-hidden="true">🍲</span><span class="m"><b>وصفات جاهزة</b><small>'+esc(trf('{0} وصفة بالمقادير وطريقة الطبخ، تراعي بياناتك',HREC.length))+'</small></span></button>'+f0(a)}
-/* في «طعامي» تحت «دفتر طعامي» مباشرة (المالك، 2026-10-02): انظر hlNutCard في كتلة الكاميرا (D-076). */
+/* في «طعامي» تحت «دفتر طعامي» مباشرة (المدير، 2026-10-02): انظر hlNutCard في كتلة الكاميرا (D-076). */
 
 /* ============ وقت أخذ الدواء بالضبط (D-075) ============
-   طلب المالك: بعد تصوير الجرعة يعرف التطبيق هل أُخذت في وقتها، ويسجّل الساعة بالضبط وجزء اليوم (صباحًا، بعد
+   طلب المدير: بعد تصوير الجرعة يعرف التطبيق هل أُخذت في وقتها، ويسجّل الساعة بالضبط وجزء اليوم (صباحًا، بعد
    الظهر، مساءً، ليلًا)، ويمكن تسجيل جرعة في وقت آخر عند الحاجة. كل ذلك يصل إلى تقرير الطبيب اليومي.
    «في وقتها» = خلال ساعة من الموعد (قاعدة عرض فقط؛ مواعيد التسامح يحدّدها الطبيب لاحقًا). التطبيق لا يقول للمريض
    خذ أو لا تأخذ جرعة: الجرعة الإضافية تُسجَّل كما هي ويراها الطبيب. */
@@ -5652,7 +5672,7 @@ document.head.insertAdjacentHTML('beforeend','<style>.mtrow{display:flex;align-i
  '.tag.mt-ok{background:var(--ok-bg)}.tag.mt-late,.tag.mt-early{background:var(--watch-bg)}.tag.mt-miss{background:var(--urgent-bg)}.tag.mt-extra{background:var(--prod-soft)}.tag.mt-due,.tag.mt-none{background:var(--line)}</style>');
 
 /* ============ «طعامي»: الكاميرا والوصفات تحت «دفتر طعامي» (D-076) ============
-   طلب المالك: الكاميرا تتعرّف على الطعام وتقدّر الكمية، والوصفات الجاهزة مباشرة تحت «دفتر طعامي».
+   طلب المدير: الكاميرا تتعرّف على الطعام وتقدّر الكمية، والوصفات الجاهزة مباشرة تحت «دفتر طعامي».
    الكاميرا تفتح «صورة الطبق» الموجودة (المرحلة 3): الذكاء الاصطناعي يقترح الأطعمة وغراماتها التقريبية فقط،
    القيم الغذائية من قاعدة الطعام، ولا يُسجَّل شيء قبل أن يختار المريض ويعدّل ويضغط «سجّل». */
 {const c0=hlNutCard; hlNutCard=function(){const h=c0(), e=h.lastIndexOf('</div>');
@@ -5893,7 +5913,7 @@ document.addEventListener('scroll',e=>{const bar=document.getElementById('lnbar'
   const i=h.indexOf('<button class="ckentry"'); if(i>=0){const e=h.indexOf('</button>',i)+9; h=h.slice(0,e)+ln+h.slice(e)} else h=ln+h;
   const j=h.indexOf('<div class="card hlnutcard'); return j<0?symCardHTML()+h:h.slice(0,j)+symCardHTML()+h.slice(j)}}
 
-/* ============ خمس صفحات للتعريف بالتطبيق (المالك، 2026-10-02 — D-078) ============
+/* ============ خمس صفحات للتعريف بالتطبيق (المدير، 2026-10-02 — D-078) ============
    تحلّ محلّ الشرائح الأربع القديمة. عربية فقط (D-065)، فلا أزرار لغة هنا. سحب بالإصبع يمينًا ويسارًا،
    ونقاط قابلة للضغط، و«تخطّي» في كل صفحة. الرسوم أصلية (SVG داخل الصفحة)، دون صور. */
 const INTRO=[
@@ -5922,12 +5942,12 @@ ACT.wgo=b=>{welcomeIdx=+b.dataset.i; rerender()};
  document.addEventListener('touchend',e=>{ if(x0==null||route!=='welcome') return; const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)<50) return;
    if(dx>0) ACT.wnext(); else ACT.wprev()},{passive:true})}
 
-/* ============ بوابتان: «المريض» و«العائلة»، ومكان خاص بالعائلة (المالك، 2026-10-02 — D-079) ============
+/* ============ بوابتان: «المريض» و«العائلة»، ومكان خاص بالعائلة (المدير، 2026-10-02 — D-079) ============
    «المريض وعائلته» يفتح بوابتين كبيرتين. بوابة العائلة تدخل إلى مكان العائلة وحده:
    - رسالة تشجيع للمريض (دائرة العائلة، D-064، كما هي).
    - «صِف حالة المريض»: ما لاحظته العائلة من حالته وتصرّفاته، وصفًا فقط، يصل إلى الطبيب. العلامات الحمراء
      (حمّى، ضيق تنفّس، نزيف…) تُظهر رقم الطوارئ فورًا، وتجعل حالة المريض «تستدعي الاتصال» عند الطبيب،
-     ويظهر شريط الخطر في صفحة المريض (طلب المالك D-069: أو أحد أفراد العائلة).
+     ويظهر شريط الخطر في صفحة المريض (طلب المدير D-069: أو أحد أفراد العائلة).
    - «تواصل مع الطبيب»: محادثة بين العائلة والفريق الطبي، منفصلة عن رسائل التشجيع وعن محادثة المريض.
    العائلة لا ترى تطبيق المريض ولا بياناته الطبية أبدًا. والمريض يقرّر من «دائرة العائلة» هل تصف عائلته حالته
    للفريق وهل تراسله (مفعّلان افتراضيًا، ويستطيع إيقافهما). */
@@ -5949,7 +5969,7 @@ SCREENS.pgate={title:'المريض وعائلته',bare:true,html:()=>
   '<button class="gate gate-p" data-act="pickRole" data-r="patient"><span class="gi">'+(I.user||HI.user)+'</span><span class="m"><b>المريض</b><small>تطبيقك أنت: علاجك، وحياتي، وتحاليلك، وطبيبك.</small></span></button>'+
   '<button class="gate gate-f" data-act="pickRole" data-r="family"><span class="gi">'+I.users+'</span><span class="m"><b>العائلة</b><small>مكان خاص بالعائلة: رسائل تشجيع للمريض، ووصف حالته، والتواصل مع الطبيب.</small></span></button>'+
   '<p class="note">العائلة لا ترى تطبيق المريض ولا بياناته الطبية.</p>'+
-  /* TEMP_TEST_LOGIN: الدخول السريع للتجربة فقط، يُحذف في آخر مرحلة عندما يطلب المالك ذلك. */
+  /* TEMP_TEST_LOGIN: الدخول السريع للتجربة فقط، يُحذف في آخر مرحلة عندما يطلب المدير ذلك. */
   '<div class="card" style="background:var(--accent-soft)"><b>دخول سريع للتجربة</b><div class="gquick"><button class="btn sm" data-act="quick" data-r="patient">مريض بالغ</button><button class="btn sm" data-act="quickAud" data-aud="preg">امرأة حامل</button><button class="btn sm" data-act="quickAud" data-aud="child">طفل</button></div><p class="note">مؤقت للتجربة فقط. كل البيانات هنا اصطناعية.</p></div>'};
 {const p0=ACT.pickRole; ACT.pickRole=b=>{ if(route==='login'&&b.dataset.r==='patient'){go('pgate'); return} p0(b)}}
 /* صفحة الدخول بعد البوابة: بلا مفتاح «المريض / من عائلة المريض» (صار بوابتين). */
@@ -6012,7 +6032,7 @@ function famDoctorCard(pid){const O=famObsFor(pid).slice().reverse(), M=famDocFo
 {const c0=classify; classify=function(p){const r=c0(p); if(!p||p.srv) return r; const red=famRedToday(p.id); if(red.length&&r&&r.why){r.status='urgent'; r.why.unshift('أبلغت العائلة اليوم: '+red.join('، '))} return r}}
 {const r0=hRedStrip; hRedStrip=function(red){const f=role==='patient'?famRedToday('p1').map(x=>x+' (أبلغت عائلتك)'):[]; return r0((red||[]).concat(f))}}
 
-/* ============ مجال خاص بالحوامل ومجال خاص بالأطفال (المالك، 2026-10-02 — D-080) ============
+/* ============ مجال خاص بالحوامل ومجال خاص بالأطفال (المدير، 2026-10-02 — D-080) ============
    يُختار من البداية في صفحة دخول المريض: «بالغ» أو «امرأة حامل» أو «طفل (مع والديه)»، ويمكن تغييره من «ملفي».
    - الحمل: ألوان وردية هادئة، وخطاب بصيغة المؤنّث، وبطاقة «رحلتكِ أنتِ وطفلكِ» بأسبوع الحمل، وعلامات خطر خاصة
      بالحمل (تفتح الطريق الأحمر الموجود برقم الطوارئ)، وكل الوصفات مطبوخة (سلامة الطعام أثناء الحمل)، وفصل خاص
@@ -6117,13 +6137,13 @@ Object.assign(ACT,{
   const tag='<div class="alert '+(a==='preg'?'p':'i')+' audtag">'+(a==='preg'?'🤰 حامل · الأسبوع '+pregWeek()+' ('+pregTri(pregWeek())+'). أرقام التغذية يضعها الفريق وطبيبة النساء.':'🧒 حساب طفل. أرقام التغذية يضعها فريق طب الأطفال.')+'</div>'; return tag+h}}
 
 /* ============ المرحلة 7: اليوم، «تقدّمي الغذائي»، ملخّص لأخصائية التغذية، والعائلة تسجّل الوجبات — D-081 ============
-   «حياتي» تبقى أبوابها الأربعة (المالك). «اليوم» هو أعلى «طعامي»: كيف تشعر اليوم، دفتر طعامي (البروتين أولًا، الطاقة، الماء)،
+   «حياتي» تبقى أبوابها الأربعة (المدير). «اليوم» هو أعلى «طعامي»: كيف تشعر اليوم، دفتر طعامي (البروتين أولًا، الطاقة، الماء)،
    وفكرة الوجبة القادمة. «تقدّمي الغذائي» يُفتح من «طعامي» ومن «وزني»:
    - الوزن داخل نطاق ثابت حول الوزن المرجعي (لا ألوان «جيد/سيئ»)، ويمكن إخفاؤه. يكون مخفيًا افتراضيًا إذا اختار الطبيب «رعاية داعمة».
    - الأكل مقارنةً بالهدف، والبروتين، والماء، وسجلّ الأعراض: أسبوع أو شهر.
    - لا مدح لنقص الوزن أبدًا، ولا سلاسل أيام ولا شارات للوزن (فحص نصّي في الاختبار).
    «ملخّص لأخصائية التغذية»: صفحة قراءة واحدة، تُطبع أو تُحفظ PDF من المتصفّح (وفي الخادم يُصدر PDF، §8.3).
-   العائلة (قرار المالك D-079: لا ترى تطبيق المريض): تسجّل ما أكله المريض وصفًا فقط، إذا سمح المريض («يسجّل وجباتي…»)،
+   العائلة (قرار المدير D-079: لا ترى تطبيق المريض): تسجّل ما أكله المريض وصفًا فقط، إذا سمح المريض («يسجّل وجباتي…»)،
    فيظهر للمريض في «دفتر طعامي» وللطبيب، ويُذكر في الملخّص. خيارات «ما يراه أفراد عائلتك» أُزيلت لأن العائلة لا ترى شيئًا. */
 const NP={per:'week'};
 const npDays=n=>Array.from({length:n},(_,i)=>addDays(TODAY,-(n-1-i)));
@@ -6237,7 +6257,7 @@ Object.assign(ACT,{
 {const keep=FAM_SCOPES.filter(x=>x[0]==='logMeals'); FAM_SCOPES.length=0; keep.forEach(x=>FAM_SCOPES.push([x[0],'تسجّل عائلتي ما أكلته (وصفًا)']))}
 {const t0=SCREENS.hteam.html; SCREENS.hteam.html=a=>t0(a).replace('اختر ما يراه أفراد عائلتك. أنت تقرّر، ويمكنك التغيير في أي وقت.','عائلتك لا ترى تطبيقك ولا بياناتك. أنت تقرّر ما تستطيع فعله:')}
 
-/* ============ بلد الإقامة تلقائيًا، وصفحة «الإعدادات» (المالك، 2026-10-02 — D-082) ============
+/* ============ بلد الإقامة تلقائيًا، وصفحة «الإعدادات» (المدير، 2026-10-02 — D-082) ============
    لا تظهر صفحة «أين تقيم؟» بعد الآن: يتعرّف التطبيق على البلد من المنطقة الزمنية للهاتف، ثم من لغة الهاتف،
    وإلا تونس. لا يُستعمل الموقع (GPS). يُغيَّر البلد من «الإعدادات»، ومعه رقم الطوارئ.
    «الإعدادات» (زرّ الترس أعلى كل شاشة): البلد، الوحدات (الوزن، الحرارة)، ألوان التطبيق، والإضاءة: تلقائي / نهاري / ليلي.
@@ -6289,4 +6309,211 @@ if(['region'].includes(route)&&role==='patient') go('home',null,false);
 /* تغيير البلد يدويًا (من «ملفي» أو أي رابط «بلد الإقامة») يفتح الصفحة. */
 {const r0=ACT.goRegion; ACT.goRegion=b=>{ST.fromSettings=true; r0(b)}}
 
+
+/* ============ الإدارة: رقابة إدارية قوية (المدير، 2026-10-02 — D-083) ============
+   الاسم القديم للمدير صار «المدير». أقسام الإدارة: المدير، المسؤول المالي (كما هو)، المراقب المالي، المراقب القانوني، إدارة التسويق.
+   المدير: لوحة تحكم ولوحة بيانات عامة؛ يدخل كل دولة ويرى كل مرضاها: المريض وعائلته وأرقام هواتفهم، مع من تواصل، وكل
+   المحادثات، مرجعًا لكل ما يقع للمريض. أداء الفريق (الممرضة والمتابِعة): متى أُجيب المريض بالضبط، حسب الدولة والمرض والخطورة.
+   مراقبة كل رابط أُرسل لطبيب أو لغيره، والحماية من الاختراق عبر الرابط.
+   الحذف: عند خروج المريض من التطبيق تُحذف كل معطياته بعد 90 يومًا (المحادثات، العائلة، الروابط، كل شيء)؛ لا يبقى إلا
+   سطر في سجلّ الحذف بلا أي بيانات شخصية.
+   الضوابط: كل اطّلاع على ملف مريض وكل إجراء إداري يُسجَّل (من، متى، ماذا) ويراه المراقب القانوني والمدير. المراقب المالي
+   والمراقب القانوني يقرآن ولا يغيّران المدفوعات. التسويق لا يرى أي بيانات مريض، وكل منشور يمرّ بمرشّح الادّعاءات ثم موافقة المدير.
+   في هذا العرض كل البيانات اصطناعية. في الإطلاق: حسابات الموظفين بالتحقّق بخطوتين، والاستضافة في البلد الذي يقرّره المحامي. */
+const ADM_I={more:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>'};
+ROLE_T.owner='المدير'; Object.assign(ROLE_T,{fctl:'المراقب المالي',legal:'المراقب القانوني',mkt:'إدارة التسويق'});
+const ADM_ROLES=[['owner','المدير',I.key,'لوحة التحكم، الدول والمرضى، الفريق، الروابط والأمان، الحذف، السجلّ'],['finance','المسؤول المالي',I.card,'يؤكّد التحويلات ويرسل الطلبات'],['fctl','المراقب المالي',I.receipt||I.card,'يراقب المدفوعات والشذوذ، للقراءة فقط'],['legal','المراقب القانوني',I.sign||I.key,'الموافقات، سجلّ الاطّلاع، الحذف بعد 90 يومًا'],['mkt','إدارة التسويق',I.share,'الحملات والمنشورات، دون أي بيانات مريض']];
+TABS.owner=[['odash','لوحة التحكم',I.day],['ocountries','الدول',I.globe],['obatches','القوارير',I.qr],['forders','الطلبات',I.box],['omore','المزيد',ADM_I.more]];
+TABS.fctl=[['fcdash','الرقابة المالية',I.card],['fpay','المدفوعات',I.receipt||I.card],['oaudit','السجلّ',I.check]];
+TABS.legal=[['lgdash','الرقابة القانونية',I.sign||I.key],['oaudit','سجلّ الاطّلاع',I.check],['oretention','الحذف',ADM_I.del],['olinks','الروابط',I.share]];
+TABS.mkt=[['mdash','التسويق',I.share],['mposts','المنشورات',I.day],['mcamp','الحملات',I.globe]];
+
+/* ---------- السجلّ الإداري ---------- */
+const auditAll=()=>store.get('auditLog',[]);
+function audit(act,target){const L=auditAll(); L.push({at:new Date().toISOString(),role:role||'?',who:ROLE_T[role]||role||'?',act,target:target||''}); store.set('auditLog',L.slice(-2000))}
+/* ---------- الدخول ---------- */
+{const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{
+  if(r==='admin') return '<div class="row sp"><h2 style="margin:0">دخول الإدارة</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div><p class="muted">اختر قسمك في الإدارة.</p>'+
+   '<div class="admpick">'+ADM_ROLES.map(([k,t,ic,d])=>'<button class="admrole" data-act="pickRole" data-r="'+k+'"><span class="ri">'+ic+'</span><span class="m"><b>'+t+'</b><small>'+d+'</small></span></button>').join('')+'</div>'+
+   '<p class="note">في الإطلاق: حساب لكل موظف، وتحقّق بخطوتين، وكل دخول مسجّل.</p>';
+  if(['fctl','legal','mkt'].includes(r)) return '<div class="row sp"><h2 style="margin:0">دخول '+ROLE_T[r]+'</h2><button class="lnk" data-act="pickRole" data-r="admin">رجوع</button></div>'+
+   '<p class="muted">'+ADM_ROLES.find(x=>x[0]===r)[3]+'.</p><div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق.</p></div>';
+  return h0(r)}}
+{const e0=enter; enter=function(r){ if(['owner','finance','fctl','legal','mkt'].includes(r)) audit('دخول',ROLE_T[r]);
+  if(r==='owner'){role=r; stack=[]; go('odash',null,false); return} if(r==='fctl'){role=r; stack=[]; go('fcdash',null,false); return}
+  if(r==='legal'){role=r; stack=[]; go('lgdash',null,false); return} if(r==='mkt'){role=r; stack=[]; go('mdash',null,false); return} return e0(r)}}
+
+/* ---------- البيانات (اصطناعية في العرض) ---------- */
+const CC_AR={TN:'تونس',DZ:'الجزائر',MA:'المغرب',LY:'ليبيا',ID:'إندونيسيا',MY:'ماليزيا',EG:'مصر',SA:'السعودية'};
+const DIAL={'تونس':'+216','الجزائر':'+213','المغرب':'+212','ليبيا':'+218','إندونيسيا':'+62','ماليزيا':'+60','مصر':'+20','السعودية':'+966'};
+const hsh=s=>{let h=7; for(const c of String(s)) h=(h*31+c.charCodeAt(0))>>>0; return h};
+const rnd=(seed)=>{let x=hsh(seed)||1; return ()=>{x^=x<<13; x>>>=0; x^=x>>17; x^=x<<5; x>>>=0; return (x%10000)/10000}};
+const admCountry=p=>{const c=p.country||(p.id==='p1'?cName(regionCode()):''); return CC_AR[c]||c||'—'};
+const admPhone=(seed,country)=>{const r=rnd('ph'+seed); return (DIAL[country]||'+000')+' '+String(20+Math.floor(r()*79))+' '+String(100+Math.floor(r()*899))+' '+String(100+Math.floor(r()*899))};
+const DX_AR={breast:'سرطان الثدي',colon:'سرطان القولون',lung:'سرطان الرئة',lymphoma:'لمفوما',hcv:'التهاب الكبد C',covid:'ما بعد كورونا',prostate:'سرطان البروستاتا'};
+function admPatients(){const ret=retAll(); return allPatients().filter(p=>!(ret[p.id]&&ret[p.id].purgedAt)).map(p=>{const c=admCountry(p), st=classify(p).status;
+  const fam=p.id==='p1'?((typeof FAM!=='undefined'&&FAM.d&&FAM.d.members)||[]).filter(m=>m.status!=='removed').map(m=>({name:m.name,rel:famRel(m.relation),phone:admPhone(m.id||m.name,c)})):
+    [{name:['أم','ابن','بنت','زوج'][hsh(p.id)%4]+' '+p.name.split(' ')[0],rel:['أم','ابن','بنت','زوج'][hsh(p.id)%4],phone:admPhone('f'+p.id,c)}];
+  return {id:p.id,name:p.name,age:p.age,sex:p.sex,dx:p.dx,dxT:DX_AR[p.dx]||p.dx,country:c,phone:admPhone(p.id,c),status:st,nurse:(TEAMN[assignOf()[p.id]]||{}).name||'—',nurseId:assignOf()[p.id],fam,left:ret[p.id]||null}})}
+/* التواصل وزمن الإجابة: رسائل حقيقية للمريض p1 + سجلّ اصطناعي مستقرّ للبقية (30 يومًا). الهدف: الرسالة العادية 4 ساعات، والإنذار الأحمر دقيقتان. */
+const ADM_SLA={routine:240,red:2};
+function admComms(pid){const out=[], r=rnd('cm'+pid), nurse=assignOf()[pid];
+  for(let i=0;i<10;i++){const d=addDays(TODAY,-Math.floor(r()*30)), red=r()<0.15, hh=8+Math.floor(r()*12), mm=Math.floor(r()*60), resp=red?Math.max(1,Math.round(r()*4)):Math.round(10+r()*360);
+    out.push({pid,date:d,at:d+' '+String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0'),kind:red?'red':'routine',text:red?'إنذار أحمر من المريض':'سؤال من المريض',nurse,respMin:resp})}
+  if(pid==='p1'){ try{const L=msgs(); L.forEach((m,i)=>{ if(m.from==='patient'||m.from==='p'){const n=L.slice(i+1).find(x=>x.from!==m.from); out.push({pid,date:m.at.slice(0,10),at:m.at,kind:'routine',text:m.text||'رسالة صوتية',nurse,respMin:n?Math.max(0,(new Date(n.at.replace(' ','T'))-new Date(m.at.replace(' ','T')))/6e4):null})}})}catch(e){} }
+  return out.sort((a,b)=>a.at<b.at?1:-1)}
+const median=a=>{const s=a.filter(x=>x!=null).sort((x,y)=>x-y); return s.length?s[Math.floor(s.length/2)]:null};
+const fmtMin=m=>m==null?'لم يُجب بعد':m<60?Math.round(m)+' د':(Math.round(m/6)/10)+' س';
+const ADM={country:'',dx:'',sev:''};
+function admFiltered(){return admPatients().filter(p=>(!ADM.country||p.country===ADM.country)&&(!ADM.dx||p.dx===ADM.dx)&&(!ADM.sev||p.status===ADM.sev))}
+function admFilterBar(){const P=admPatients(), cs=[...new Set(P.map(p=>p.country))], ds=[...new Set(P.map(p=>p.dx))];
+  const ch=(k,v,t)=>'<button class="chip" data-act="admF" data-k="'+k+'" data-val="'+v+'" aria-pressed="'+(ADM[k]===v)+'">'+t+'</button>';
+  return '<div class="admfil"><div class="chips">'+ch('country','','كل الدول')+cs.map(c=>ch('country',c,c)).join('')+'</div><div class="chips">'+ch('dx','','كل الأمراض')+ds.map(d=>ch('dx',d,DX_AR[d]||d)).join('')+'</div><div class="chips">'+ch('sev','','كل الحالات')+ch('sev','urgent','تستدعي الاتصال')+ch('sev','watch','للمتابعة')+ch('sev','stable','مستقرّة')+'</div></div>'}
+const ADM_ST={urgent:'تستدعي الاتصال',watch:'للمتابعة',stable:'مستقرّة'};
+const bar=(t,v,max,cls)=>'<div class="abar"><span>'+esc(t)+'</span><i><b class="'+(cls||'')+'" style="width:'+(max?Math.round(v/max*100):0)+'%"></b></i><em class="num">'+esc(String(v))+'</em></div>';
+
+/* ---------- المدير: لوحة التحكم ---------- */
+SCREENS.odash={title:'لوحة التحكم',tab:'odash',html:()=>{const P=admFiltered(), C=P.flatMap(p=>admComms(p.id)), red=C.filter(c=>c.kind==='red'), rou=C.filter(c=>c.kind==='routine');
+  const redOk=red.filter(c=>c.respMin!=null&&c.respMin<=ADM_SLA.red).length, rouOk=rou.filter(c=>c.respMin!=null&&c.respMin<=ADM_SLA.routine).length;
+  const links=admLinks(), risky=links.filter(l=>l.risk.length&&(l.state==='open'||l.state==='locked')), ret=Object.values(retAll()).filter(x=>!x.purgedAt), byC={}; admPatients().forEach(p=>{byC[p.country]=(byC[p.country]||0)+1});
+  const urgByC={}; admPatients().filter(p=>p.status==='urgent').forEach(p=>{urgByC[p.country]=(urgByC[p.country]||0)+1});
+  const kpi=(n,t,cls,act,r)=>'<button class="akpi '+(cls||'')+'"'+(act?' data-act="'+act+'"'+(r?' data-r="'+r+'"':''):'')+'><b class="num">'+n+'</b><small>'+t+'</small></button>';
+  const appr=mkPosts().filter(x=>x.status==='review').length;
+  return '<div class="admhead"><h2>لوحة التحكم</h2><small class="muted">'+esc(fmtD(TODAY,{weekday:'long',day:'numeric',month:'long'}))+' · بيانات اصطناعية</small></div>'+admFilterBar()+
+   '<div class="akpis">'+kpi(P.length,'مريضًا','','nav','opatients')+kpi(P.filter(p=>p.status==='urgent').length,'تستدعي الاتصال','red','admSev','')+
+    kpi(red.length?Math.round(redOk/red.length*100)+'%':'—','إنذارات أُجيبت خلال دقيقتين',red.length&&redOk<red.length?'red':'ok','nav','onurse')+kpi(fmtMin(median(rou.map(c=>c.respMin))),'وسيط الإجابة على الرسائل','','nav','onurse')+
+    kpi(links.filter(l=>l.state==='open').length,'رابطًا فعّالًا',risky.length?'warn':'','nav','olinks')+kpi(ret.length,'بانتظار الحذف (90 يومًا)','','nav','oretention')+'</div>'+
+   (risky.length?'<div class="alert u">'+I.alert+' <b>'+esc(trf('{0} رابط فيه محاولات مشبوهة',risky.length))+'</b> <button class="lnk" data-act="nav" data-r="olinks">افتح الروابط</button></div>':'')+
+   (appr?'<div class="alert i"><b>'+esc(trf('{0} منشور تسويقي ينتظر موافقتك',appr))+'</b> <button class="lnk" data-act="nav" data-r="oapprove">راجعها</button></div>':'')+
+   '<div class="card"><h3>المرضى حسب الدولة</h3>'+Object.entries(byC).sort((a,b)=>b[1]-a[1]).map(([c,n])=>'<button class="abtn" data-act="admCountry" data-c="'+esc(c)+'">'+bar(c,n,Math.max(...Object.values(byC)))+'</button>').join('')+'</div>'+
+   '<div class="card"><h3>الحالات الخطيرة حسب الدولة</h3>'+(Object.keys(urgByC).length?Object.entries(urgByC).map(([c,n])=>bar(c,n,Math.max(...Object.values(urgByC)),'red')).join(''):'<p class="note">لا حالات تستدعي الاتصال الآن.</p>')+
+    '<h4>تطوّر الإنذارات الحمراء (أسابيع)</h4>'+admRedTrend(P)+'</div>'+
+   '<div class="card"><h3>أداء الفريق</h3>'+admNurseRows(P,true)+'<button class="lnk" data-act="nav" data-r="onurse">التفاصيل</button></div>'+
+   '<div class="card"><h3>الأقسام</h3><div class="admtiles">'+[['opatients','كل المرضى'],['onurse','الفريق والإجابة'],['olinks','الروابط والأمان'],['oretention','الحذف بعد 90 يومًا'],['oaudit','سجلّ الإدارة'],['oapprove','موافقات التسويق'],['fcdash','الرقابة المالية'],['lgdash','الرقابة القانونية'],['mdash','التسويق']].map(([r,t])=>'<button class="btn ghost sm" data-act="nav" data-r="'+r+'">'+t+'</button>').join('')+'</div></div>'}};
+function admRedTrend(P){const C=P.flatMap(p=>admComms(p.id)).filter(c=>c.kind==='red'), w=[0,1,2,3].map(i=>{const a=addDays(TODAY,-7*(i+1)+1), b=addDays(TODAY,-7*i); return {t:i?trf('قبل {0} أسابيع',i):'هذا الأسبوع',n:C.filter(c=>c.date>=a&&c.date<=b).length}}).reverse(); const m=Math.max(1,...w.map(x=>x.n));
+  return w.map(x=>bar(x.t,x.n,m,'red')).join('')}
+function admNurseRows(P,short){const ids=[...new Set(P.map(p=>p.nurseId))].filter(Boolean);
+  return '<div class="tbl"><table class="admt"><thead><tr><th>الفريق</th><th>مرضى</th><th>وسيط الإجابة</th><th>خلال الهدف</th><th>إنذارات ≤ 2 د</th></tr></thead><tbody>'+ids.map(id=>{const pp=P.filter(p=>p.nurseId===id), C=pp.flatMap(p=>admComms(p.id)), red=C.filter(c=>c.kind==='red'), rou=C.filter(c=>c.kind==='routine');
+    const ok=rou.filter(c=>c.respMin!=null&&c.respMin<=ADM_SLA.routine).length, rok=red.filter(c=>c.respMin!=null&&c.respMin<=ADM_SLA.red).length, pct=rou.length?Math.round(ok/rou.length*100):null;
+    return '<tr><td>'+esc((TEAMN[id]||{}).name||id)+'<small class="muted" style="display:block">'+esc((TEAMN[id]||{}).role||'')+'</small></td><td class="num">'+pp.length+'</td><td class="num">'+esc(fmtMin(median(rou.map(c=>c.respMin))))+'</td><td class="num '+(pct!=null&&pct<80?'bad':'')+'">'+(pct==null?'—':pct+'%')+'</td><td class="num '+(red.length&&rok<red.length?'bad':'')+'">'+rok+'/'+red.length+'</td></tr>'}).join('')+'</tbody></table></div>'}
+Object.assign(ACT,{
+  admF(b){ADM[b.dataset.k]=b.dataset.val; rerender()},
+  admSev(){ADM.sev='urgent'; go('opatients')},
+  admCountry(b){ADM.country=b.dataset.c; go('opatients')},
+  admOpen(b){audit('اطّلع على ملف مريض',b.dataset.id); go('opatient',b.dataset.id)},
+});
+/* ---------- الدول ← المرضى ---------- */
+{const c0=SCREENS.ocountries.html; SCREENS.ocountries.html=a=>{ if(role!=='owner') return c0(a); const byC={}; admPatients().forEach(p=>{byC[p.country]=(byC[p.country]||0)+1});
+  return '<div class="card"><h3>مرضى كل دولة</h3><div class="admtiles">'+Object.entries(byC).map(([c,n])=>'<button class="btn ghost sm" data-act="admCountry" data-c="'+esc(c)+'">'+esc(c)+' · '+n+'</button>').join('')+'</div></div>'+c0(a)}}
+SCREENS.opatients={title:'المرضى',tab:'odash',html:()=>{const P=admFiltered();
+  return admFilterBar()+'<p class="muted num">'+esc(trf('{0} مريضًا',P.length))+'</p>'+P.map(p=>'<button class="prow admp" data-act="admOpen" data-id="'+p.id+'"><span class="av">'+esc(p.name[0])+'</span><span class="pm"><b>'+esc(p.name)+'</b><small>'+esc(p.country+' · '+p.dxT+' · '+p.nurse)+'</small><small dir="ltr" class="num" style="text-align:end">'+esc(p.phone)+'</small></span><span class="tag '+(p.status==='urgent'?'urg':p.status==='watch'?'watch':'calm')+'">'+ADM_ST[p.status]+'</span></button>').join('')+
+   '<p class="note">كل فتح لملف مريض يُسجَّل في سجلّ الإدارة ويراه المراقب القانوني.</p>'}};
+SCREENS.opatient={title:'ملف المريض',tab:'odash',html:pid=>{const p=admPatients().find(x=>x.id===pid); if(!p) return '<p class="muted">حُذف هذا الملف أو غير موجود.</p>';
+  const C=admComms(pid), fam=pid==='p1'?{doc:famDocFor('p1'),obs:famObsFor('p1'),meals:famMealsFor('p1'),enc:((FAM.d&&FAM.d.msgs)||[])}:{doc:[],obs:[],meals:[],enc:[]};
+  const links=admLinks().filter(l=>l.pid===pid);
+  const tl=[...C.map(c=>({at:c.at,who:'المريض',to:c.nurse?(TEAMN[c.nurse]||{}).name:'الفريق',txt:c.text,kind:c.kind,resp:c.respMin})),
+    ...fam.doc.map(m=>({at:m.at.slice(0,16).replace('T',' '),who:m.from==='doctor'?'الطبيب':m.name+' (عائلة)',to:m.from==='doctor'?'العائلة':'الطبيب',txt:m.text,kind:'fam'})),
+    ...fam.obs.map(o=>({at:o.at.slice(0,16).replace('T',' '),who:o.by+' (عائلة)',to:'الطبيب',txt:'وصف الحالة: '+[...(o.red||[]),...o.chips].join('، ')+(o.text?' — '+o.text:''),kind:o.red&&o.red.length?'red':'fam'})),
+    ...fam.meals.map(m=>({at:m.at.slice(0,16).replace('T',' '),who:m.by+' (عائلة)',to:'دفتر الطعام',txt:FM_SLOT[m.slot]+': '+m.text,kind:'fam'})),
+    ...fam.enc.map(m=>({at:String(m.createdAt||m.at||'').slice(0,16).replace('T',' '),who:(m.fromName||'العائلة')+' (تشجيع)',to:'المريض',txt:m.text||(m.kind==='voice'?'رسالة صوتية':m.kind==='photo'?'صورة':''),kind:'enc'}))].sort((a,b)=>a.at<b.at?1:-1);
+  return '<div class="alert g">'+I.check+' اطّلاعك على هذا الملف مسجّل باسم '+esc(ROLE_T[role])+' في سجلّ الإدارة.</div>'+
+   '<div class="card"><div class="row sp"><h3>'+esc(p.name)+'</h3><span class="tag '+(p.status==='urgent'?'urg':p.status==='watch'?'watch':'calm')+'">'+ADM_ST[p.status]+'</span></div>'+
+   '<dl class="kv"><dt>الدولة</dt><dd>'+esc(p.country)+'</dd><dt>المرض</dt><dd>'+esc(p.dxT)+'</dd><dt>العمر</dt><dd class="num">'+esc(String(p.age||'—'))+'</dd><dt>الهاتف</dt><dd dir="ltr" class="num">'+esc(p.phone)+'</dd><dt>المتابِعة</dt><dd>'+esc(p.nurse)+'</dd>'+(p.left?'<dt>خرج من التطبيق</dt><dd>'+esc(p.left.leftAt.slice(0,10))+' · يُحذف '+esc(retDue(p.left))+'</dd>':'')+'</dl></div>'+
+   '<div class="card"><h3>العائلة</h3>'+(p.fam.length?p.fam.map(f=>'<div class="crow"><span><b>'+esc(f.name)+'</b><small>'+esc(f.rel)+'</small></span><span dir="ltr" class="num">'+esc(f.phone)+'</span></div>').join(''):'<p class="note">لا أفراد عائلة.</p>')+'</div>'+
+   '<div class="card"><h3>كل التواصل والمحادثات</h3><p class="note">مرجع لكل ما وقع للمريض: رسائله مع الفريق ومتى أُجيب، والعائلة مع الطبيب، ووصف الحالة، ورسائل التشجيع.</p>'+
+    tl.slice(0,40).map(x=>'<div class="atl '+x.kind+'"><small class="num">'+esc(x.at)+'</small><b>'+esc(x.who)+' ← '+esc(x.to||'')+'</b><span>'+esc(x.txt||'')+'</span>'+(x.resp!==undefined?'<em class="'+(x.resp==null||(x.kind==='red'?x.resp>ADM_SLA.red:x.resp>ADM_SLA.routine)?'late':'ok')+'">'+(x.resp==null?'لم يُجب بعد':'أُجيب بعد '+fmtMin(x.resp))+'</em>':'')+'</div>').join('')+'</div>'+
+   '<div class="card"><h3>الروابط المرسلة</h3>'+(links.length?links.map(admLinkRow).join(''):'<p class="note">لا روابط.</p>')+'</div>'}};
+/* ---------- الفريق ---------- */
+SCREENS.onurse={title:'الفريق والإجابة',tab:'odash',html:()=>{const P=admFiltered(), C=P.flatMap(p=>admComms(p.id).map(c=>({...c,p}))).filter(c=>c.respMin==null||(c.kind==='red'?c.respMin>ADM_SLA.red:c.respMin>ADM_SLA.routine));
+  return admFilterBar()+'<p class="muted">الهدف: الإنذار الأحمر خلال دقيقتين، والرسالة العادية خلال 4 ساعات. الأوقات مسجّلة بالدقيقة لكل رسالة.</p>'+
+   '<div class="card"><h3>أداء كل عضو في الفريق</h3>'+admNurseRows(P)+'</div>'+
+   '<div class="card"><h3>إجابات متأخّرة أو مفقودة</h3>'+(C.length?C.slice(0,25).map(c=>'<button class="atl late abtn" data-act="admOpen" data-id="'+c.p.id+'"><small class="num">'+esc(c.at)+'</small><b>'+esc(c.p.name+' · '+c.p.country)+'</b><span>'+esc((c.kind==='red'?'إنذار أحمر':'رسالة')+' · '+((TEAMN[c.nurse]||{}).name||''))+'</span><em class="late">'+esc(c.respMin==null?'لم يُجب بعد':'بعد '+fmtMin(c.respMin))+'</em></button>').join(''):'<p class="note">لا تأخير.</p>')+'</div>'}};
+/* ---------- الروابط والحماية ---------- */
+function admLinks(){const out=[], rv=store.get('admRevoked',{});
+  (SHD.L||[]).forEach(l=>{const op=l.openings||[], fails=op.filter(o=>/pin_wrong|pin_locked/.test(o.outcome)).length; out.push({id:l.id,pid:'p1',to:'طبيب معالج',createdAt:l.createdAt,expiresAt:l.expiresAt,pin:!!(l.hasPin||l.pinHash),opens:op.filter(o=>o.outcome==='opened'||o.outcome==='pdf').length,fails,devices:new Set(op.map(o=>o.client)).size,state:rv[l.id]||l.revokedAt?'revoked':shState(l),real:true})});
+  allPatients().filter(p=>p.id!=='p1').forEach(p=>{const r=rnd('ln'+p.id); if(r()<0.35) return; const c=addDays(TODAY,-Math.floor(r()*10)), fails=r()<0.25?3+Math.floor(r()*4):0, id='syn-'+p.id;
+    out.push({id,pid:p.id,to:r()<0.7?'طبيب معالج':'مستشفى آخر',createdAt:c+'T10:00:00Z',expiresAt:addDays(c,r()<0.5?1:7)+'T10:00:00Z',pin:r()<0.8,opens:Math.floor(r()*6),fails,devices:1+Math.floor(r()*(fails?5:2)),state:rv[id]?'revoked':addDays(c,7)<TODAY?'expired':fails>=5?'locked':'open'})});
+  return out.map(l=>({...l,risk:[...(l.fails>=3?['محاولات رمز خاطئة: '+l.fails]:[]),...(l.devices>=4?['فُتح من '+l.devices+' أجهزة']:[]),...(!l.pin&&l.state==='open'?['بلا رمز']:[])]}))}
+function admLinkRow(l){const p=allPatients().find(x=>x.id===l.pid)||{name:'—'};
+  return '<div class="card alink'+(l.risk.length?' risk':'')+'"><div class="row sp"><b>'+esc(p.name)+' → '+esc(l.to)+'</b><span class="tag '+(l.state==='open'?'calm':l.state==='locked'?'watch':'wait')+'">'+({open:'فعّال',locked:'مقفل',expired:'انتهت مدته',revoked:'أُبطل',gone:'انتهى'}[l.state]||l.state)+'</span></div>'+
+   '<small class="muted num">أُنشئ '+esc(String(l.createdAt).slice(0,10))+' · ينتهي '+esc(String(l.expiresAt).slice(0,10))+' · '+(l.pin?'برمز':'بلا رمز')+' · فُتح '+l.opens+' · أجهزة '+l.devices+'</small>'+
+   (l.risk.length?'<div class="tags">'+l.risk.map(r=>'<em class="st-urgent">'+esc(r)+'</em>').join('')+'</div>':'')+
+   (l.state==='open'||l.state==='locked'?'<button class="btn sm ghost" data-act="admRevoke" data-id="'+esc(l.id)+'">إبطال الرابط</button>':'')+'</div>'}
+SCREENS.olinks={title:'الروابط والأمان',get tab(){return role==='legal'?'olinks':'odash'},html:()=>{const L=admLinks(), risky=L.filter(l=>l.risk.length&&(l.state==='open'||l.state==='locked'));
+  const sec=[['رمز عشوائي طويل لكل رابط (128 بت)','مفعّل'],['رمز سرّي (PIN) يحدّده المريض','اختياري، مستحسن'],['قفل 15 دقيقة بعد 5 محاولات خاطئة','مفعّل'],['مدة محدّدة لكل رابط (24 ساعة أو 7 أيام)','مفعّل'],['قراءة فقط، وPDF بعلامة مائية','مفعّل'],['تسجيل كل فتح: الوقت والجهاز','مفعّل'],['إبطال أي رابط في أي لحظة (المريض أو الإدارة)','مفعّل'],['تشفير الاتصال (HTTPS)','مفعّل'],['حسابات الموظفين بالتحقّق بخطوتين، وانتهاء الجلسة','عند الإطلاق (الخادم)'],['حدّ لعدد الطلبات وحجب العناوين المشبوهة','عند الإطلاق (الخادم)']];
+  return '<div class="card"><h3>الحماية من الاختراق عبر الرابط</h3>'+sec.map(([a,b])=>'<div class="crow"><span>'+esc(a)+'</span><span class="tag '+(b==='مفعّل'?'ok':'wait')+'">'+esc(b)+'</span></div>').join('')+'</div>'+
+   (risky.length?'<div class="alert u">'+I.alert+' <b>'+esc(trf('{0} رابط مشبوه',risky.length))+'</b> <button class="lnk" data-act="admRevokeRisky">إبطالها كلها</button></div>':'')+
+   '<h3>كل الروابط المرسلة ('+L.length+')</h3>'+L.sort((a,b)=>b.risk.length-a.risk.length).map(admLinkRow).join('')}};
+Object.assign(ACT,{
+  admRevoke(b){const id=b.dataset.id, rv=store.get('admRevoked',{}); rv[id]=true; store.set('admRevoked',rv); if(!id.startsWith('syn-')){const L=SHD.L, l=L.find(x=>x.id===id); if(l){l.revokedAt=new Date().toISOString(); SHD.L=L}} audit('أبطل رابطًا',id); toast('أُبطل الرابط'); rerender()},
+  admRevokeRisky(){const rv=store.get('admRevoked',{}); admLinks().filter(l=>l.risk.length&&(l.state==='open'||l.state==='locked')).forEach(l=>{rv[l.id]=true}); store.set('admRevoked',rv); audit('أبطل كل الروابط المشبوهة',''); toast('أُبطلت الروابط المشبوهة'); rerender()},
+});
+/* ---------- الحذف بعد 90 يومًا ---------- */
+const RET_DAYS=90;
+function retAll(){let R=store.get('retention',null); if(!R){R={p7:{leftAt:addDays(TODAY,-85)+'T09:00:00Z'},p6:{leftAt:addDays(TODAY,-20)+'T09:00:00Z'},p9x:{leftAt:addDays(TODAY,-93)+'T09:00:00Z',name:'مريض سابق'}}; store.set('retention',R)} return R}
+const retDueDate=x=>addDays(x.leftAt.slice(0,10),RET_DAYS);
+const retDue=x=>{const d=retDueDate(x), n=Math.round((new Date(d)-new Date(TODAY))/864e5); return n<=0?'اليوم':trf('بعد {0} يومًا ({1})',n,d)};
+function retPurge(){const R=retAll(); let ch=false; Object.entries(R).forEach(([pid,x])=>{ if(!x.purgedAt&&retDueDate(x)<=TODAY){x.purgedAt=new Date().toISOString(); delete x.name; ch=true;
+   if(pid==='p1'){['famObs','famDoc','famMeals','hSymDays','msgs'].forEach(k=>store.set(k,[])); SHD.L=[]} audit('حذف تلقائي بعد 90 يومًا','ملف '+hsh(pid).toString(16))}}); if(ch) store.set('retention',R)}
+retPurge();
+SCREENS.oretention={title:'الحذف بعد 90 يومًا',get tab(){return role==='legal'?'oretention':'odash'},html:()=>{const R=retAll(), wait=Object.entries(R).filter(([k,x])=>!x.purgedAt), done=Object.entries(R).filter(([k,x])=>x.purgedAt);
+  const nm=k=>(allPatients().find(p=>p.id===k)||{}).name||'مريض';
+  return '<div class="card"><h3>القاعدة</h3><p>عندما يخرج المريض من التطبيق، تُحذف كل معطياته بعد '+RET_DAYS+' يومًا: الملف، والمحادثات، والعائلة وأرقامها، والروابط، والصور. لا يبقى إلا سطر في سجلّ الحذف بلا اسم ولا بيانات.</p></div>'+
+   '<div class="card"><h3>بانتظار الحذف ('+wait.length+')</h3>'+(wait.length?wait.map(([k,x])=>'<div class="crow"><span><b>'+esc(nm(k))+'</b><small>خرج '+esc(x.leftAt.slice(0,10))+'</small></span><span class="tag watch">'+esc(retDue(x))+'</span></div>').join(''):'<p class="note">لا أحد.</p>')+'</div>'+
+   '<div class="card"><h3>حُذف ('+done.length+')</h3>'+(done.length?done.map(([k,x])=>'<div class="crow"><span><b>ملف #'+esc(hsh(k).toString(16).slice(0,6))+'</b><small>حُذف '+esc(x.purgedAt.slice(0,10))+'</small></span><span class="tag ok">حُذف كل شيء</span></div>').join(''):'<p class="note">لا شيء.</p>')+'</div>'}};
+/* المريض: «الخروج من التطبيق» في الإعدادات (يُلغى خلال 90 يومًا). */
+{const s0=SCREENS.settings.html; SCREENS.settings.html=a=>{const h=s0(a); if(role!=='patient') return h; const x=retAll().p1;
+  return h+'<div class="card stleave"><h3>الخروج من التطبيق</h3>'+(x&&!x.purgedAt?'<p>طلبت الخروج يوم '+esc(x.leftAt.slice(0,10))+'. تُحذف كل بياناتك '+esc(retDue(x))+'.</p><button class="btn ghost" data-act="leaveCancel">إلغاء الخروج</button>':
+   '<p class="muted">عند خروجك تُحذف كل بياناتك نهائيًا بعد '+RET_DAYS+' يومًا: ملفك، ومحادثاتك، وعائلتك، وروابطك. يمكنك التراجع خلال هذه المدة.</p><button class="btn ghost" data-act="leaveApp">أريد الخروج من التطبيق</button>')+'</div>'}}
+Object.assign(ACT,{
+  leaveApp(){ if(!confirm('تأكيد: تُحذف كل بياناتك بعد 90 يومًا')) return; const R=retAll(); R.p1={leftAt:new Date().toISOString()}; store.set('retention',R); audit('طلب المريض الخروج','p1'); rerender()},
+  leaveCancel(){const R=retAll(); delete R.p1; store.set('retention',R); audit('ألغى المريض الخروج','p1'); rerender()},
+});
+/* ---------- السجلّ ---------- */
+SCREENS.oaudit={title:'سجلّ الإدارة',get tab(){return role==='legal'||role==='fctl'?'oaudit':'odash'},html:()=>{const L=auditAll().slice().reverse();
+  return '<p class="muted">كل دخول للإدارة، وكل اطّلاع على ملف مريض، وكل إبطال رابط أو حذف أو موافقة، بالوقت والقسم. لا يُعدَّل ولا يُحذف من التطبيق.</p>'+
+   (L.length?L.slice(0,100).map(x=>'<div class="atl"><small class="num">'+esc(x.at.slice(0,16).replace('T',' '))+'</small><b>'+esc(x.who)+'</b><span>'+esc(x.act)+(x.target?' · '+esc(x.target):'')+'</span></div>').join(''):'<p class="note">السجلّ فارغ.</p>')}};
+/* ---------- المزيد (المدير) ---------- */
+SCREENS.omore={title:'المزيد',tab:'omore',html:()=>'<div class="admtiles big">'+[['opatients','كل المرضى',I.users],['onurse','الفريق والإجابة',I.team||I.users],['olinks','الروابط والأمان',I.share],['oretention','الحذف بعد 90 يومًا',ADM_I.del],['oaudit','سجلّ الإدارة',I.check],['oapprove','موافقات التسويق',I.share],['fpay','المدفوعات',I.card],['fcdash','الرقابة المالية',I.card],['lgdash','الرقابة القانونية',I.sign||I.key],['mdash','التسويق',I.share]].map(([r,t,ic])=>'<button class="admrole" data-act="nav" data-r="'+r+'"><span class="ri">'+ic+'</span><span class="m"><b>'+t+'</b></span></button>').join('')+'</div>'};
+
+/* ---------- المراقب المالي ---------- */
+SCREENS.fcdash={title:'الرقابة المالية',get tab(){return role==='fctl'?'fcdash':'odash'},html:()=>{let L=[]; try{L=finInvoices()||[]}catch(e){}
+  const by={}, cur={}; L.forEach(i=>{by[i.status]=(by[i.status]||0)+1; const c=i.currency||'—'; cur[c]=(cur[c]||0)+(+i.amount||+i.total||0)});
+  const old=L.filter(i=>/issued|receipt_uploaded/.test(i.status)&&String(i.createdAt||i.issuedAt||'').slice(0,10)<=addDays(TODAY,-7));
+  const refs={}; L.forEach(i=>{const r=i.reference||i.ref; if(r) refs[r]=(refs[r]||0)+1}); const dup=Object.entries(refs).filter(([r,n])=>n>1);
+  return '<p class="muted">للقراءة فقط: المراقب المالي لا يؤكّد الدفعات ولا يغيّرها (فصل المهام). لا يرى بيانات طبية.</p>'+
+   '<div class="akpis">'+[['issued','بانتظار التحويل'],['receipt_uploaded','إيصال بانتظار التأكيد'],['paid_confirmed','مؤكّدة']].map(([k,t])=>'<div class="akpi"><b class="num">'+(by[k]||0)+'</b><small>'+t+'</small></div>').join('')+'</div>'+
+   '<div class="card"><h3>المبالغ حسب العملة</h3>'+(Object.keys(cur).length?Object.entries(cur).map(([c,v])=>'<div class="crow"><span>'+esc(c)+'</span><b class="num">'+esc(String(Math.round(v*100)/100))+'</b></div>').join(''):'<p class="note">لا فواتير.</p>')+'</div>'+
+   '<div class="card"><h3>للانتباه</h3>'+(old.length||dup.length?(old.length?'<p>'+esc(trf('{0} فاتورة معلّقة أكثر من 7 أيام',old.length))+'</p>':'')+(dup.length?'<p class="bad">مرجع تحويل مكرّر: '+esc(dup.map(d=>d[0]).join('، '))+'</p>':''):'<p class="note">لا شذوذ.</p>')+'</div>'+
+   '<button class="btn ghost" data-act="nav" data-r="oaudit">السجلّ</button>'}};
+/* ---------- المراقب القانوني ---------- */
+SCREENS.lgdash={title:'الرقابة القانونية',get tab(){return role==='legal'?'lgdash':'odash'},html:()=>{const R=retAll(), wait=Object.values(R).filter(x=>!x.purgedAt).length, views=auditAll().filter(x=>/ملف مريض/.test(x.act)).length;
+  const cons=[['مشاركة التجربة في «نحن كلنا معك»',(store.get('evState',{})||{}).consent||'لم يُجب'],['صور الطعام والذكاء الاصطناعي',store.get('hPhotoConsent',false)?'موافق':'غير موافق'],['المحتوى الإيماني',(store.get('faith',null)||{}).optedIn?'اختاره':'لم يختره'],['وصف العائلة لحالته للفريق',famCare().obs?'مسموح':'موقوف'],['مراسلة العائلة للفريق',famCare().doc?'مسموح':'موقوف'],['تسجيل العائلة لوجباته',famMealsOn()?'مسموح':'موقوف']];
+  const chk=[['سياسة الاحتفاظ: الحذف بعد 90 يومًا من الخروج','مطبّقة'],['سجلّ اطّلاع لا يُعدَّل','مطبّق'],['موافقة صريحة قبل المشاركة والصور والذكاء الاصطناعي','مطبّقة'],['تصدير بيانات المريض وحذفها عند الطلب','حذف مطبّق · التصدير في الخادم'],['بلد الاستضافة وقانون حماية البيانات','ينتظر قرار المحامي'],['مسؤول حماية البيانات وعقود المعالجة','قبل الإطلاق'],['الإبلاغ عن الاختراق خلال 72 ساعة','إجراء مكتوب قبل الإطلاق']];
+  return '<div class="akpis"><button class="akpi" data-act="nav" data-r="oaudit"><b class="num">'+views+'</b><small>اطّلاع على ملفات مرضى</small></button><button class="akpi" data-act="nav" data-r="oretention"><b class="num">'+wait+'</b><small>بانتظار الحذف</small></button><button class="akpi" data-act="nav" data-r="olinks"><b class="num">'+admLinks().filter(l=>l.risk.length).length+'</b><small>روابط مشبوهة</small></button></div>'+
+   '<div class="card"><h3>الامتثال</h3>'+chk.map(([a,b])=>'<div class="crow"><span>'+esc(a)+'</span><span class="tag '+(/^مطبّق/.test(b)?'ok':'wait')+'">'+esc(b)+'</span></div>').join('')+'</div>'+
+   '<div class="card"><h3>موافقات المريض (سلمى، تجربة)</h3>'+cons.map(([a,b])=>'<div class="crow"><span>'+esc(a)+'</span><b>'+esc(String(b))+'</b></div>').join('')+'</div>'}};
+/* ---------- التسويق ---------- */
+const MK_BAN=/يعالج|يشفي|علاج للسرطان|مضاد للسرطان|يقتل|معجزة|مضمون|100\s*%|قبل وبعد|بدل العلاج|أوقف العلاج|cure|miracle/i;
+const mkPosts=()=>store.get('mkPosts',null)||[{id:'mp1',country:'تونس',channel:'Instagram',text:'OxyLife يرافقك كل يوم: تذكير الأدوية، ودفتر الطعام، وطبيب يراجع كل شيء.',status:'approved',at:addDays(TODAY,-6)},{id:'mp2',country:'إندونيسيا',channel:'TikTok',text:'وصفات طرية سهلة لأيام التعب أثناء العلاج، بإشراف أخصائية التغذية.',status:'review',at:addDays(TODAY,-1)},{id:'mp3',country:'المغرب',channel:'Facebook',text:'نحن كلنا معك: مساحة يشارك فيها المرضى تجاربهم بموافقتهم.',status:'draft',at:TODAY}];
+const mkSave=L=>store.set('mkPosts',L);
+const MK_ST={draft:'مسودة',review:'بانتظار موافقة المدير',approved:'وافق المدير',rejected:'رُفض'};
+SCREENS.mdash={title:'التسويق',tab:'mdash',html:()=>{const L=mkPosts(), byC={}; ['تونس','الجزائر','المغرب','ليبيا','إندونيسيا','ماليزيا'].forEach(c=>{const r=rnd('mk'+c); byC[c]={reach:Math.round(2000+r()*18000),sign:Math.round(20+r()*300)}});
+  return '<p class="muted">مؤشرات مجمّعة فقط. لا يرى قسم التسويق أي بيانات مريض، ولا يستعمل البيانات الصحية للتسويق أبدًا.</p>'+
+   '<div class="akpis"><div class="akpi"><b class="num">'+L.filter(x=>x.status==='approved').length+'</b><small>منشورات منشورة</small></div><div class="akpi"><b class="num">'+L.filter(x=>x.status==='review').length+'</b><small>بانتظار المدير</small></div><div class="akpi"><b class="num">'+L.filter(x=>x.status==='draft').length+'</b><small>مسودات</small></div></div>'+
+   '<div class="card"><h3>الوصول والتسجيلات حسب الدولة (30 يومًا)</h3><div class="tbl"><table class="admt"><thead><tr><th>الدولة</th><th>الوصول</th><th>تسجيلات</th></tr></thead><tbody>'+Object.entries(byC).map(([c,v])=>'<tr><td>'+c+'</td><td class="num">'+v.reach.toLocaleString('ar-u-nu-latn')+'</td><td class="num">'+v.sign+'</td></tr>').join('')+'</tbody></table></div><p class="note">أرقام اصطناعية للعرض.</p></div>'}};
+SCREENS.mposts={title:'المنشورات',tab:'mposts',html:()=>{const L=mkPosts().slice().reverse();
+  return '<div class="card"><h3>منشور جديد</h3><div class="row"><select id="mk-c">'+['تونس','الجزائر','المغرب','ليبيا','إندونيسيا','ماليزيا'].map(c=>'<option>'+c+'</option>').join('')+'</select><select id="mk-ch"><option>Instagram</option><option>TikTok</option><option>Facebook</option></select></div>'+
+   '<label class="field"><span>النص</span><textarea id="mk-t" rows="3" dir="auto"></textarea></label><p class="note">ممنوع: ادّعاءات العلاج أو الشفاء، «قبل وبعد»، أي بيانات أو صور مرضى دون موافقة مكتوبة. كل منشور يوافق عليه المدير قبل النشر.</p><button class="btn" data-act="mkSubmit">أرسل للمدير</button></div>'+
+   L.map(x=>'<div class="card"><div class="row sp"><b>'+esc(x.country+' · '+x.channel)+'</b><span class="tag '+(x.status==='approved'?'ok':x.status==='rejected'?'urg':'wait')+'">'+MK_ST[x.status]+'</span></div><p>'+esc(x.text)+'</p>'+(x.status==='draft'?'<button class="btn sm ghost" data-act="mkSend" data-id="'+x.id+'">أرسل للمدير</button>':'')+'</div>').join('')}};
+SCREENS.mcamp={title:'الحملات',tab:'mcamp',html:()=>'<div class="card"><h3>الحملات الجارية</h3>'+[['تونس','أكتوبر الوردي: التوعية بالكشف المبكر','جارية'],['إندونيسيا','وصفات لأيام العلاج','تحضير'],['المغرب','قصص أمل (بموافقة المرضى)','تحضير']].map(([c,t,s])=>'<div class="crow"><span><b>'+esc(t)+'</b><small>'+esc(c)+'</small></span><span class="tag '+(s==='جارية'?'ok':'wait')+'">'+s+'</span></div>').join('')+'<p class="note">كل رسالة توعية عامة؛ لا وعود علاجية.</p></div>'};
+SCREENS.oapprove={title:'موافقات التسويق',tab:'odash',html:()=>{const L=mkPosts().filter(x=>x.status==='review');
+  return (L.length?L.map(x=>'<div class="card"><b>'+esc(x.country+' · '+x.channel)+'</b><p>'+esc(x.text)+'</p>'+(MK_BAN.test(x.text)?'<div class="alert u">فيه عبارة ممنوعة</div>':'')+'<div class="grid2"><button class="btn" data-act="mkDecide" data-id="'+x.id+'" data-v="approved">موافقة</button><button class="btn ghost" data-act="mkDecide" data-id="'+x.id+'" data-v="rejected">رفض</button></div></div>').join(''):'<p class="muted">لا منشورات تنتظر الموافقة.</p>')}};
+Object.assign(ACT,{
+  mkSubmit(){const t=($('#mk-t').value||'').trim(); if(!t){toast('اكتب النص'); return} if(MK_BAN.test(t)){toast('فيه عبارة ممنوعة: لا ادّعاءات علاجية'); return}
+    const L=mkPosts(); L.push({id:'mp'+Date.now().toString(36),country:$('#mk-c').value,channel:$('#mk-ch').value,text:t,status:'review',at:TODAY}); mkSave(L); audit('أرسل منشورًا للموافقة',$('#mk-c').value); toast('أُرسل للمدير'); rerender()},
+  mkSend(b){const L=mkPosts(), x=L.find(y=>y.id===b.dataset.id); if(MK_BAN.test(x.text)){toast('فيه عبارة ممنوعة'); return} x.status='review'; mkSave(L); rerender()},
+  mkDecide(b){const L=mkPosts(), x=L.find(y=>y.id===b.dataset.id); x.status=b.dataset.v; mkSave(L); audit(b.dataset.v==='approved'?'وافق على منشور':'رفض منشورًا',x.country); rerender()},
+});
+if(['ocountries','odash'].includes(route)&&role==='owner') rerender();
 </script>
