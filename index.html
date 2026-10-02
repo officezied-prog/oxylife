@@ -698,6 +698,50 @@ button.dstat{border:0;cursor:pointer;font:inherit;color:inherit}.dstat.dhead{fle
 .is-hello .ipts li::before{background:#D9A93F}.is-labs .ipts li::before{background:#2B7C74}.is-life .ipts li::before{background:#86702A}.is-team .ipts li::before{background:#6A4FA0}
 .idots{gap:8px}.idots button{width:9px;height:9px;border-radius:99px;border:0;padding:0;background:var(--line);cursor:pointer}.idots button.on{width:26px;background:var(--accent)}
 .inav{display:flex;gap:10px}.inav .btn{min-height:52px;font-size:16px}.inav .btn.ghost{flex:0 0 34%}
+.hred>svg,.symalert>svg,.alert.u>svg{width:22px;height:22px;vertical-align:-5px;flex:none}
+/* D-079: البوابتان ومكان العائلة */
+.gate{display:flex;align-items:center;gap:14px;width:100%;text-align:start;border:1px solid var(--line);border-radius:24px;padding:22px 18px;font:inherit;color:inherit;cursor:pointer;min-height:120px}
+.gate .m{display:flex;flex-direction:column;gap:4px}.gate b{font-family:var(--display);font-size:22px}.gate small{color:var(--ink-soft);font-size:14px;line-height:1.6}
+.gate .gi{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;flex:none}.gate .gi svg{width:34px;height:34px}
+.gate-p{background:linear-gradient(135deg,#E6EEFB,#D4E2F6)}.gate-p .gi{background:#2A68AE;color:#fff}
+.gate-f{background:linear-gradient(135deg,#F1EAFB,#E4D8F6)}.gate-f .gi{background:#6A4FA0;color:#fff}
+.gquick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.gquick .btn{width:100%;padding:9px 4px;font-size:13px}
+.famhub{display:flex;flex-direction:column;gap:8px}.famhub h2{font-size:22px}
+.fhgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fht{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;border:1px solid var(--line);border-radius:18px;padding:14px 6px;font:inherit;color:inherit;cursor:pointer;min-width:0}
+.fht .fi{font-size:28px}.fht b{font-size:14px}.fht small{color:var(--ink-soft);font-size:11.5px;line-height:1.4}
+.fht-msg{background:#FBEAF0}.fht-obs{background:#EAF4EE}.fht-doc{background:#E6EEFB}
+.fored{color:var(--urgent);font-size:14px}.chip.red{border-color:var(--urgent)}.chip.red[aria-pressed="true"]{background:var(--urgent);border-color:var(--urgent);color:#fff}
+.fobsitem{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:8px}.card.fobsitem{border-top:1px solid var(--line)}.fobsitem.red{border-inline-start:4px solid var(--urgent);padding-inline-start:8px}
+.famdoc{border-color:var(--prod)}.famdoc.red{border-color:var(--urgent);border-width:2px}
+/* D-080: الحمل */
+#app[data-aud=preg]{--accent:#B0507A;--accent-soft:#F7E4EC;--ground:#FBF3F6;--page:#EBD9E1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #app[data-aud=preg]{--accent:#F0A3C3;--accent-soft:#3A2230;--ground:#1E141A;--page:#0E090C}}
+.pregcard{background:linear-gradient(150deg,#FDEFF4,#F6DCE7);border-color:#E9BDD0;color:#4A2235}.pregcard small{color:#8A5470}.pregcard h3{font-size:19px}.pregcard .muted{color:#6B4458}
+.pregwk .ib{width:38px;height:38px;font-size:20px;font-weight:700;background:#fff}.pregred{color:#B42D2D;font-size:14px}
+.audcard .audopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.audopt{display:flex;flex-direction:column;align-items:center;gap:4px;border:1.5px solid var(--line);background:var(--ground);border-radius:16px;padding:12px 4px;font:inherit;color:inherit;cursor:pointer}
+.audopt span{font-size:30px}.audopt b{font-size:13px;font-weight:600;text-align:center}.audopt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.audtag{font-weight:600}
+/* D-080: الأطفال — شكل مرح وأزرار كبيرة */
+#app[data-aud=child]{--accent:#2F8FE0;--accent-soft:#DDEFFF;--ground:#FFF8E8;--page:#FFE7B8;--display:"Baloo Bhaijaan 2","Readex Pro",system-ui,sans-serif}
+#app[data-aud=child] .tabs button[aria-current="page"]{background:#FFE08A;color:#7A4A00}
+.kidhero{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#BFE3FF,#FFE3F0);border-radius:28px;padding:12px 14px}
+.kidmascot{width:120px;height:auto;flex:none;animation:kbob 3s ease-in-out infinite}@keyframes kbob{50%{transform:translateY(-5px)}}
+.kidhero h2{font-family:"Baloo Bhaijaan 2",var(--display);font-size:26px;font-weight:800;color:#1D3B66}.kidhero p{font-size:15px;color:#2E4A72}
+.kidstars{display:flex;justify-content:space-between;align-items:center;background:#fff;border:2px dashed #FFC93C;border-radius:20px;padding:10px 14px;font-family:"Baloo Bhaijaan 2",var(--display)}
+.kidstars i{font-style:normal;font-size:28px;color:#E6E2D6;margin-inline-start:4px}.kidstars i.on{color:#FFB800;text-shadow:0 2px 0 #E59A00}
+.kidcard{background:#fff;border-radius:24px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 6px 0 #F2D9A6}
+.kidcard b,.kidtile b{font-family:"Baloo Bhaijaan 2",var(--display);font-size:19px;font-weight:700;color:#24324A}
+.kidfaces{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.kidfaces button{border:3px solid transparent;background:#F4F7FF;border-radius:18px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;cursor:pointer}
+.kidfaces span{font-size:30px}.kidfaces small{font-size:11px;color:#4E5E77}.kidfaces button[aria-pressed="true"]{border-color:#2F8FE0;background:#DDEFFF;transform:scale(1.06)}
+.kidgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kidtile{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;border:0;border-radius:24px;padding:16px 8px;font:inherit;cursor:pointer;min-height:132px;justify-content:center;box-shadow:0 6px 0 rgba(0,0,0,.08);transition:transform .1s}
+.kidtile:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.08)}.kidtile .ke{font-size:40px}.kidtile small{font-size:12.5px;color:#4E5E77}
+.kt-water{background:#D7F0FF}.kt-med{background:#FFE1E1}.kt-food{background:#E2F7D9}.kt-talk{background:#FFF0C7}.kt-breath{background:#EADFFF}.kt-fam{background:#FFE0EF}
+.kidhelp{border:0;border-radius:22px;background:#E5484D;color:#fff;font:inherit;font-family:"Baloo Bhaijaan 2",var(--display);font-size:20px;font-weight:800;padding:16px;cursor:pointer;box-shadow:0 6px 0 #B5282D}
+.kidpar{align-self:center}.kidsos{text-align:center;background:#FFF0F0;border-radius:20px;padding:14px}.kidsos h2{font-family:"Baloo Bhaijaan 2",var(--display);font-size:26px;color:#B42D2D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #app[data-aud=child]{--ground:#1B1A14;--page:#0E0D09}}
 </style>
 
 <div class="app" id="app" dir="rtl" lang="ar">
@@ -1610,7 +1654,7 @@ function trDom(root){ if(LANG==='ar'||!root) return; const w=document.createTree
 function setLang(l){l='ar'; LANG=l; try{localStorage.setItem('hayati.lang',l)}catch(e){} applyLabLang(); const app=$('#app'); app.dir=l==='ar'?'rtl':'ltr'; app.lang=l; $('#langBtn').textContent={ar:'ع',en:'EN',id:'ID'}[l]; rerender()}
 const LANG_NAME={ar:'Arabic',en:'English',id:'Indonesian (Bahasa Indonesia)'};
 /* ============ الموجّه ============ */
-let role=null, route=store.get('seenIntro',false)?'login':'welcome', arg=null, stack=[], welcomeIdx=0, seg='over', lsub='labs', ovsub='day', rvsub='doc';
+let role=null, route='welcome' /* التعريف في كل فتح للرابط (المالك، 2026-10-02) */, arg=null, stack=[], welcomeIdx=0, seg='over', lsub='labs', ovsub='day', rvsub='doc';
 const main=$('#main');
 const TABS={patient:[['home','الرئيسية',I.home],['life','حياتي',I.life],['meds','علاجي',I.pill],['prod','مستحضرنا',I.drop],['labs','تحاليلي',I.lab]],
             doctor:[['patients','المرضى',I.users],['daily','التقارير',I.day],['review','المراجعة',I.check],['requests','الطلبات',I.lab],['team','الفريق',I.life]]};
@@ -5135,7 +5179,7 @@ function evConsentCard(){const s=evState();
     '<p class="muted">هذا حقّك وحدك. إن شاركت، يقرأ تجربتك مرضى آخرون وعائلاتهم ليجدوا الأمل والدعم. إن رفضت، لا يظهر منك شيء هنا، وتستطيع القراءة والدعم كالجميع.</p>'+
     '<div class="grid2"><button class="btn" data-act="evConsent" data-val="yes">أشارك تجربتي</button><button class="btn ghost" data-act="evConsent" data-val="no">لا أشارك</button></div>'+
     '<p class="note">تستطيع تغيير قرارك في أي وقت من هذه الصفحة.</p></div>';
-  if(s.consent==='no') return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">لا أشارك</b></span><button class="btn sm ghost" data-act="evConsent" data-val="yes">أريد المشاركة</button></div><p class="note">لا يظهر منك شيء في «الجميع». ما زلت تستطيع القراءة والدعم.</p></div>';
+  if(s.consent==='no') return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">لا أشارك</b></span><button class="btn sm ghost" data-act="evConsent" data-val="yes">أريد المشاركة</button></div><p class="note">لا يظهر منك شيء في «نحن كلنا معك». ما زلت تستطيع القراءة والدعم.</p></div>';
   return '<div class="card evc"><div class="row sp"><span><small class="muted">مشاركة تجربتي</small><b style="display:block">أشارك مع الجميع</b></span><button class="btn sm ghost" data-act="evConsent" data-val="no">إيقاف المشاركة</button></div>'+
     '<label class="tgl"><input type="checkbox" id="ev-name" data-act="evName"'+(s.showName?' checked':'')+'><span>أظهر اسمي الأول. إن ألغيت ذلك تظهر تجربتك باسم «مريض من OxyLife».</span></label>'+
     '<label class="field"><span>اكتب تجربتك أو نصيحة لغيرك</span><textarea id="ev-text" rows="4" maxlength="800" placeholder="ما الذي ساعدك؟ ماذا تقول لمن بدأ العلاج للتو؟"></textarea></label>'+
@@ -5151,13 +5195,13 @@ function evPostHTML(p){const s=evState(), myR=s.myR[p.id], mySay=s.mySay[p.id]||
     (says.length?'<div class="chips evsays">'+says.map(([t,n])=>'<span class="tag calm">'+esc(tr(t))+' <b class="num">'+n+'</b></span>').join('')+'</div>':'')+
     (p.by==='me'?'':'<div class="fm-a"><span class="freact">'+EV_REACT.map(([k,e,t])=>'<button class="fr" data-act="evReact" data-id="'+esc(p.id)+'" data-val="'+k+'" aria-pressed="'+(myR===k)+'" aria-label="'+t+'">'+e+' <small class="num">'+(((p.r||{})[k]||0)+(myR===k?1:0))+'</small></button>').join('')+'</span>'+
      '<button class="lnk" data-act="evSayOpen" data-id="'+esc(p.id)+'">أرسل كلمة دعم</button></div>')+'</div>'}
-SCREENS.everyone={title:'الجميع',tab:'home',get bare(){return !role},html:()=>{const posts=evPosts();
-  return (role?'':'<div class="row sp"><h2 style="margin:0">الجميع</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div>')+
+SCREENS.everyone={title:'نحن كلنا معك',tab:'home',get bare(){return !role},html:()=>{const posts=evPosts();
+  return (role?'':'<div class="row sp"><h2 style="margin:0">نحن كلنا معك</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div>')+
    '<div class="card motiv"><h3>دعم ومساندة</h3><p class="muted">هنا يشارك المرضى الذين اختاروا ذلك تجاربهم، ليجد غيرهم الأمل. اقرأ، وادعم بكلمة طيبة.</p></div>'+
    (role==='patient'?evConsentCard():'')+
    (posts.length?posts.map(evPostHTML).join(''):'<p class="muted" style="text-align:center">لا توجد مشاركات بعد.</p>')+
    '<p class="note" style="text-align:center">تجارب شخصية وليست نصيحة طبية. اتّبع دائمًا تعليمات فريقك الطبي.</p>'}};
-ACT.evConsent=b=>{const s=evState(); s.consent=b.dataset.val; evSave(s); toast(s.consent==='yes'?'تم: تستطيع الآن نشر تجربتك':'تم: لا يظهر منك شيء في «الجميع»'); rerender()};
+ACT.evConsent=b=>{const s=evState(); s.consent=b.dataset.val; evSave(s); toast(s.consent==='yes'?'تم: تستطيع الآن نشر تجربتك':'تم: لا يظهر منك شيء في «نحن كلنا معك»'); rerender()};
 ACT.evName=b=>{const s=evState(); s.showName=!!b.checked; evSave(s); rerender()};
 ACT.evPost=()=>{const t=($('#ev-text')||{}).value||''; if(t.trim().length<10){toast('اكتب جملة واحدة على الأقل'); return}
   const s=evState(); if(s.consent!=='yes') return; s.mine.unshift({id:'m'+Date.now(),at:TODAY,dx:'',text:t.trim().slice(0,800),r:{},says:{}}); evSave(s); toast('نُشرت تجربتك. شكرًا لأنك شاركت'); rerender()};
@@ -5167,15 +5211,15 @@ ACT.evSayOpen=b=>{const id=b.dataset.id; sheet('<h3>أرسل كلمة دعم</h3
 ACT.evSay=b=>{const s=evState(), id=b.dataset.id, l=s.mySay[id]||(s.mySay[id]=[]); if(!l.includes(b.dataset.val)) l.push(b.dataset.val); evSave(s); $('#sheet').hidden=true; toast('وصلت كلمتك'); rerender()};
 ACT.goEveryone=()=>go('everyone');
 /* الدخول: «العائلة» داخل زر المريض، و«الجميع» زر مستقل */
-amalRoleBtns=function(){return '<button class="rolebtn sm" data-act="goEveryone" style="grid-column:1/-1;flex-direction:row;justify-content:center"><span class="ri">'+I.users+'</span><b>الجميع · دعم ومساندة</b></button>'+
+amalRoleBtns=function(){return '<button class="rolebtn sm" data-act="goEveryone" style="grid-column:1/-1;flex-direction:row;justify-content:center"><span class="ri">'+I.users+'</span><b>نحن كلنا معك</b></button>'+
   '<button class="rolebtn sm" data-act="pickRole" data-r="admin" style="grid-column:1/-1;flex-direction:row;justify-content:center"><span class="ri">'+I.key+'</span><b>الإدارة</b></button>'};
 {const h0=SCREENS.login.html; SCREENS.login.html=a=>h0(a).replace('<b>مريض</b>','<b>المريض وعائلته</b>')}
 {const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{const h=h0(r); if(r!=='patient'&&r!=='family') return h;
   return '<div class="seg" role="group" aria-label="أدخل بصفتي"><button data-act="pickRole" data-r="patient" aria-pressed="'+(r==='patient')+'">المريض</button><button data-act="pickRole" data-r="family" aria-pressed="'+(r==='family')+'">من عائلة المريض</button></div>'+h}}
 {const p0=ACT.pickRole; ACT.pickRole=b=>{ if(route==='signin'&&['patient','family'].includes(b.dataset.r)){arg=b.dataset.r; rerender(); return} p0(b)}}
 /* الوصول من داخل الحساب */
-{const h0=SCREENS.home.html; SCREENS.home.html=a=>h0(a).replace(/(<div class="hsecs">[\s\S]*?)(\n  <\/div>)/,(m,x,y)=>x+hSection('everyone','الجميع',tr('دعم ومساندة بين المرضى'),I.users)+y)}
-if(SCREENS.fhome){const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>h0(a)+'<button class="rep" data-act="goEveryone"><span class="d" style="color:var(--prod)">'+I.users+'</span><span class="m"><b>الجميع</b><small>تجارب يشاركها المرضى للدعم والمساندة</small></span></button>'}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>h0(a).replace(/(<div class="hsecs">[\s\S]*?)(\n  <\/div>)/,(m,x,y)=>x+hSection('everyone','نحن كلنا معك',tr('مرضى يساندون بعضهم'),I.users)+y)}
+if(SCREENS.fhome){const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>h0(a)+'<button class="rep" data-act="goEveryone"><span class="d" style="color:var(--prod)">'+I.users+'</span><span class="m"><b>نحن كلنا معك</b><small>تجارب يشاركها المرضى للدعم والمساندة</small></span></button>'}
 if(['login','signin','home','fhome'].includes(route)) rerender();
 </script>
 <script>
@@ -5427,7 +5471,7 @@ ACT.hkDel=b=>{store.set('hk',hkList().filter(x=>x.id!==b.dataset.id)); rerender(
 const qbtn=(act,t,s,ic,cls)=>'<button class="qb '+cls+'" data-act="'+act+'"><span class="qi">'+ic+'</span><b>'+t+'</b><small>'+s+'</small></button>';
 function homeQuick(){const fn=(typeof famSurfaced==='function'?(famSurfaced()||[]).length:0);
   return '<div class="qgrid">'+qbtn('goMusanid','مساند','صوّر علاجك أو تحليلك',MI.scan,'q1')+qbtn('goHki','احكي','عبّر عن حالتك',MI.talk,'q2')+
-   qbtn('goFamily','عائلتي','رسائل من أحبّائك',MI.fam,'q3')+qbtn('goEveryone','الجميع','دعم ومساندة',I.users,'q4')+'</div>'}
+   qbtn('goFamily','عائلتي','رسائل من أحبّائك',MI.fam,'q3')+qbtn('goEveryone','نحن كلنا معك','مرضى يساندون بعضهم',I.users,'q4')+'</div>'}
 ACT.goFamily=()=>go('family');
 {const h0=SCREENS.home.html; SCREENS.home.html=a=>{let h=h0(a).replace(/<button class="hsec hsec-everyone"[\s\S]*?<\/button>/,''); const i=h.indexOf('<div class="hsecs">'); return i<0?homeQuick()+h:h.slice(0,i)+homeQuick()+h.slice(i)}}
 document.head.insertAdjacentHTML('beforeend','<style>.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}'+
@@ -5857,4 +5901,198 @@ ACT.wgo=b=>{welcomeIdx=+b.dataset.i; rerender()};
 {let x0=null; document.addEventListener('touchstart',e=>{x0=route==='welcome'&&e.touches[0]?e.touches[0].clientX:null},{passive:true});
  document.addEventListener('touchend',e=>{ if(x0==null||route!=='welcome') return; const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)<50) return;
    if(dx>0) ACT.wnext(); else ACT.wprev()},{passive:true})}
+
+/* ============ بوابتان: «المريض» و«العائلة»، ومكان خاص بالعائلة (المالك، 2026-10-02 — D-079) ============
+   «المريض وعائلته» يفتح بوابتين كبيرتين. بوابة العائلة تدخل إلى مكان العائلة وحده:
+   - رسالة تشجيع للمريض (دائرة العائلة، D-064، كما هي).
+   - «صِف حالة المريض»: ما لاحظته العائلة من حالته وتصرّفاته، وصفًا فقط، يصل إلى الطبيب. العلامات الحمراء
+     (حمّى، ضيق تنفّس، نزيف…) تُظهر رقم الطوارئ فورًا، وتجعل حالة المريض «تستدعي الاتصال» عند الطبيب،
+     ويظهر شريط الخطر في صفحة المريض (طلب المالك D-069: أو أحد أفراد العائلة).
+   - «تواصل مع الطبيب»: محادثة بين العائلة والفريق الطبي، منفصلة عن رسائل التشجيع وعن محادثة المريض.
+   العائلة لا ترى تطبيق المريض ولا بياناته الطبية أبدًا. والمريض يقرّر من «دائرة العائلة» هل تصف عائلته حالته
+   للفريق وهل تراسله (مفعّلان افتراضيًا، ويستطيع إيقافهما). */
+const FOBS=['يأكل أقل من المعتاد','لا يشرب كفاية','ينام كثيرًا','لا ينام جيدًا','متعب جدًا','حزين أو منعزل','قلق أو متوتر','عصبي أو منفعل','نسيان أو تشتّت','يشتكي من ألم','غثيان أو تقيّؤ','إسهال'];
+const FOBS_RED=['حمّى','ضيق تنفّس','نزيف','ارتباك مفاجئ أو إغماء','سقوط','تقيّؤ لا يتوقّف'];
+const famCare=()=>Object.assign({obs:true,doc:true},store.get('famCare',{}));
+const famObsAll=()=>store.get('famObs',[]);
+const famDocAll=()=>store.get('famDoc',[]);
+const famObsFor=pid=>famObsAll().filter(o=>o.pid===pid);
+const famDocFor=pid=>famDocAll().filter(m=>m.pid===pid);
+function famRedToday(pid){return [...new Set(famObsFor(pid||'p1').filter(o=>o.at.slice(0,10)===TODAY).flatMap(o=>o.red||[]))]}
+const famWho=()=>{const m=typeof famMe==='function'?famMe():null; return {name:(m&&m.name)||'أحد أفراد العائلة',rel:m?famRel(m.relation):''}};
+const famT=iso=>new Date(iso).toLocaleString('ar-u-nu-latn',{weekday:'short',hour:'2-digit',minute:'2-digit'});
+
+/* ---------- البوابتان ---------- */
+SCREENS.pgate={title:'المريض وعائلته',bare:true,html:()=>
+  '<div class="row sp"><h2 style="margin:0">المريض وعائلته</h2><button class="lnk" data-act="nav" data-r="login">رجوع</button></div>'+
+  '<p class="muted">اختر بوابتك:</p>'+
+  '<button class="gate gate-p" data-act="pickRole" data-r="patient"><span class="gi">'+(I.user||HI.user)+'</span><span class="m"><b>المريض</b><small>تطبيقك أنت: علاجك، وحياتي، وتحاليلك، وطبيبك.</small></span></button>'+
+  '<button class="gate gate-f" data-act="pickRole" data-r="family"><span class="gi">'+I.users+'</span><span class="m"><b>العائلة</b><small>مكان خاص بالعائلة: رسائل تشجيع للمريض، ووصف حالته، والتواصل مع الطبيب.</small></span></button>'+
+  '<p class="note">العائلة لا ترى تطبيق المريض ولا بياناته الطبية.</p>'+
+  /* TEMP_TEST_LOGIN: الدخول السريع للتجربة فقط، يُحذف في آخر مرحلة عندما يطلب المالك ذلك. */
+  '<div class="card" style="background:var(--accent-soft)"><b>دخول سريع للتجربة</b><div class="gquick"><button class="btn sm" data-act="quick" data-r="patient">مريض بالغ</button><button class="btn sm" data-act="quickAud" data-aud="preg">امرأة حامل</button><button class="btn sm" data-act="quickAud" data-aud="child">طفل</button></div><p class="note">مؤقت للتجربة فقط. كل البيانات هنا اصطناعية.</p></div>'};
+{const p0=ACT.pickRole; ACT.pickRole=b=>{ if(route==='login'&&b.dataset.r==='patient'){go('pgate'); return} p0(b)}}
+/* صفحة الدخول بعد البوابة: بلا مفتاح «المريض / من عائلة المريض» (صار بوابتين). */
+{const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{let h=h0(r).replace(/<div class="seg" role="group" aria-label="أدخل بصفتي">[\s\S]*?<\/div>/,'');
+  if(r==='family') h=h.replace(/دخول المريض/g,'دخول العائلة'); return h}}
+{const t0=SCREENS.signin.title; SCREENS.signin.title=r=>r==='family'?'دخول العائلة':typeof t0==='function'?t0(r):t0}
+
+/* ---------- مكان العائلة ---------- */
+TABS.family=[['fhome','عائلتي',I.users],['fobs','حالته',I.day],['fdoc','الطبيب',I.team||I.users],['fsent','ما أرسلته',I.check]];
+const famOff=t=>'<div class="card"><h3>'+t+'</h3><p class="muted">أوقف المريض هذه الخاصية من إعدادات دائرة العائلة. يمكنكم دائمًا إرسال رسائل التشجيع.</p></div>';
+const famIn=()=>typeof famCircles==='function'&&famCircles().length>0;
+{const h0=SCREENS.fhome.html; SCREENS.fhome.html=a=>{const h=h0(a); if(!famIn()) return h; const c=famCare(), mine=famObsAll().length, rep=famDocAll().filter(m=>m.from==='doctor'&&!m.seenByFam).length;
+  return '<div class="famhub"><h2>مكان العائلة</h2><p class="muted">هنا تساندون '+esc(famPatient().name)+' وتتواصلون مع فريقه الطبي. لا ترون تطبيقه ولا بياناته الطبية.</p><div class="fhgrid">'+
+   '<button class="fht fht-msg" data-act="famCompose" data-pid="p1"><span class="fi">💌</span><b>رسالة تشجيع</b><small>تصل إلى المريض</small></button>'+
+   '<button class="fht fht-obs" data-act="nav" data-r="fobs"><span class="fi">📝</span><b>صِف حالته</b><small>'+(c.obs?(mine?esc(trf('{0} وصف أرسلتموه',mine)):'ما لاحظتموه يصل إلى الطبيب'):'أوقفها المريض')+'</small></button>'+
+   '<button class="fht fht-doc" data-act="nav" data-r="fdoc"><span class="fi">🩺</span><b>تواصل مع الطبيب</b><small>'+(c.doc?(rep?'<span class="fbadge">'+rep+'</span> رد جديد':'أسئلتكم للفريق الطبي'):'أوقفها المريض')+'</small></button>'+
+   '</div></div>'+h}}
+SCREENS.fobs={title:'صِف حالة المريض',tab:'fobs',html:()=>{ if(!famIn()) return SCREENS.fhome.html(); if(!famCare().obs) return famOff('وصف حالة المريض موقوف');
+  const mine=famObsAll().slice().reverse().slice(0,10);
+  return '<div class="card fobscard"><h3>ماذا لاحظتم اليوم؟</h3><p class="muted">صِفوا حالة '+esc(famPatient().name)+' وتصرّفاته كما ترونها. هذا وصف فقط، يقرؤه الطبيب، ولا يُعدّ تشخيصًا.</p>'+
+   '<div class="chips" id="fo-chips">'+FOBS.map(t=>'<button class="chip" data-act="mchip">'+t+'</button>').join('')+'</div>'+
+   '<b class="fored">علامات تستدعي الاتصال فورًا</b><div class="chips" id="fo-red">'+FOBS_RED.map(t=>'<button class="chip red" data-act="mchip">'+t+'</button>').join('')+'</div>'+
+   '<label class="field"><span>صِفوا بكلماتكم</span><textarea id="fo-text" rows="4" maxlength="1000" dir="auto" placeholder="مثلًا: أكل نصف طبقه فقط، وكان هادئًا أكثر من المعتاد مساءً."></textarea></label>'+
+   '<button class="btn" data-act="famObsSave">أرسل الوصف إلى الطبيب</button></div>'+
+   (mine.length?'<h3>ما أرسلتموه</h3>'+mine.map(o=>'<div class="card fobsitem'+(o.red&&o.red.length?' red':'')+'"><small class="muted">'+esc(famT(o.at))+' · '+esc(o.by)+'</small>'+(o.red&&o.red.length?'<div class="tags">'+o.red.map(x=>'<em class="st-urgent">'+esc(x)+'</em>').join('')+'</div>':'')+(o.chips.length?'<div class="tags">'+o.chips.map(x=>'<em>'+esc(x)+'</em>').join('')+'</div>':'')+(o.text?'<p>'+esc(o.text)+'</p>':'')+'</div>').join(''):'')}};
+SCREENS.fdoc={title:'التواصل مع الطبيب',tab:'fdoc',html:()=>{ if(!famIn()) return SCREENS.fhome.html(); if(!famCare().doc) return famOff('التواصل مع الطبيب موقوف');
+  const L=famDocFor('p1'); store.set('famDoc',famDocAll().map(m=>m.from==='doctor'?Object.assign(m,{seenByFam:true}):m));
+  return '<div class="card"><h3>الفريق الطبي لـ'+esc(famPatient().name)+'</h3><p class="muted">اسألوا عن رعاية المريض في البيت، أو أخبروا الفريق بما يقلقكم. للحالات العاجلة اتصلوا بالطوارئ ولا تنتظروا الرد.</p>'+
+   '<div class="thread">'+(L.length?L.map(m=>'<div class="bub'+(m.from==='family'?' me':'')+'"><small>'+esc(m.from==='doctor'?m.name||'الطبيب':m.name+(m.rel?' ('+m.rel+')':''))+' · '+esc(famT(m.at))+'</small>'+esc(m.text)+'</div>').join(''):'<p class="note">لا رسائل بعد.</p>')+'</div>'+
+   '<label class="field"><span>رسالتكم</span><textarea id="fd-text" rows="3" maxlength="1000" dir="auto"></textarea></label><button class="btn" data-act="famDocSend">إرسال إلى الطبيب</button></div>'}};
+Object.assign(ACT,{
+  famObsSave(){const pick=id=>[...document.querySelectorAll('#'+id+' [aria-pressed=true]')].map(b=>b.textContent), chips=pick('fo-chips'), red=pick('fo-red'), text=($('#fo-text').value||'').trim();
+    if(!chips.length&&!red.length&&!text){toast('اختاروا ما لاحظتموه أو اكتبوا وصفًا'); return}
+    const w=famWho(), L=famObsAll(); L.push({id:'fo'+Date.now().toString(36),pid:'p1',by:w.name,rel:w.rel,at:new Date().toISOString(),chips,red,text}); store.set('famObs',L);
+    if(red.length){sheet('<div class="redhead">'+I.alert+'<h3>'+esc(red.join('، '))+'</h3></div><p>وصل وصفكم إلى الطبيب، وظهرت حالة '+esc(famPatient().name)+' عنده على أنها تستدعي الاتصال اليوم. لا تنتظروا الرد: إن كانت الحالة شديدة فاتصلوا بالطوارئ الآن.</p>'+emerHTML()); rerender(); return}
+    toast('وصل الوصف إلى الطبيب'); rerender()},
+  famDocSend(){const t=($('#fd-text').value||'').trim(); if(!t){toast('اكتبوا رسالتكم'); return} const w=famWho(), L=famDocAll(); L.push({id:'fd'+Date.now().toString(36),pid:'p1',from:'family',name:w.name,rel:w.rel,text:t,at:new Date().toISOString(),seenByDoc:false}); store.set('famDoc',L); toast('أُرسلت إلى الطبيب'); rerender()},
+  famDocReply(b){const i=$('#fdr-text'), t=(i&&i.value||'').trim(); if(!t) return; const L=famDocAll(); L.push({id:'fd'+Date.now().toString(36),pid:b.dataset.pid,from:'doctor',name:'الطبيب',text:t,at:new Date().toISOString(),seenByFam:false}); store.set('famDoc',L); toast('أُرسل الرد إلى العائلة'); rerender()},
+  famCareTog(b){const c=famCare(); c[b.dataset.k]=!c[b.dataset.k]; store.set('famCare',c); rerender()},
+});
+/* ---------- المريض: يقرّر في «دائرة العائلة» ---------- */
+{const m0=SCREENS.famManage.html; SCREENS.famManage.html=a=>{const c=famCare(), n=famObsFor('p1').length, d=famDocFor('p1').filter(m=>m.from==='family').length;
+  return m0(a)+'<div class="card famcare"><h3>عائلتي وفريقي الطبي</h3>'+
+   '<label class="tgl"><input type="checkbox" data-act="famCareTog" data-k="obs"'+(c.obs?' checked':'')+'><span>يمكن لعائلتي أن تصف حالتي لفريقي الطبي</span></label>'+
+   '<label class="tgl"><input type="checkbox" data-act="famCareTog" data-k="doc"'+(c.doc?' checked':'')+'><span>يمكن لعائلتي أن تراسل فريقي الطبي</span></label>'+
+   '<p class="note">'+esc(trf('أرسلت عائلتك {0} وصفًا و{1} رسالة إلى فريقك. لا ترى عائلتك تطبيقك ولا بياناتك الطبية.',n,d))+'</p></div>'}}
+/* ---------- الطبيب ---------- */
+function famDoctorCard(pid){const O=famObsFor(pid).slice().reverse(), M=famDocFor(pid); if(!O.length&&!M.length) return '';
+  const red=famRedToday(pid);
+  return '<div class="card famdoc'+(red.length?' red':'')+'"><div class="row sp"><h3>من عائلة المريض</h3>'+(red.length?'<span class="tag urg">'+esc(red.join('، '))+'</span>':'')+'</div>'+
+   (O.length?'<b>وصف الحالة</b>'+O.slice(0,5).map(o=>'<div class="fobsitem'+(o.red&&o.red.length?' red':'')+'"><small class="muted">'+esc(famT(o.at))+' · '+esc(o.by)+(o.rel?' ('+esc(o.rel)+')':'')+'</small><div class="tags">'+(o.red||[]).map(x=>'<em class="st-urgent">'+esc(x)+'</em>').join('')+o.chips.map(x=>'<em>'+esc(x)+'</em>').join('')+'</div>'+(o.text?'<p>'+esc(o.text)+'</p>':'')+'</div>').join(''):'')+
+   '<b>رسائل العائلة</b><div class="thread">'+(M.length?M.map(m=>'<div class="bub'+(m.from==='doctor'?' me':'')+'"><small>'+esc(m.from==='doctor'?'أنت':m.name+(m.rel?' ('+m.rel+')':''))+' · '+esc(famT(m.at))+'</small>'+esc(m.text)+'</div>').join(''):'<p class="note">لا رسائل.</p>')+'</div>'+
+   '<label class="field"><span>ردّك على العائلة</span><textarea id="fdr-text" rows="2" dir="auto"></textarea></label><button class="btn sm" data-act="famDocReply" data-pid="'+pid+'">إرسال إلى العائلة</button>'+
+   '<p class="note">وصف من العائلة، لا من المريض. يُقرأ مع ما يسجّله المريض.</p></div>'}
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); const card=famDoctorCard(pid); if(!card) return h;
+  if(famDocFor(pid).some(m=>m.from==='family'&&!m.seenByDoc)) store.set('famDoc',famDocAll().map(m=>m.pid===pid&&m.from==='family'?Object.assign(m,{seenByDoc:true}):m));
+  const i=h.indexOf('<div class="seg'); return i<0?card+h:h.slice(0,i)+card+h.slice(i)}}
+{const r0=SCREENS.review.html; SCREENS.review.html=a=>{const n=famObsAll().filter(o=>!o.seenByDoc).length+famDocAll().filter(m=>m.from==='family'&&!m.seenByDoc).length;
+  return (n?'<button class="rep famrev" data-act="openP" data-id="p1"><span class="d" style="color:var(--prod)">'+I.users+'</span><span class="m"><b>من عائلة المريض</b><small>'+esc(trf('{0} جديد: وصف حالة أو رسالة',n))+'</small></span></button>':'')+r0(a)}}
+{const c0=classify; classify=function(p){const r=c0(p); if(!p||p.srv) return r; const red=famRedToday(p.id); if(red.length&&r&&r.why){r.status='urgent'; r.why.unshift('أبلغت العائلة اليوم: '+red.join('، '))} return r}}
+{const r0=hRedStrip; hRedStrip=function(red){const f=role==='patient'?famRedToday('p1').map(x=>x+' (أبلغت عائلتك)'):[]; return r0((red||[]).concat(f))}}
+
+/* ============ مجال خاص بالحوامل ومجال خاص بالأطفال (المالك، 2026-10-02 — D-080) ============
+   يُختار من البداية في صفحة دخول المريض: «بالغ» أو «امرأة حامل» أو «طفل (مع والديه)»، ويمكن تغييره من «ملفي».
+   - الحمل: ألوان وردية هادئة، وخطاب بصيغة المؤنّث، وبطاقة «رحلتكِ أنتِ وطفلكِ» بأسبوع الحمل، وعلامات خطر خاصة
+     بالحمل (تفتح الطريق الأحمر الموجود برقم الطوارئ)، وكل الوصفات مطبوخة (سلامة الطعام أثناء الحمل)، وفصل خاص
+     في «دليلي». أرقام التغذية يضعها الفريق الطبي وطبيبة النساء: المحرّك لا يحسبها (قاعدة المحرّك نفسها:
+     pregnancy_or_breastfeeding).
+   - الأطفال: شكل مميّز وجذّاب (ألوان زاهية، خط مرح، رفيق اسمه «أوكسي»)، وصفحة رئيسية بأزرار كبيرة وكلمات قليلة،
+     ونجوم للأفعال اليومية (لا علاقة لها بالوزن أبدًا)، وزر «أشعر بشيء مخيف» يطلب من الطفل مناداة والديه ويعرض رقم
+     الطوارئ للوالدين. «للوالدين» يفتح التطبيق الكامل. أرقام التغذية يضعها فريق طب الأطفال (قاعدة المحرّك: under_18).
+   الطبيب يرى نوع الحساب في صفحة المريض. لا شيء من هذا يشخّص أو يقترح دواءً. */
+const AUD_T={adult:'بالغ',preg:'امرأة حامل',child:'طفل (مع والديه)'};
+const hAud=()=>{const a=store.get('hAud','adult'); return AUD_T[a]?a:'adult'};
+const isPreg=()=>role==='patient'&&hAud()==='preg', isKid=()=>role==='patient'&&hAud()==='child';
+const pregWeek=()=>Math.max(4,Math.min(42,+store.get('hPregWeek',20)||20));
+const pregTri=w=>w<=13?'الثلث الأول':w<=27?'الثلث الثاني':'الثلث الثالث';
+/* خط مرح للأطفال (Google Fonts فقط). */
+(function(){ if(document.getElementById('kidfont')) return; const l=document.createElement('link'); l.id='kidfont'; l.rel='stylesheet'; l.href='https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap'; document.head.appendChild(l)})();
+/* الشكل: سمة على التطبيق كله. */
+{const r0=render; render=function(){const app=document.getElementById('app'); if(app){const a=role==='patient'?hAud():'adult'; if(app.dataset.aud!==a) app.dataset.aud=a} return r0.apply(this,arguments)}}
+
+/* ---------- الاختيار من البداية: صفحة دخول المريض ---------- */
+const audPickHTML=()=>'<div class="card audcard"><h3>من يستعمل التطبيق؟</h3><div class="audopts">'+Object.entries({adult:['🧑','بالغ'],preg:['🤰','امرأة حامل'],child:['🧒','طفل (مع والديه)']}).map(([k,[e,t]])=>'<button class="audopt" data-act="audPick" data-val="'+k+'" aria-pressed="'+(hAud()===k)+'"><span>'+e+'</span><b>'+t+'</b></button>').join('')+'</div>'+
+  (hAud()==='preg'?'<p class="note">تطبيق مخصّص لكِ: يراعي الحمل في الطعام والعلامات والمتابعة.</p>':hAud()==='child'?'<p class="note">شكل خاص بالأطفال، يستعمله الطفل مع أحد والديه.</p>':'')+'</div>';
+{const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{const h=h0(r); if(r!=='patient') return h; const i=h.indexOf('<div class="card">'); return i<0?audPickHTML()+h:h.slice(0,i)+audPickHTML()+h.slice(i)}}
+Object.assign(ACT,{
+  audPick(b){store.set('hAud',b.dataset.val); rerender()},
+  quickAud(b){store.set('hAud',b.dataset.aud); enter('patient')},
+  pregWk(b){store.set('hPregWeek',pregWeek()+(+b.dataset.d)); rerender()},
+  kidParent(b){store.set('kidParent',b.dataset.on==='1'); go('home',null,false)},
+});
+{const q0=ACT.quick; ACT.quick=b=>{ if(route==='pgate'&&b.dataset.r==='patient') store.set('hAud','adult'); q0(b)}}
+/* «ملفي»: تغيير نوع الحساب. */
+{const h0=SCREENS.hprofile.html; SCREENS.hprofile.html=a=>h0(a)+'<div class="card"><h3>نوع الحساب</h3><div class="chips">'+Object.entries(AUD_T).map(([k,t])=>'<button class="chip" data-act="audPick" data-val="'+k+'" aria-pressed="'+(hAud()===k)+'">'+t+'</button>').join('')+'</div></div>'}
+
+/* ---------- الحمل ---------- */
+Object.assign(SYM_RED,{preg_bleed:'نزيف مهبلي',preg_pain:'ألم بطن شديد أو تقلّصات',preg_move:'قلّة حركة الجنين',preg_head:'صداع شديد أو زغللة',preg_fluid:'نزول سائل'});
+['preg_bleed','preg_pain','preg_move','preg_head','preg_fluid'].forEach(k=>{SYM_RED_SIGN[k]=SYM_RED[k]; if(!RED_SIGNS.includes(SYM_RED[k])) RED_SIGNS.push(SYM_RED[k])});
+symRedNow=function(){const s=symDay(TODAY); return s?s.codes.filter(c=>SYM_RED[c]):[]};
+function pregCardHTML(){const w=pregWeek(), s=symDay(TODAY), codes=s?s.codes:[];
+  return '<div class="card pregcard"><div class="row sp"><div><small>رحلتكِ أنتِ وطفلكِ</small><h3>الأسبوع <span class="num">'+w+'</span> · '+pregTri(w)+'</h3></div><div class="row pregwk"><button class="ib" data-act="pregWk" data-d="-1" aria-label="أسبوع أقل">−</button><button class="ib" data-act="pregWk" data-d="1" aria-label="أسبوع أكثر">+</button></div></div>'+
+   '<p class="muted">فريق الأورام وطبيبة النساء والتوليد يتابعانكِ معًا. كل ما تسجّلينه هنا يصل إلى طبيبكِ.</p>'+
+   '<b class="pregred">علامات تستدعي الاتصال فورًا</b><div class="chips symred">'+['preg_bleed','preg_pain','preg_move','preg_head','preg_fluid'].map(k=>'<button class="chip red" data-act="symTog" data-val="'+k+'" aria-pressed="'+codes.includes(k)+'">'+SYM_RED[k]+'</button>').join('')+'</div>'+
+   '<button class="lnk" data-act="lnOpen" data-id="preg">اقرئي «التغذية أثناء الحمل والعلاج»</button></div>'}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>{ if(isKid()&&!store.get('kidParent',false)) return kidHomeHTML(); let h=h0(a);
+  if(isKid()) h='<div class="alert i kidparentbar">أنت في وضع الوالدين. <button class="lnk" data-act="kidParent" data-on="0">العودة إلى شاشة الطفل</button></div>'+h;
+  if(isPreg()){h=h.replace(/صباح الخير، /,'صباح الخير يا '); const q=h.indexOf('<div class="qgrid">'), i=q>=0?q:h.indexOf('<div class="hsecs">'); h=i<0?pregCardHTML()+h:h.slice(0,i)+pregCardHTML()+h.slice(i)}
+  return h}}
+/* علامات الحمل الحمراء أيضًا في «كيف تشعر اليوم؟». */
+{const s0=symCardHTML; symCardHTML=function(){let h=s0(); if(!isPreg()) return h; const s=symDay(TODAY), codes=s?s.codes:[];
+  return h.replace('<div class="chips symred">','<div class="chips symred">'+['preg_bleed','preg_pain','preg_move','preg_head','preg_fluid'].map(k=>'<button class="chip red" data-act="symTog" data-val="'+k+'" aria-pressed="'+codes.includes(k)+'">'+SYM_RED[k]+'</button>').join(''))}}
+{const t0=ACT.symTog; ACT.symTog=b=>{const red=SYM_RED[b.dataset.val]&&!(symDay(TODAY)||{codes:[]}).codes.includes(b.dataset.val); t0(b); if(red&&b.dataset.val.startsWith('preg_')) toast('اتصلي بطبيبتكِ أو بالطوارئ الآن')}}
+/* الطعام أثناء الحمل: كل المكوّنات مطبوخة. */
+{const v0=ckVisible; ckVisible=function(){const L=v0(); return isPreg()?L.filter(r=>r.needs.includes('immune')):L}}
+{const s0=ckSuggest; ckSuggest=function(){const r=s0(); if(isPreg()&&!r.needs.includes('immune')){r.needs.push('immune'); (r.why.immune=r.why.immune||[]).push('الحمل: كل المكوّنات مطبوخة')} return r}}
+{const n0=symNextMeal; symNextMeal=function(){const r=n0(); if(!isPreg()||!r||r.needs.includes('immune')) return r; return HREC.find(x=>x.needs.includes('immune')&&x.slot===r.slot&&ckAllergyOk(x).level!=='contains')||null}}
+/* أرقام التغذية: يضعها الفريق (الحمل، الأطفال). */
+{const c0=hgNutCard; hgNutCard=function(){ if(!isPreg()&&!isKid()) return c0(); const g=store.get('hGoal',null);
+  if(g&&g.source==='clinician') return c0();
+  return '<div class="card hplancard hstopcard" data-block="'+(isPreg()?'pregnancy_or_breastfeeding':'under_18')+'"><h3>'+(isPreg()?'خطتكِ الغذائية':'خطة الطفل الغذائية')+'</h3><p class="muted">'+(isPreg()?'أثناء الحمل يضع فريقكِ الطبي وطبيبة النساء أرقام الطاقة والبروتين والسوائل بأنفسهم، ولا يحسبها التطبيق.':'للأطفال يضع فريق طب الأطفال أرقام الطاقة والبروتين والسوائل بنفسه، ولا يحسبها التطبيق.')+'</p></div>'}}
+{const e0=hgSaveEngine; hgSaveEngine=function(mode,o){ if(isPreg()) return 'pregnancy_or_breastfeeding'; if(isKid()) return 'under_18'; return e0(mode,o)}}
+/* «دليلي»: فصل الحمل أولًا، وفصل للوالدين في حساب الطفل. */
+const LN_PREG={id:'preg',title:'التغذية أثناء الحمل والعلاج',lede:'جسمكِ يغذّيكِ ويغذّي طفلكِ معًا، ولذلك يحدّد فريقكِ احتياجاتكِ بدقّة.',
+  blocks:[['p','أثناء الحمل يضع فريق الأورام وطبيبة النساء والتوليد أرقام الطاقة والبروتين والسوائل لكِ بأنفسهم. هذا الفصل يشرح القواعد العامة لسلامة الطعام فقط.'],
+   ['list',['اللحم والدجاج والسمك والبيض مطبوخة حتى تنضج تمامًا.','الحليب والأجبان مبسترة فقط.','اغسلي الخضار والفواكه جيدًا.','تجنّبي الأسماك الكبيرة الغنية بالزئبق مثل القرش وسمك أبو سيف.','اسألي فريقكِ قبل أكل الكبدة، وعن كمية القهوة والشاي المناسبة لكِ.']],
+   ['tip','وجبات صغيرة متكرّرة تساعد مع غثيان الحمل وغثيان العلاج معًا.'],
+   ['myth','الحامل يجب أن تأكل لشخصين.','تحتاج الحامل إلى زيادة معتدلة يحدّدها فريقها، لا إلى مضاعفة الأكل. والأهمّ جودة الطعام وسلامته.'],
+   ['warn','لا تأخذي أي فيتامين أو مكمّل أو عشبة دون أن يصفه طبيبكِ.'],
+   ['warn','النزيف، أو ألم البطن الشديد، أو قلّة حركة الجنين، أو الصداع الشديد مع زغللة، أو نزول سائل: اتصلي بطبيبتكِ أو بالطوارئ فورًا.']]};
+const LN_KID={id:'kid',title:'لوالدي الطفل: الأكل أثناء العلاج',lede:'الأطفال يتغيّر أكلهم مع العلاج، والصبر واللعب يساعدان أكثر من الضغط.',
+  blocks:[['p','يحدّد فريق طب الأطفال احتياجات طفلكم من الطاقة والبروتين والسوائل حسب عمره ووزنه وعلاجه. هذا الفصل نصائح عامة للبيت.'],
+   ['list',['قدّموا وجبات صغيرة متكرّرة، وأطعمة يحبّها الطفل.','اجعلوا الأكل وقتًا هادئًا ممتعًا، دون عقاب أو إجبار.','اطبخوا كل شيء جيدًا، والحليب والأجبان مبسترة فقط.','قدّموا الماء والسوائل كثيرًا طوال اليوم.']],
+   ['tip','دعوا الطفل يختار بين خيارين صحيين، ويساعد في التحضير البسيط.'],
+   ['warn','الحمّى عند طفل يتلقّى العلاج حالة عاجلة: اتصلوا بالفريق أو بالطوارئ فورًا.']]};
+{const o0=lnOrder; lnOrder=function(){const L=o0(); if(isPreg()) return [Object.assign({mine:true},LN_PREG)].concat(L); if(isKid()) return [Object.assign({mine:true},LN_KID)].concat(L); return L}}
+{const t0=lnTexts; lnTexts=function(){const out=t0(); [LN_PREG,LN_KID].forEach(c=>{out.push(c.title,c.lede); c.blocks.forEach(x=>{ if(x[0]==='myth') out.push(x[2]); else if(x[0]==='list') out.push(...x[1]); else out.push(x[1])})}); return out}}
+
+/* ---------- الأطفال ---------- */
+const KID_MASCOT='<svg class="kidmascot" viewBox="0 0 160 140" aria-hidden="true"><ellipse cx="80" cy="128" rx="44" ry="7" fill="rgba(0,0,0,.08)"/><path d="M40 92c-18 0-26-14-22-26 4-11 16-15 26-11 2-20 18-33 36-33s34 13 36 33c10-4 22 0 26 11 4 12-4 26-22 26z" fill="#fff" stroke="#5AA9E6" stroke-width="4"/><circle cx="64" cy="64" r="7" fill="#24324A"/><circle cx="96" cy="64" r="7" fill="#24324A"/><circle cx="66" cy="61.5" r="2.2" fill="#fff"/><circle cx="98" cy="61.5" r="2.2" fill="#fff"/><path d="M68 78q12 10 24 0" fill="none" stroke="#24324A" stroke-width="4" stroke-linecap="round"/><circle cx="54" cy="76" r="6" fill="#FF9EB5" opacity=".7"/><circle cx="106" cy="76" r="6" fill="#FF9EB5" opacity=".7"/><path d="M120 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#FFC93C"/></svg>';
+const KID_FACES=[['1','😢','حزين'],['2','😟','مش منيح'],['3','😐','عادي'],['4','🙂','منيح'],['5','😄','رائع']];
+function kidStars(){const lt=lifeToday(), log=(S.medlog&&S.medlog[TODAY])||{}; let n=0;
+  if(lt.mood) n++; if((lt.water||0)>=1) n++; if(Object.values(log).some(v=>v==='taken')) n++; if((lt.meals&&Object.keys(lt.meals).length)||0) n++; return n}
+function kidHomeHTML(){const p=meP(), lt=lifeToday(), cups=Math.round((lt.water||0)/0.25), st=kidStars(), nm=esc((p.name||'').split(' ')[0]||'بطل');
+  return '<div class="kidhero">'+KID_MASCOT+'<div><h2>مرحبًا يا '+nm+'!</h2><p>أنا أوكسي، صديقك. هيا نعتني بك اليوم.</p></div></div>'+
+   '<div class="kidstars" aria-label="نجومك اليوم"><b>نجومك اليوم</b><span>'+[0,1,2,3].map(i=>'<i class="'+(i<st?'on':'')+'">★</i>').join('')+'</span></div>'+
+   '<div class="kidcard kc-mood"><b>كيف تشعر الآن؟</b><div class="kidfaces">'+KID_FACES.map(([v,e,t])=>'<button data-act="kidMood" data-val="'+v+'" aria-pressed="'+(String(lt.mood)===v)+'" aria-label="'+t+'"><span>'+e+'</span><small>'+t+'</small></button>').join('')+'</div></div>'+
+   '<div class="kidgrid">'+
+    '<button class="kidtile kt-water" data-act="kidWater"><span class="ke">💧</span><b>شربت كوب ماء</b><small class="num">'+cups+' أكواب اليوم</small></button>'+
+    '<button class="kidtile kt-med" data-act="nav" data-r="meds"><span class="ke">💊</span><b>دوائي</b><small>صوّره عندما تأخذه</small></button>'+
+    '<button class="kidtile kt-food" data-act="hlAddGo"><span class="ke">🍎</span><b>ماذا أكلت؟</b><small>مع ماما أو بابا</small></button>'+
+    '<button class="kidtile kt-talk" data-act="nav" data-r="hki"><span class="ke">🗣️</span><b>احكي لي</b><small>قل ما تشعر به</small></button>'+
+    '<button class="kidtile kt-breath" data-act="breathStart"><span class="ke">🎈</span><b>لعبة التنفّس</b><small>نفخ البالون ببطء</small></button>'+
+    '<button class="kidtile kt-fam" data-act="nav" data-r="family"><span class="ke">💌</span><b>رسائل العائلة</b><small>كلمات من أحبّائك</small></button>'+
+   '</div>'+
+   '<button class="kidhelp" data-act="kidHelp">🆘 أشعر بشيء مخيف</button>'+
+   '<button class="lnk kidpar" data-act="kidParent" data-on="1">للوالدين: افتحوا التطبيق الكامل</button>'}
+Object.assign(ACT,{
+  kidMood(b){saveLife(t=>{t.mood=+b.dataset.val}); toast(+b.dataset.val>=4?'رائع! نجمة جديدة ⭐':'شكرًا لأنك أخبرتني. ماما وبابا معك 💙'); rerender()},
+  kidWater(){saveLife(t=>{t.water=Math.round(((t.water||0)+0.25)*100)/100}); toast('أحسنت! 💧'); rerender()},
+  kidHelp(){sheet('<div class="kidsos"><h2>نادِ ماما أو بابا الآن</h2><p>قل لهم ما تشعر به. هم سيعرفون ماذا يفعلون.</p></div><b>للوالدين: علامات تستدعي الاتصال فورًا</b><p class="muted">حمّى، ضيق تنفّس، نزيف، نعاس شديد غير معتاد، تقيّؤ لا يتوقّف.</p>'+emerHTML())},
+});
+/* الطبيب: نوع الحساب في صفحة المريض. */
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(pid!=='p1') return h; const a=store.get('hAud','adult'); if(a==='adult') return h;
+  const tag='<div class="alert '+(a==='preg'?'p':'i')+' audtag">'+(a==='preg'?'🤰 حامل · الأسبوع '+pregWeek()+' ('+pregTri(pregWeek())+'). أرقام التغذية يضعها الفريق وطبيبة النساء.':'🧒 حساب طفل. أرقام التغذية يضعها فريق طب الأطفال.')+'</div>'; return tag+h}}
 </script>
