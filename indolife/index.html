@@ -1757,7 +1757,7 @@ function sheet(html){$('#sheetPanel').innerHTML=html+'<button class="btn ghost" 
 /* ============ الشاشات ============ */
 const SCREENS={};
 SCREENS.login={title:'Indo Life',bare:true,html:()=>`
-  <div class="logo brand" style="margin-top:28px;justify-content:center;flex-direction:column;gap:6px">${LOGO}<span dir="ltr" class="goldname wordtext">Indo Life</span></div>
+  <div class="logo brand" style="margin-top:28px;justify-content:center;flex-direction:column;gap:6px">${LOGO}<img class="wordmark" src="${WORD_IMG}" alt="OxyLife"></div>
   <p class="muted" style="text-align:center">متابعة يومية لمرضى الأورام والتهاب الكبد C وما بعد كورونا، مع طبيب يراجع كل شيء.</p>
   <div class="rolepick">
     <button class="rolebtn" data-act="pickRole" data-r="patient"><span class="ri">${I.users}</span><b>مريض</b></button>
@@ -5953,7 +5953,7 @@ SLIDES.length=0; INTRO.forEach(x=>SLIDES.push([x.t,x.s,x.art]));
 SCREENS.welcome={title:'مرحبًا',bare:true,html:()=>{const i=Math.min(welcomeIdx,INTRO.length-1), s=INTRO[i], last=i===INTRO.length-1;
   return '<div class="itop"><span class="num istep">'+(i+1)+' / '+INTRO.length+'</span>'+(last?'':'<button class="lnk" data-act="wskip">تخطّي</button>')+'</div>'+
    '<div class="islide is-'+s.k+'" id="islide">'+(s.brand?'<img class="iart ofimg" src="'+OF_IMG+'" alt="">':'<svg class="iart" viewBox="0 0 200 200" aria-hidden="true">'+s.art+'</svg>')+''+
-   (s.brand?'<h2 class="ititle">'+s.t+'</h2><span dir="ltr" class="goldname wordtext ibrand">Indo Life</span>':'<h2 class="ititle">'+s.t+'</h2>')+
+   (s.brand?'<h2 class="ititle">'+s.t+'</h2><img class="wordmark ibrand" src="'+WORD_IMG+'" alt="OxyLife">':'<h2 class="ititle">'+s.t+'</h2>')+
    '<p class="isub">'+s.s+'</p><ul class="ipts">'+s.pts.map(p=>'<li>'+p+'</li>').join('')+'</ul></div>'+
    '<div class="dots idots">'+INTRO.map((_,j)=>'<button class="'+(j===i?'on':'')+'" data-act="wgo" data-i="'+j+'" aria-label="الصفحة '+(j+1)+'"'+(j===i?' aria-current="step"':'')+'></button>').join('')+'</div>'+
    '<div class="inav">'+(i?'<button class="btn ghost" data-act="wprev">السابق</button>':'')+'<button class="btn" data-act="wnext">'+(last?'ابدأ الآن':'التالي')+'</button></div>'}};
