@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610031453';
+const APP_BUILD='202610031511';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7090,4 +7090,25 @@ ACT.famLabsTgl=b=>{store.set('famLabsOff',!b.checked); rerender()};
 {const c0=SCREENS.chat.html; SCREENS.chat.html=a=>{const h=c0(a), k='<b>قبل أن تكتب</b><ul>'; return h.includes(k)?h.replace(k,k+'<li class="teamreads">'+tr(TEAM_READS)+'</li>'):h+'<p class="note teamreads">'+tr(TEAM_READS)+'</p>'}}
 document.head.insertAdjacentHTML('beforeend','<style>.saltcard{border:2px solid var(--urgent)}.saltcard>b.saltred{font-size:1.35rem;display:block}.saltred{color:var(--urgent)}.flabs{list-style:none;padding:0;margin:.4rem 0 0}.flab{padding:4px 0;border-bottom:1px solid var(--line)}.flab.out span{color:var(--urgent);font-weight:700}.chip.on{background:var(--brand,#1B6B73);color:#fff}</style>');
 if(['home','fhome','famManage','chat','life','patient'].includes(route)) rerender();
+</script>
+<script>
+/* D-108 (owner, 2026-10-03): the phone's back button goes back one page inside the app, like the app's
+   own back arrow, instead of leaving the link (which reopened the app from the start). An open sheet is
+   closed first; in the intro it goes to the previous slide. On the first page of the account, one press
+   says «اضغط رجوع مرة أخرى للخروج» and a second press within 2 s leaves. */
+(function(){ if(!window.history||!history.pushState) return;
+  const guard=()=>{try{history.pushState({oxy:Date.now()},'')}catch(e){}};
+  let exitAt=0;
+  guard();
+  addEventListener('popstate',()=>{
+    const sh=$('#sheet');
+    if(sh&&!sh.hidden){sh.hidden=true; guard(); return}
+    if(route==='welcome'&&typeof welcomeIdx==='number'&&welcomeIdx>0){welcomeIdx--; rerender(); guard(); return}
+    const atRoot=!stack.length&&(route==='welcome'||!role||route===ROOT_OF(role));
+    if(!atRoot){back(); guard(); return}
+    const now=Date.now();
+    if(now-exitAt<2000){history.back(); return}
+    exitAt=now; toast('اضغط رجوع مرة أخرى للخروج'); guard();
+  });
+})();
 </script>
