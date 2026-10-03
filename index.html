@@ -1375,7 +1375,7 @@ function spark(vals,dates){if(vals.length<2) return ''; const n=vals.length, W=3
   return g+'</svg>'}
 
 /* ============ البيانات الاصطناعية ============ */
-const DX=[{k:'breast',n:'سرطان الثدي'},{k:'colon',n:'سرطان القولون'},{k:'lung',n:'سرطان الرئة'},{k:'lymphoma',n:'لمفوما'},{k:'prostate',n:'سرطان البروستاتا'},{k:'hcv',n:'التهاب الكبد الفيروسي C'},{k:'covid',n:'متابعة ما بعد كورونا'},{k:'hav',n:'التهاب الكبد الفيروسي A'},{k:'hbv',n:'التهاب الكبد الفيروسي B'},{k:'psoriasis',n:'الصدفية'},{k:'eczema',n:'الإكزيما'},{k:'vitiligo',n:'البهاق'},{k:'skin',n:'أمراض جلدية أخرى'},{k:'ibd',n:'أمراض القولون والتهابات الجهاز الهضمي'},{k:'polyps',n:'زوائد القولون (البوليبات)'},{k:'ulcer',n:'قرحة المعدة أو الاثني عشر'},{k:'neuro',n:'ضمور خلايا الدماغ (الأطفال وكبار السن)'},{k:'ms',n:'التصلب اللويحي (MS)'},{k:'autoimmune',n:'أمراض المناعة الذاتية'},{k:'arthritis',n:'التهاب العظام والمفاصل'},{k:'dfoot',n:'القدم السكرية والغرغرينة'},{k:'fertility',n:'ضعف الخصوبة عند الرجال'},{k:'inflam',n:'التهابات مزمنة أخرى'},{k:'other',n:'حالة أخرى'}];
+const DX=[{k:'breast',n:'سرطان الثدي'},{k:'colon',n:'سرطان القولون'},{k:'lung',n:'سرطان الرئة'},{k:'livercancer',n:'سرطان الكبد'},{k:'pancreas',n:'سرطان البنكرياس'},{k:'lymphoma',n:'لمفوما'},{k:'prostate',n:'سرطان البروستاتا'},{k:'hcv',n:'التهاب الكبد الفيروسي C'},{k:'covid',n:'متابعة ما بعد كورونا'},{k:'hav',n:'التهاب الكبد الفيروسي A'},{k:'hbv',n:'التهاب الكبد الفيروسي B'},{k:'psoriasis',n:'الصدفية'},{k:'eczema',n:'الإكزيما'},{k:'vitiligo',n:'البهاق'},{k:'skin',n:'أمراض جلدية أخرى'},{k:'ibd',n:'أمراض القولون والتهابات الجهاز الهضمي'},{k:'polyps',n:'زوائد القولون (البوليبات)'},{k:'ulcer',n:'قرحة المعدة أو الاثني عشر'},{k:'neuro',n:'ضمور خلايا الدماغ (الأطفال وكبار السن)'},{k:'ms',n:'التصلب اللويحي (MS)'},{k:'autoimmune',n:'أمراض المناعة الذاتية'},{k:'arthritis',n:'التهاب العظام والمفاصل'},{k:'dfoot',n:'القدم السكرية والغرغرينة'},{k:'fertility',n:'ضعف الخصوبة عند الرجال'},{k:'inflam',n:'التهابات مزمنة أخرى'},{k:'other',n:'حالة أخرى'}];
 const DXN=Object.fromEntries(DX.map(d=>[d.k,d.n]));
 const R=(date,status,vals,extra={})=>({id:'r'+Math.random().toString(36).slice(2,8),date,status,lab:extra.lab||'مخبر المدينة',source:'demo',
   rows:Object.entries(vals).map(([k,v])=>({k,v})),note:extra.note||'',reviewedAt:status==='approved'?date:null});
@@ -1757,7 +1757,7 @@ function sheet(html){$('#sheetPanel').innerHTML=html+'<button class="btn ghost" 
 const SCREENS={};
 SCREENS.login={title:'OxyLife',bare:true,html:()=>`
   <div class="logo brand" style="margin-top:28px;justify-content:center;flex-direction:column;gap:6px">${LOGO}<img class="wordmark" src="${WORD_IMG}" alt="OxyLife"></div>
-  <p class="muted" style="text-align:center">متابعة يومية لمرضى الأورام والكبد والجلد والجهاز الهضمي والمناعة وغيرها، مع طبيب يراجع كل شيء.</p>
+  <p class="muted" style="text-align:center">متابعة يومية لكل مريض حسب حالته، مع طبيب يراجع كل شيء، مع طبيب يراجع كل شيء.</p>
   <div class="rolepick">
     <button class="rolebtn" data-act="pickRole" data-r="patient"><span class="ri">${I.users}</span><b>مريض</b></button>
     <button class="rolebtn" data-act="pickRole" data-r="doctor"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v5a4 4 0 0 0 8 0V3"/><path d="M9 12v3a5 5 0 0 0 10 0v-2"/><circle cx="19" cy="11" r="2"/></svg></span><b>طبيب</b></button>
@@ -5937,7 +5937,7 @@ document.addEventListener('scroll',e=>{const bar=document.getElementById('lnbar'
    تحلّ محلّ الشرائح الأربع القديمة. عربية فقط (D-065)، فلا أزرار لغة هنا. سحب بالإصبع يمينًا ويسارًا،
    ونقاط قابلة للضغط، و«تخطّي» في كل صفحة. الرسوم أصلية (SVG داخل الصفحة)، دون صور. */
 const INTRO=[
- {k:'hello',t:'مرحبًا بك في',brand:true,s:'رفيقك اليومي في رحلة العلاج. تسجّل يومك في دقيقة، وطبيبك يتابع كل شيء.',pts:['لمرضى الأورام والكبد والجلد والجهاز الهضمي والمناعة وغيرها','طبيب حقيقي يراجع كل ما تسجّله','بياناتك محفوظة ولا تُشارَك إلا بإذنك'],
+ {k:'hello',t:'مرحبًا بك في',brand:true,s:'رفيقك اليومي في رحلة العلاج. تسجّل يومك في دقيقة، وطبيبك يتابع كل شيء.',pts:['لكل مريض حسب حالته، مع طبيب يراجع كل شيء','طبيب حقيقي يراجع كل ما تسجّله','بياناتك محفوظة ولا تُشارَك إلا بإذنك'],
   art:'<defs><radialGradient id="ig1" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#FFF6D8"/><stop offset="1" stop-color="#F1D78A" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="100" r="92" fill="url(#ig1)"/><circle cx="100" cy="100" r="74" fill="var(--surface)" opacity=".9"/><defs><linearGradient id="ofLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7CC489"/><stop offset="1" stop-color="#2E8B57"/></linearGradient><linearGradient id="ofGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D27A"/><stop offset="1" stop-color="#B8862B"/></linearGradient></defs><circle cx="74" cy="112" r="34" fill="none" stroke="var(--accent)" stroke-width="12"/><circle cx="74" cy="112" r="20" fill="var(--accent)" opacity=".08"/><text x="104" y="74" font-family="Playfair Display,Georgia,serif" font-style="italic" font-weight="700" font-size="30" fill="url(#ofGold)">2</text><path d="M131 154C127 130 128 102 133 74" fill="none" stroke="#3B7A4A" stroke-width="9" stroke-linecap="round"/><path d="M133 76C144 56 168 50 182 58C172 75 150 83 133 76Z" fill="url(#ofLeaf)"/><path d="M135 75Q158 66 180 59" fill="none" stroke="#E9F6EC" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M131 108C140 92 160 88 170 95C161 109 145 114 131 108Z" fill="url(#ofLeaf)"/><path d="M133 107Q151 99 168 96" fill="none" stroke="#E9F6EC" stroke-width="2" stroke-linecap="round" opacity=".85"/><path d="M131 130C124 124 120 116 122 110C129 113 133 121 131 130Z" fill="url(#ofLeaf)" opacity=".8"/><path d="M36 50l6 0M39 47l0 6M160 150l8 0M164 146l0 8" stroke="#D9A93F" stroke-width="2.4" stroke-linecap="round"/>'},
  {k:'treat',t:'علاجك في وقته',s:'تذكير بمواعيد أدويتك، وصورة سريعة للجرعة تكفي ليعرف التطبيق متى أخذتها بالضبط.',pts:['تذكير لكل دواء في موعده','«في وقتها» أو «متأخرة»، والساعة بالضبط','أضف دواءً بالكتابة أو بكاميرا الهاتف'],
   art:'<circle cx="100" cy="100" r="86" fill="#E6EEFB"/><rect x="58" y="34" width="84" height="138" rx="16" fill="var(--surface)" stroke="#2A68AE" stroke-width="4"/><rect x="70" y="52" width="60" height="38" rx="10" fill="#DCE8F5"/><g transform="rotate(-30 100 71)"><rect x="80" y="63" width="40" height="16" rx="8" fill="#fff" stroke="#2A68AE" stroke-width="3"/><path d="M100 63v16" stroke="#2A68AE" stroke-width="3"/><rect x="100" y="64.5" width="18.5" height="13" rx="6.5" fill="#6A4FA0" opacity=".85"/></g><rect x="70" y="102" width="60" height="9" rx="4.5" fill="#E2F3E8"/><rect x="70" y="118" width="44" height="9" rx="4.5" fill="#E2F3E8"/><rect x="70" y="134" width="52" height="9" rx="4.5" fill="#FBF2CF"/><circle cx="148" cy="148" r="24" fill="#2E9B57"/><path d="M137 148l8 8 14-15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'},
@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610030531';
+const APP_BUILD='202610030624';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -6984,4 +6984,62 @@ function dfootCard(){return '<div class="card dfcard"><b class="dfred">'+tr('ا�
   const i=h.indexOf('</div>\n   <button class="ib" data-act="goHProfile"'), j=i<0?-1:h.indexOf('</div>',i+6); return j<0?dfootCard()+h:h.slice(0,j+6)+dfootCard()+h.slice(j+6)}}
 document.head.insertAdjacentHTML('beforeend','<style>.dfcard{border:2px solid var(--urgent)}.dfred{color:var(--urgent)}</style>');
 if(route==='home') rerender();
+</script>
+<script>
+/* ============ تصنيف الأمراض: المريض يرى حالته فقط، والطبيب يرى التقسيمات الكبرى والصغرى (D-095) ============ */
+const DX_FAM=[
+ ['cancer','الأورام (السرطان)',['breast','colon','lung','livercancer','pancreas','lymphoma','prostate']],
+ ['liver','الكبد والفيروسات',['hav','hbv','hcv','covid']],
+ ['skin','أمراض الجلد',['psoriasis','eczema','vitiligo','skin']],
+ ['gut','الجهاز الهضمي والقولون',['ibd','polyps','ulcer']],
+ ['neuro','الدماغ والأعصاب',['neuro','ms']],
+ ['immune','المناعة والمفاصل والالتهابات',['autoimmune','arthritis','inflam']],
+ ['diabetes','السكري ومضاعفاته',['dfoot']],
+ ['fertility','الخصوبة',['fertility']],
+ ['other','حالات أخرى',['other']]];
+const famOf=dx=>(DX_FAM.find(f=>f[2].includes(dx))||DX_FAM[DX_FAM.length-1])[0];
+const famName=k=>(DX_FAM.find(f=>f[0]===k)||[])[1]||k;
+/* 1) المريض يختار نوع المرض أولًا ثم حالته (قائمة من مستويين). */
+function dxSelect(id,val){return '<select id="'+id+'"><option value="">'+tr('اختر')+'</option>'+DX_FAM.map(([k,t,L])=>'<optgroup label="'+esc(tr(t))+'">'+L.filter(x=>DXN[x]).map(x=>'<option value="'+x+'"'+(x===val?' selected':'')+'>'+esc(tr(DXN[x]))+'</option>').join('')+'</optgroup>').join('')+'</select>'}
+{const h0=SCREENS.profile&&SCREENS.profile.html; if(h0) SCREENS.profile.html=a=>{const h=h0(a), m=h.match(/<select id="pf-dx"[\s\S]*?<\/select>/); if(!m) return h; const cur=(m[0].match(/<option value="([^"]*)" selected/)||[])[1]||''; return h.replace(m[0],dxSelect('pf-dx',cur))}}
+/* المريض لا يرى مجموعات الأمراض الأخرى في الدردشة: مجموعة نوع مرضه، والخط العالمي، ومجموعة العائلات. */
+const CH_FAM={breast:'cancer',colon:'cancer',lung:'cancer',liver:'cancer',lymphoma:'cancer',prostate:'cancer',hcv:'liver',covid:'liver',liverv:'liver',skin:'skin',gut:'gut',neuro:'neuro',immune:'immune',dfoot:'diabetes'};
+{const c0=SCREENS.chat&&SCREENS.chat.html; if(c0) SCREENS.chat.html=a=>{const h=c0(a); if(role!=='patient') return h; let f='other'; try{f=famOf(meP().dx)}catch(e){}
+  return h.replace(/<button class="chg[^"]*" data-act="chRoom" data-val="([^"]+)">[\s\S]*?<\/button>/g,(m,k)=>k==='care'||CH_FAM[k]===f?m:'')}}
+/* 2) الطبيب: تقسيمات كبرى، وفي كل واحدة تقسيمات صغرى. */
+SCREENS.dxfam={title:a=>famName(a),tab:'patients',html:(fk)=>{const ps=allPatients(), cs=Object.fromEntries(ps.map(p=>[p.id,classify(p)])), F=DX_FAM.find(f=>f[0]===fk);
+  if(!F) return '';
+  return F[2].map(k=>{const list=ps.filter(p=>p.dx===k).sort((a,b)=>ST_O[cs[a.id].status]-ST_O[cs[b.id].status]);
+    return '<section class="grp"><div class="grp-h"><span class="grp-t">'+organIcon(k)+'<span>'+esc(DXN[k]||k)+'</span></span><small>'+esc(trf('{0} مريض',list.length))+'</small></div>'+
+      (list.length?list.map(p=>prow(p,cs[p.id])).join(''):'<p class="note">'+tr('لا مرضى في هذا القسم الآن.')+'</p>')+'</section>'}).join('')}};
+{const g0=SCREENS.group.html; SCREENS.group.html=gk=>{ if(gk!=='dx') return g0(gk);
+  const ps=allPatients();
+  return '<p class="note">'+tr('اختر تقسيمًا كبيرًا لترى أقسامه الصغرى ومرضاها.')+'</p><div class="famgrid">'+DX_FAM.map(([k,t,L])=>{const n=ps.filter(p=>L.includes(p.dx)).length;
+    const FI={cancer:'lymphoma',liver:'hcv',gut:'colon',immune:'covid'};
+    return '<button class="famtile" data-act="openFam" data-val="'+k+'">'+organIcon(FI[k]||'other')+'<b>'+esc(tr(t))+'</b><small>'+esc(trf('{0} مريض',n))+' · '+esc(trf('{0} أقسام',L.length))+'</small></button>'}).join('')+'</div>'}}
+ACT.openFam=b=>go('dxfam',b.dataset.val);
+/* 3) ما يقوله صاحب المستحضر: للطبيب فقط، منسوب إلى صاحبه، بانتظار مراجعة الطبيب ومراجعه العلمية. */
+const OWNER_CLAIM={by:'صاحب المستحضر',at:'2026-10-03',
+  text:'المستحضر يساعد على علاج هذه الأمراض، وله فاعلية فيها، وهذا مثبت علميًا (حسب صاحب المستحضر).',
+  list:['الأمراض الجلدية والصدفية','الإكزيما','أمراض القولون وزوائد القولون','قرحة المعدة','ضمور خلايا الدماغ عند الأطفال وكبار السن','فيروس الكبد A و B و C','الالتهابات','تحسين الحيوانات المنوية','البهاق','التهاب العظام والمفاصل','غرغرينة السكري','التصلب اللويحي (MS)','التهاب الجهاز الهضمي','أمراض المناعة الذاتية']};
+const claimRev=()=>store.get('claimReview',{status:'pending',refs:'',note:'',by:null,at:null});
+SCREENS.prodclaims={title:'ما يقوله صاحب المستحضر',tab:'patients',html:()=>{ if(role==='patient'||role==='family') return '<p class="muted">'+tr('هذه الصفحة للطبيب فقط.')+'</p>';
+  const r=claimRev(), ps=allPatients();
+  return '<div class="card"><p class="note">'+tr('للطبيب فقط. لا يراها المريض ولا العائلة.')+'</p>'+
+   '<p><b>'+esc(tr('قول صاحب المستحضر'))+'</b> <small class="muted">('+esc(fmtD(OWNER_CLAIM.at,{day:'numeric',month:'long',year:'numeric'}))+')</small></p><p dir="auto">«'+esc(tr(OWNER_CLAIM.text))+'»</p>'+
+   '<ul class="why">'+OWNER_CLAIM.list.map(x=>'<li>'+esc(tr(x))+'</li>').join('')+'</ul>'+
+   '<div class="alert '+(r.status==='confirmed'?'i':'w')+'">'+esc(tr(r.status==='confirmed'?'راجعه الطبيب مع المراجع العلمية المرفقة.':r.status==='rejected'?'لم يقبله الطبيب.':'بانتظار مراجعة الطبيب: المراجع العلمية لم تُرفق بعد. لا يُعرض على المرضى.'))+(r.by?' · '+esc(r.by)+' · '+esc(fmtD(r.at,{day:'numeric',month:'long',year:'numeric'})):'')+'</div></div>'+
+   '<div class="card"><h3>'+tr('مراجعة الطبيب')+'</h3><label class="field"><span>'+tr('المراجع العلمية (عنوان الدراسة، المجلة، السنة، الرابط)')+'</span><textarea id="cl-refs" rows="4">'+esc(r.refs)+'</textarea></label>'+
+   '<label class="field"><span>'+tr('ملاحظة الطبيب')+'</span><textarea id="cl-note" rows="3">'+esc(r.note)+'</textarea></label>'+
+   '<div class="grid2"><button class="btn" data-act="claimRev" data-val="confirmed">'+tr('راجعتها مع المراجع')+'</button><button class="btn ghost" data-act="claimRev" data-val="rejected">'+tr('لا أقبلها')+'</button></div>'+
+   '<p class="note">'+tr('القرار للطبيب وصاحب التطبيق. حتى بعد المراجعة، لا يظهر هذا القول للمرضى إلا بقرار صريح منهما.')+'</p></div>'+
+   '<div class="card"><h3>'+tr('مرضى التطبيق في هذه الحالات')+'</h3>'+DX_FAM.filter(f=>f[0]!=='cancer'&&f[0]!=='other').map(([k,t,L])=>{const n=ps.filter(p=>L.includes(p.dx)).length, d=ps.filter(p=>L.includes(p.dx)&&p.prod&&p.prod.doses).length;
+     return '<div class="crow"><span><b>'+esc(tr(t))+'</b><small>'+esc(trf('{0} مريض · {1} سجّلوا جرعات',n,d))+'</small></span></div>'}).join('')+'<p class="note">'+tr('أرقام تسجيل فقط، ولا تقول شيئًا عن أثر المستحضر.')+'</p></div>'}};
+ACT.claimRev=b=>{const r=claimRev(); r.status=b.dataset.val; r.refs=$('#cl-refs').value.trim(); r.note=$('#cl-note').value.trim(); r.by=(TEAMN.t1||{}).name||'الطبيب'; r.at=TODAY;
+  if(r.status==='confirmed'&&r.refs.length<10){toast('أرفق المراجع العلمية أولًا'); return} store.set('claimReview',r); toast('حُفظت المراجعة'); rerender()};
+ACT.openClaims=()=>go('prodclaims');
+/* زر في صفحة «المرضى» للطبيب */
+{const p0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=p0(a); if(role!=='doctor') return h; return h+'<button class="btn ghost" data-act="openClaims">'+tr('ما يقوله صاحب المستحضر')+'</button>'}}
+document.head.insertAdjacentHTML('beforeend','<style>.famgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.famtile{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:14px;text-align:start;display:flex;flex-direction:column;gap:4px;color:var(--ink)}.famtile b{font-size:15px}.famtile small{color:var(--ink-soft)}</style>');
+if(['group','dxfam','patients','prodclaims','chat','profile'].includes(route)) rerender();
 </script>
