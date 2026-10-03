@@ -1757,7 +1757,7 @@ function sheet(html){$('#sheetPanel').innerHTML=html+'<button class="btn ghost" 
 const SCREENS={};
 SCREENS.login={title:'OxyLife',bare:true,html:()=>`
   <div class="logo brand" style="margin-top:28px;justify-content:center;flex-direction:column;gap:6px">${LOGO}<img class="wordmark" src="${WORD_IMG}" alt="OxyLife"></div>
-  <p class="muted" style="text-align:center">متابعة يومية لكل مريض حسب حالته، مع طبيب يراجع كل شيء، مع طبيب يراجع كل شيء.</p>
+  <p class="muted" style="text-align:center">متابعة يومية لكل مريض حسب حالته، مع طبيب يراجع كل شيء.</p>
   <div class="rolepick">
     <button class="rolebtn" data-act="pickRole" data-r="patient"><span class="ri">${I.users}</span><b>مريض</b></button>
     <button class="rolebtn" data-act="pickRole" data-r="doctor"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v5a4 4 0 0 0 8 0V3"/><path d="M9 12v3a5 5 0 0 0 10 0v-2"/><circle cx="19" cy="11" r="2"/></svg></span><b>طبيب</b></button>
@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610030624';
+const APP_BUILD='202610030717';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7042,4 +7042,13 @@ ACT.openClaims=()=>go('prodclaims');
 {const p0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=p0(a); if(role!=='doctor') return h; return h+'<button class="btn ghost" data-act="openClaims">'+tr('ما يقوله صاحب المستحضر')+'</button>'}}
 document.head.insertAdjacentHTML('beforeend','<style>.famgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.famtile{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:14px;text-align:start;display:flex;flex-direction:column;gap:4px;color:var(--ink)}.famtile b{font-size:15px}.famtile small{color:var(--ink-soft)}</style>');
 if(['group','dxfam','patients','prodclaims','chat','profile'].includes(route)) rerender();
+</script>
+<script>
+/* D-096: OxyLife (the version that continues toward the real app) carries a stethoscope mark above the
+   OxyLife wordmark, so it is told apart from the frozen copy «Oxy» (docs/prototype/oxy/oxy.html). */
+const STETH='<svg class="steth" viewBox="0 0 64 64" role="img" aria-label="سمّاعة الطبيب"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8v14a12 12 0 0 0 24 0V8" stroke="#2A68AE" stroke-width="4.5"/><path d="M28 34v6a13 13 0 0 0 26 0v-6" stroke="#2A68AE" stroke-width="4.5"/></g><circle cx="16" cy="8" r="3.6" fill="#2A68AE"/><circle cx="40" cy="8" r="3.6" fill="#2A68AE"/><circle cx="54" cy="29" r="7" fill="#4E9A3C"/><circle cx="54" cy="29" r="3" fill="#E9F5E1"/></svg>';
+const withSteth=h=>String(h).replace(/<img class="wordmark/g,STETH+'<img class="wordmark');
+{const l0=SCREENS.login.html; SCREENS.login.html=(...a)=>withSteth(l0(...a));
+ const w0=SCREENS.welcome.html; SCREENS.welcome.html=(...a)=>withSteth(w0(...a));}
+document.head.insertAdjacentHTML('beforeend','<style>.steth{display:block;width:56px;height:56px;margin:4px auto -2px}</style>');
 </script>
