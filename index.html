@@ -6952,3 +6952,21 @@ if(['patients','patient','psum'].includes(route)) rerender();
   if(!document.querySelector('meta[name=color-scheme]')) document.head.insertAdjacentHTML('afterbegin','<meta name="color-scheme" content="light dark">');
 })();
 </script>
+<script>
+/* ============ دائمًا أحدث نسخة (D-093) ============
+   المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
+   عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
+   لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
+const APP_BUILD='202610030453';
+(function(){
+  if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
+  let busy=false, last=0;
+  async function check(){ const now=Date.now(); if(busy||now-last<5000) return; busy=true; last=now;
+    try{const r=await fetch(location.pathname+'?v='+now,{cache:'no-store'}); if(!r.ok) return;
+      const t=await r.text(), m=t.match(/const APP_BUILD='([^']+)'/);
+      if(m&&m[1]!==APP_BUILD&&!/@@/.test(m[1])){ const k='oxy.reloaded.'+m[1]; if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1'); location.reload()} }
+    }catch(e){} finally{busy=false} }
+  window.addEventListener('pageshow',e=>{ if(e.persisted) last=0; check()});
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') check()});
+})();
+</script>
