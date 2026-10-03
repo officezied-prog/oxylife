@@ -6763,3 +6763,142 @@ function homeNotices(){let out=''; try{
 document.head.insertAdjacentHTML('beforeend','<style>.hsecs:empty,.hsecs:not(:has(*)){display:none}</style>');
 if(route==='home') rerender();
 </script>
+<script>
+/* ============ ملخص حالة المريض للطبيب (D-090) ============
+   زر «ملخص الحالة» في كل مريض. يجمع ما سُجّل في الملف فقط، كل سطر بتاريخه ومصدره، حتى لا يعيد الطبيب قراءة كل التقارير.
+   قواعد السلامة (حسّاسة جدًا):
+   - لا يضيف تشخيصًا ولا تفسيرًا ولا خلاصة: ينقل فقط.
+   - التشخيص يظهر كما سجّله الطبيب وأكّده (النص، تاريخ التشخيص، الوثيقة المصدر، من أكّده ومتى).
+     إن لم يؤكّده الطبيب يظهر تحذير واضح، مع فئة المرض كما اختيرت عند التسجيل.
+   - قيم التحاليل من التحاليل المعتمدة فقط؛ التحاليل التي تنتظر المراجعة تُذكر بعددها وتاريخها دون قيمها.
+   - ما لم يُسجَّل يُكتب «غير مسجّل» ولا يُخمَّن.
+   - مراجعة الطبيب للملخص تُحفظ بتاريخها، ويظهر ما أُضيف إلى الملف بعدها. */
+const SUM_DOC=()=> (TEAMN.t1||{}).name||'الطبيب';
+const sumDx=()=>store.get('dxConfirmed',{});
+const sumRev=()=>store.get('sumReviewed',{});
+const fD=d=>d?(/^\d{4}-\d{2}$/.test(d)?ym(d):fmtD(d,{day:'numeric',month:'long',year:'numeric'})):'<span class="nrec">'+tr('التاريخ غير مسجّل')+'</span>';
+const NREC=t=>'<span class="nrec">'+esc(tr(t||'غير مسجّل'))+'</span>';
+const SUM_FLAG_T={H:'مرتفع',L:'منخفض',HH:'مرتفع جدًا (منطقة الخطر)',LL:'منخفض جدًا (منطقة الخطر)',A:'غير طبيعي',N:'ضمن المدى','?':'دون مدى مرجعي'};
+let SUM_DXFORM=null;
+function sumSec(title,body,src){return '<div class="card ssec"><div class="row sp"><h3>'+esc(tr(title))+'</h3>'+(src?'<small class="ssrc">'+esc(tr(src))+'</small>':'')+'</div>'+body+'</div>'}
+function sumRange(r){const x=info(r); if(x.q) return x.normal?tr('الطبيعي:')+' '+esc(x.normal):'—';
+  const t=x.lo!=null&&x.hi!=null?x.lo+' – '+x.hi:x.lo!=null?'≥ '+x.lo:x.hi!=null?'≤ '+x.hi:''; return t?esc(t+' '+x.u):'—'}
+/* تاريخ رقمي صريح يوم/شهر/سنة (لا يلتبس). */
+const fN=d=>d&&/^\d{4}-\d{2}-\d{2}$/.test(d)?d.split('-').reverse().join('/'):(d||'');
+/* كل ما في الملف بتاريخه، لمعرفة ما أُضيف بعد آخر مراجعة. */
+function sumDated(pid,p){const L=[];
+  reportsOf(pid).forEach(r=>L.push({d:r.date,t:(r.status==='approved'?'تحليل معتمد':'تحليل ينتظر المراجعة')+' · '+(r.lab||'')}));
+  imagingOf(pid).forEach(i=>L.push({d:i.date,t:(IMG_T[i.type]||i.type)+' · '+(i.region||'')}));
+  reqs().filter(q=>q.pid===pid).forEach(q=>{L.push({d:q.at,t:'طلب '+REQ_T[q.kind]}); if(q.doneAt) L.push({d:q.doneAt,t:'أُنجز طلب '+REQ_T[q.kind]})});
+  if(p.me){const life=S.life; Object.keys(life).forEach(d=>{const red=(life[d].signs||[]).filter(s=>RED_SIGNS.includes(s)); if(red.length) L.push({d,t:'علامة إنذار: '+red.join('، ')})})}
+  return L}
+SCREENS.psum={title:'ملخص الحالة',tab:'patients',html:(pid)=>{
+  const p=allPatients().find(x=>x.id===pid); if(!p) return '<p class="muted">'+tr('المريض غير موجود.')+'</p>';
+  const dx=sumDx()[pid], rev=sumRev()[pid], ap=approvedOf(pid), pend=reportsOf(pid).filter(r=>r.status!=='approved'&&r.status!=='refused');
+  const fol=TEAMN[assignOf()[pid]], out=[];
+  /* الرأس */
+  out.push('<div class="card shead"><div class="row sp"><div><h2>'+esc(p.name)+'</h2><p class="muted">'+(p.srv?'':esc((p.age?p.age+' '+tr('سنة'):'')+' · '+(p.sex==='f'?tr('أنثى'):tr('ذكر'))+(p.country?' · '+p.country:'')))+(fol?' · '+esc(tr('المتابِع:')+' '+fol.name):'')+'</p></div>'+
+    '<button class="btn sm ghost" data-act="sumPrint">'+tr('طباعة')+'</button></div>'+
+    '<p class="note">'+esc(tr('أُعدّ هذا الملخص في'))+' '+fD(TODAY)+'. '+esc(tr('يجمع ما سُجّل في الملف كما هو، بتاريخه ومصدره. لا يضيف تشخيصًا ولا تفسيرًا، ولا يغني عن الوثيقة الأصلية قبل أي قرار.'))+'</p>'+
+    (rev?'<p class="sok">'+esc(tr('آخر مراجعة لهذا الملخص:'))+' '+esc(rev.by)+' · '+fD(rev.at)+'</p>':'<p class="swarn">'+esc(tr('لم يراجع الطبيب هذا الملخص بعد.'))+'</p>')+'</div>');
+  /* ما أُضيف بعد آخر مراجعة */
+  if(rev){const nw=sumDated(pid,p).filter(x=>x.d>=rev.at).sort((a,b)=>a.d<b.d?1:-1);
+    out.push(sumSec('جديد منذ آخر مراجعة (يشمل يوم المراجعة)',nw.length?'<ul class="slist">'+nw.map(x=>'<li><b class="num">'+fD(x.d)+'</b> — '+esc(tr(x.t))+'</li>').join('')+'</ul>':'<p class="muted">'+tr('لا شيء جديد في الملف منذ آخر مراجعة.')+'</p>'))}
+  /* التشخيص */
+  {let b='';
+   if(dx) b='<dl class="kv"><dt>'+tr('التشخيص')+'</dt><dd><b>'+esc(dx.text)+'</b></dd><dt>'+tr('تاريخ التشخيص')+'</dt><dd class="num">'+fD(dx.date)+'</dd><dt>'+tr('الوثيقة المصدر')+'</dt><dd>'+(dx.source?esc(dx.source):NREC())+'</dd><dt>'+tr('أكّده')+'</dt><dd>'+esc(dx.by)+' · <span class="num">'+fD(dx.at)+'</span></dd></dl>'+
+     '<button class="lnk" data-act="sumDxEdit" data-id="'+pid+'">'+tr('تعديل التشخيص المؤكَّد')+'</button>';
+   else b='<div class="alert u">'+esc(tr('التشخيص لم يؤكّده الطبيب بعد.'))+' '+esc(tr('فئة المرض كما اختيرت عند التسجيل:'))+' <b>'+esc(DXN[p.dx]||'—')+'</b>. '+esc(tr('هذه فئة فقط، وليست تشخيصًا.'))+'</div>'+
+     '<button class="btn sm" data-act="sumDxEdit" data-id="'+pid+'">'+tr('تسجيل التشخيص المؤكَّد')+'</button>';
+   if(SUM_DXFORM===pid) b+='<div class="sform"><label class="field"><span>'+tr('التشخيص كما في التقرير (النوع، الموضع، المرحلة إن وُجدت)')+' <b>*</b></span><input id="sdx-t" value="'+esc(dx?dx.text:'')+'" maxlength="200"></label>'+
+     '<label class="field"><span>'+tr('تاريخ التشخيص')+' <b>*</b></span><input id="sdx-d" type="date" value="'+esc(dx?dx.date:'')+'" max="'+TODAY+'"></label>'+
+     '<label class="field"><span>'+tr('الوثيقة المصدر (مثلًا: تقرير التشريح المرضي، المستشفى، التاريخ)')+' <b>*</b></span><input id="sdx-s" value="'+esc(dx?dx.source:'')+'" maxlength="200"></label>'+
+     '<p class="note">'+tr('انقل التشخيص من الوثيقة الأصلية كما هو. يُحفظ باسمك وبتاريخ اليوم.')+'</p><div class="grid2"><button class="btn" data-act="sumDxSave" data-id="'+pid+'">'+tr('حفظ')+'</button><button class="btn ghost" data-act="sumDxCancel">'+tr('إلغاء')+'</button></div></div>';
+   out.push(sumSec('التشخيص',b,dx?'أكّده الطبيب':'غير مؤكَّد'))}
+  /* العلاج */
+  {let b;
+   if(p.me&&S.tx&&S.tx.items&&S.tx.items.length){const order={current:0,planned:1,done:2};
+     b='<ul class="slist">'+S.tx.items.slice().sort((a,c)=>order[a.status]-order[c.status]).map(t=>'<li><b>'+esc(TX_T[t.type]||t.type)+'</b>'+(t.detail?' — '+esc(t.detail):'')+' · '+esc(TXS_T[t.status])+
+       ' · '+tr('البداية:')+' '+(t.start?ym(t.start):NREC())+(t.end?' · '+tr('النهاية:')+' '+ym(t.end):'')+(t.cycles?' · '+tr('الدورات:')+' <span class="num">'+esc(t.cycles)+'</span>':'')+'</li>').join('')+'</ul>'+
+       '<p class="note">'+(S.tx.confirmed?tr('راجعه الطبيب'):'<span class="nrec">'+tr('من تقارير المريض، ينتظر مراجعة الطبيب')+'</span>')+'</p>'}
+   else b='<p>'+esc(p.treat||'')+'</p><p class="note">'+tr('كما سُجّل عند التسجيل.')+' '+NREC('تاريخ البداية غير مسجّل')+'</p>'+(p.cyc&&p.cyc[1]>1?'<p class="num">'+tr('التقدّم:')+' '+p.cyc[0]+' / '+p.cyc[1]+'</p>':'');
+   out.push(sumSec('العلاج',b))}
+  /* التحاليل */
+  {let b='';
+   if(!ap.length) b='<p>'+NREC('لا تحليل معتمد في الملف.')+'</p>';
+   else{const last=ap[0], abn=last.rows.filter(r=>['H','L','HH','LL','A'].includes(flagOf(r)));
+     b+='<p><b>'+tr('آخر تحليل معتمد:')+'</b> <span class="num">'+fD(last.date)+'</span> · '+esc(last.lab||'')+'</p>';
+     b+=abn.length?'<div class="tbl stbl"><table><thead><tr><th>'+tr('التحليل')+'</th><th>'+tr('القيمة')+'</th><th>'+tr('المدى المرجعي')+'</th><th>'+tr('الحالة')+'</th></tr></thead><tbody>'+
+       abn.map(r=>{const x=info(r), f=flagOf(r); return '<tr class="'+(f==='HH'||f==='LL'?'scrit':'')+'"><td>'+esc(x.ar||x.n)+'<small class="nrm" dir="ltr">'+esc(x.n)+'</small></td><td class="num" dir="ltr">'+esc(r.v)+' '+esc(x.u)+'</td><td class="num" dir="ltr">'+sumRange(r)+'</td><td>'+esc(tr(SUM_FLAG_T[f]))+'</td></tr>'}).join('')+'</tbody></table></div>'
+       :'<p>'+tr('كل القيم في هذا التحليل ضمن المدى المرجعي.')+' <span class="num">('+last.rows.length+')</span></p>';
+     /* القيم عبر الزمن: التحاليل التي تكرّرت في أكثر من تحليل معتمد، آخر أربعة تواريخ */
+     const cols=ap.slice(0,4).reverse(), keys=[...new Set(ap.flatMap(r=>r.rows.map(x=>x.k)))].filter(k=>cols.filter(r=>valOf(r,k)!==undefined).length>1);
+     if(keys.length){const abnK=k=>cols.some(r=>{const row=r.rows.find(x=>x.k===k); return row&&['H','L','HH','LL','A'].includes(flagOf(row))});
+       const head='<thead><tr><th>'+tr('التحليل')+'</th>'+cols.map(r=>'<th class="num sdh" dir="ltr">'+fN(r.date).slice(0,5)+'<br>'+r.date.slice(0,4)+'</th>').join('')+'</tr></thead>';
+       const rowsOf=K=>K.map(k=>{const d=LAB[k]||{}, u=(cols.map(r=>r.rows.find(x=>x.k===k)).find(Boolean)||{}); return '<tr><td>'+esc(d.ar||d.n||k)+'<small class="nrm" dir="ltr">'+esc(info(u).u||'')+'</small></td>'+cols.map(r=>{const row=r.rows.find(x=>x.k===k); if(!row) return '<td>—</td>'; const f=flagOf(row); return '<td class="num '+(f==='HH'||f==='LL'?'scrit':['H','L','A'].includes(f)?'sabn':'')+'" dir="ltr">'+esc(row.v)+(['H','HH'].includes(f)?' ↑':['L','LL'].includes(f)?' ↓':'')+'</td>'}).join('')+'</tr>'}).join('');
+       const A=keys.filter(abnK), R=keys.filter(k=>!abnK(k));
+       b+='<h4>'+tr('القيم عبر الزمن')+'</h4>'+(A.length?'<div class="tbl stbl"><table>'+head+'<tbody>'+rowsOf(A)+'</tbody></table></div>':'<p>'+tr('لا قيمة خارج المدى في هذه التواريخ.')+'</p>')+
+         (R.length?'<details class="tl"><summary>'+esc(trf('باقي القيم ضمن المدى ({0})',R.length))+'</summary><div class="tbl stbl"><table>'+head+'<tbody>'+rowsOf(R)+'</tbody></table></div></details>':'')+
+         '<p class="note">'+tr('↑ مرتفع · ↓ منخفض · الملوّنة خارج المدى المرجعي؛ الحمراء في منطقة الخطر. التواريخ يوم/شهر/سنة.')+'</p>'}
+     if(ap.length>1) b+='<p class="note">'+tr('تواريخ التحاليل المعتمدة:')+' <span class="num">'+ap.map(r=>fN(r.date)).join(' · ')+'</span></p>'}
+   if(pend.length) b+='<div class="alert w">'+esc(trf('{0} تحليل ينتظر مراجعتك',pend.length))+' ('+pend.map(r=>fD(r.date)).join('، ')+'). '+esc(tr('قيمه غير داخلة في هذا الملخص حتى تعتمده.'))+'</div>';
+   out.push(sumSec('التحاليل',b,'المعتمدة فقط'))}
+  /* الأشعة والتقارير */
+  {const im=imagingOf(pid).slice().reverse();
+   out.push(sumSec('الأشعة والتقارير الطبية',im.length?'<ul class="slist">'+im.map(i=>'<li><b class="num">'+fD(i.date)+'</b> — '+esc(IMG_T[i.type]||i.type)+(i.region?' · '+esc(i.region):'')+
+     (i.lesions&&i.lesions.length?'<br><small>'+i.lesions.map(l=>esc(l.site)+' <span class="num" dir="ltr">'+esc(l.a)+(l.b?'×'+esc(l.b):'')+' mm</span>').join(' · ')+'</small>':'')+
+     (i.impression?'<br><small dir="auto">«'+esc(i.impression)+'»</small>':'')+(i.confirmed?'':' <span class="nrec">'+tr('ينتظر مراجعة الطبيب')+'</span>')+'</li>').join('')+'</ul>':'<p>'+NREC('لا أشعة ولا تقارير في الملف.')+'</p>','الخلاصة كما كُتبت في التقرير'))}
+  /* العلامات والأعراض */
+  {let b='';
+   if(p.me){const life=S.life, from=addDays(TODAY,-30), days=Object.keys(life).filter(d=>d>=from&&(life[d].signs||[]).length).sort().reverse();
+     b=days.length?'<ul class="slist">'+days.map(d=>{const s=life[d].signs, red=s.filter(x=>RED_SIGNS.includes(x)); return '<li'+(red.length?' class="scrit"':'')+'><b class="num">'+fD(d)+'</b> — '+esc(s.join('، '))+(red.length?' · <b>'+tr('علامة إنذار')+'</b>':'')+'</li>'}).join('')+'</ul>':'<p>'+tr('لم يسجّل أعراضًا في آخر 30 يومًا.')+'</p>'}
+   else b=(p.signs&&p.signs.length?'<p'+(p.signs.some(x=>RED_SIGNS.includes(x))?' class="scrit"':'')+'><b>'+fD(TODAY)+'</b> — '+esc(p.signs.join('، '))+'</p>':'<p>'+tr('لا أعراض مسجّلة اليوم.')+'</p>')+'<p class="note">'+NREC('تاريخ الأعراض السابقة غير محفوظ في هذا العرض')+'</p>';
+   out.push(sumSec('الأعراض المسجّلة',b,'كما سجّلها المريض'))}
+  /* الوزن */
+  {const w=p.weights||[], wd=p.wdates||[]; let b;
+   if(w.length>1){const pc=(w[w.length-1]-w[0])/w[0]*100; b='<p class="num">'+w[0]+' '+tr('كغ')+' ('+(wd[0]?fD(wd[0]):NREC('التاريخ غير مسجّل'))+') ← '+w[w.length-1]+' '+tr('كغ')+' ('+(wd[wd.length-1]?fD(wd[wd.length-1]):NREC('التاريخ غير مسجّل'))+') · <b dir="ltr">'+(pc>0?'+':'')+pc.toFixed(1)+'%</b></p>'}
+   else b=w.length?'<p class="num">'+w[0]+' '+tr('كغ')+'</p>':'<p>'+NREC()+'</p>';
+   out.push(sumSec('الوزن',b))}
+  /* الأدوية والالتزام */
+  out.push(sumSec('الأدوية والالتزام','<p>'+tr('الالتزام بالأدوية في آخر 14 يومًا:')+' <b class="num">'+(typeof p.adh==='number'?p.adh+'%':'—')+'</b></p>'+
+    (p.me?'<ul class="slist">'+S.meds.map(m=>'<li dir="auto"><b>'+esc(m.n)+' '+esc(m.dose)+'</b> — '+esc(m.ar)+' · '+esc(m.times.join('، '))+'</li>').join('')+'</ul>':'<p class="note">'+NREC('قائمة الأدوية غير مسجّلة في هذا العرض')+'</p>'),'كما سجّلها المريض'));
+  /* المستحضر: تسجيل فقط */
+  if(p.prod&&(p.prod.doses||p.prod.days)) out.push(sumSec('المستحضر','<p class="num">'+p.prod.doses+' '+tr('جرعة مسجّلة')+(p.prod.days?' · '+tr('اليوم')+' '+p.prod.day+' '+tr('من')+' '+p.prod.days:'')+'</p><p class="note">'+tr('بيانات تسجيل فقط، ولا تثبت أثرًا للمستحضر.')+'</p>'));
+  /* طلبات الطبيب */
+  {const L=reqs().filter(q=>q.pid===pid).reverse();
+   out.push(sumSec('طلبات الطبيب',L.length?'<ul class="slist">'+L.map(q=>'<li><b>'+esc(REQ_T[q.kind])+'</b>: '+esc(q.items.map(k=>reqItemName(k,q.kind)).join('، '))+' · '+tr('طُلب')+' <span class="num">'+fD(q.at)+'</span>'+(q.status==='done'?' · '+tr('أُنجز')+' <span class="num">'+fD(q.doneAt)+'</span>':' · <span class="nrec">'+tr('لم يُنجز بعد')+'</span>')+'</li>').join('')+'</ul>':'<p>'+tr('لا طلبات.')+'</p>'))}
+  /* ملاحظة الطبيب */
+  out.push(sumSec('ملاحظة الطبيب للمريض',S.notes[pid]?'<p dir="auto">'+esc(S.notes[pid])+'</p>':'<p>'+NREC('لا ملاحظة.')+'</p>'));
+  out.push('<div class="card"><p class="note">'+tr('راجع الملخص مع الوثائق الأصلية. تسجيل المراجعة يحفظ اسمك وتاريخ اليوم، وفي المرة القادمة يظهر ما أُضيف إلى الملف بعدها.')+'</p>'+
+    '<div class="grid2"><button class="btn" data-act="sumReviewed" data-id="'+pid+'">'+tr('راجعتُ الملخص')+'</button><button class="btn ghost" data-act="openP" data-id="'+pid+'">'+tr('فتح الملف الكامل')+'</button></div></div>');
+  return '<div class="psum">'+out.join('')+'</div>'}};
+ACT.openSum=b=>{$('#sheet').hidden=true; SUM_DXFORM=null; go('psum',b.dataset.id)};
+/* «كل المرضى» (الضغط على العنوان): زر الملخص بجانب كل اسم أيضًا. */
+{const a0=allSheet; allSheet=function(){a0(); $$('#sheetPanel .nrow').forEach(r=>{const b=r.querySelector('[data-act=openPS]'); if(b&&!r.querySelector('.psumbtn')) r.insertAdjacentHTML('beforeend','<button class="psumbtn" data-act="openSum" data-id="'+esc(b.dataset.id)+'">'+esc(tr('ملخص الحالة'))+'</button>')})}}
+ACT.sumDxEdit=b=>{SUM_DXFORM=b.dataset.id; rerender(); setTimeout(()=>{const el=$('#sdx-t'); if(el) el.focus()},50)};
+ACT.sumDxCancel=()=>{SUM_DXFORM=null; rerender()};
+ACT.sumDxSave=b=>{const t=$('#sdx-t').value.trim(), d=$('#sdx-d').value, s=$('#sdx-s').value.trim();
+  if(t.length<3||!/^\d{4}-\d{2}-\d{2}$/.test(d)||d>TODAY||s.length<3){toast('أكمل التشخيص وتاريخه والوثيقة المصدر'); return}
+  const all=sumDx(); all[b.dataset.id]={text:t,date:d,source:s,by:SUM_DOC(),at:TODAY}; store.set('dxConfirmed',all); SUM_DXFORM=null; toast('حُفظ التشخيص المؤكَّد'); rerender()};
+ACT.sumReviewed=b=>{const all=sumRev(); all[b.dataset.id]={by:SUM_DOC(),at:TODAY}; store.set('sumReviewed',all); toast('سُجّلت مراجعتك للملخص'); rerender()};
+ACT.sumPrint=()=>{document.body.classList.add('printsum'); setTimeout(()=>{window.print(); document.body.classList.remove('printsum')},50)};
+/* زر في كل مريض: في قائمة المرضى وفي رأس ملف المريض. */
+{const r0=prow; prow=function(p,c){const h=r0(p,c); return h.replace(/<\/span><\/span><\/button>$/,'</span><span class="psumbtn" role="button" tabindex="0" data-act="openSum" data-id="'+p.id+'">'+tr('ملخص الحالة')+'</span></span></button>')}}
+{const h0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=h0(pid), i=h.indexOf('<div class="seg">'); const btn='<button class="btn sm psumtop" data-act="openSum" data-id="'+esc(pid)+'">'+tr('ملخص الحالة')+'</button>'; return i<0?btn+h:h.slice(0,i)+btn+h.slice(i)}}
+main.addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('.psumbtn'); if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault(); ACT.openSum(b)}});
+document.head.insertAdjacentHTML('beforeend','<style>'+
+ '.psumbtn{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:4px 11px;cursor:pointer}'+
+ '.psumtop{margin-block:4px 2px;align-self:flex-start}'+
+ '.psum .stbl{overflow-x:visible}.psum .stbl table{min-width:0;width:100%;table-layout:fixed}.psum .stbl th:first-child,.psum .stbl td:first-child{width:34%}.psum .sdh{font-size:11.5px;line-height:1.3}'+
+ '.psum .stbl td{overflow-wrap:anywhere}'+
+ '.psum .stbl th,.psum .stbl td{white-space:normal;overflow:visible;text-overflow:clip;word-break:normal;vertical-align:top;font-size:12.5px;padding:6px 4px}'+
+ '.psum{display:flex;flex-direction:column;gap:12px}.psum h4{margin:8px 0 4px;font-size:14px;font-weight:600}'+
+ '.ssec .ssrc{color:var(--ink-faint);font-size:11.5px}.slist{margin:0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.7}'+
+ '.nrec{color:var(--watch);font-style:italic}.sok{color:var(--ok);font-size:13px;margin:0}.swarn{color:var(--watch);font-size:13px;font-weight:600;margin:0}'+
+ '.scrit,.scrit td{color:var(--urgent);font-weight:600}.sabn{color:var(--out-line);font-weight:600}.sform{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:10px}'+
+ '@media print{body.printsum .hdr,body.printsum .tabs,body.printsum .remind,body.printsum .psum .btn,body.printsum .psum .lnk{display:none!important}'+
+ 'body.printsum .screen>:not(.psum){display:none!important}body.printsum .psum .card{display:flex!important;break-inside:avoid;border:1px solid #ccc}'+
+ 'body.printsum .psum .muted,body.printsum .psum .note,body.printsum .psum .row.sp{display:flex!important}body.printsum .psum .note,body.printsum .psum .muted{display:block!important}}'+
+ '</style>');
+if(['patients','patient','psum'].includes(route)) rerender();
+</script>
