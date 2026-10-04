@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610042239';
+const APP_BUILD='202610042343';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7176,4 +7176,113 @@ for(const s of ['hnut','life']) if(SCREENS[s]){const h0=SCREENS[s].html; SCREENS
   return r}}
 document.head.insertAdjacentHTML('beforeend','<style>.labdiet,.labdietdoc{border:2px solid #4E9A3C}.ldone{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}.ldevs{list-style:none;padding:0;margin:.2rem 0}.ldev{font-size:.9rem}.ldav{background:#FCE4E1;color:#9B1C14;border:1px solid #E58C84;border-radius:10px;padding:6px 8px;margin-top:6px}.ldpr{background:#E4F3E9;color:#1E6B3E;border:1px solid #9CCFB0;border-radius:10px;padding:6px 8px;margin-top:6px}.ldurg{background:#9B1C14;color:#fff;border-radius:8px;padding:0 6px;font-size:.8rem}.ldold{background:#FFF6D1;color:#6B5200;border-radius:8px;padding:0 6px;font-size:.8rem}</style>');
 if(['home','hnut','life','patient','hrecipes'].includes(route)) rerender();
+</script>
+<script>
+/* D-110 (owner, 2026-10-04): «اسأل طبيب التغذية الخاص بك». As in the real app: the patient sends a link and,
+   separately, a 6-digit code to their own nutrition doctor; the doctor answers by voice or text; an agent
+   writes the voice down and orders the answer; THE SAME DOCTOR checks and confirms it; the answer reaches
+   the patient's app, with a copy to the care team (the administration sees who answered and when only).
+   In this trial version the doctor's side is a simulation inside the app («جرّب كطبيب»), the voice uses the
+   browser's speech recognition when it exists, and the ordering is a simple keyword reading. */
+const EXT_ITEMS={labs:'آخر التحاليل المعتمدة',medications:'الأدوية',weight:'الوزن',symptoms:'الأعراض',diets:'الطعام المقترح من تحاليلي'};
+const EXT_ST={sent:'أُرسل',opened:'فتحه طبيبك',answered:'وصل الجواب',revoked:'ألغيته'};
+const EXT_KW={low_potassium:/بوتاسيوم/,potassium_rich:/غني بالبوتاسيوم|زيادة البوتاسيوم/,renal:/الكلى/,low_phosphate:/الفوسفات/,low_sugar:/السكر/,food_safety:/المناعة|سلامة الطعام|النيء/,soft_bleeding:/طري|الصفائح/,consistent_vitamin_k:/فيتامين ك/,liver_care:/الكبد/,protein_energy:/بروتين|الألبومين/,iron_rich:/الحديد/,no_calcium_supplements:/الكالسيوم/,low_purine:/اليوريك|البيورين/,heart_healthy_fats:/الدهون|الكوليسترول/};
+const extReqs=()=>store.get('extReqs',[])||[];
+const extSave=l=>store.set('extReqs',l);
+const extGet=id=>extReqs().find(r=>r.id===id);
+const extPut=r=>extSave(extReqs().map(x=>x.id===r.id?r:x));
+let EXT={doc:null,unlocked:false,draft:null,heard:''};
+/* The demo «agent»: sentence by sentence, only what the doctor said, each item with the doctor's words. */
+function extParse(text,keys){const sents=String(text).split(/[.،!؟\n]+/).map(s=>s.trim()).filter(Boolean), d={decisions:[],salt:null,avoid:[],prefer:[],nextTest:null,unclear:[]};
+  for(const s of sents){
+    const no=/لا داعي|لا أوافق|لا يحتاج|أوقف|ليس ضروري|غير ضروري/.test(s), yes=/أوافق|موافق|نعم|ابدأ|اتبع|قلّل|قلل|التزم|خفّف|خفف/.test(s);
+    let hit=false;
+    for(const k of keys){ if(EXT_KW[k]&&EXT_KW[k].test(s)&&(no||yes)&&!d.decisions.some(x=>x.diet===k)){ if(k==='low_potassium'&&EXT_KW.potassium_rich.test(s)) continue; d.decisions.push({diet:k,decision:no?'reject':'approve',quote:s}); hit=true}}
+    if(/بدون ملح|بلا ملح|ممنوع الملح/.test(s)){d.salt={level:'no_salt',quote:s};hit=true} else if(/ملح قليل|قلّل الملح|قلل الملح|خفف الملح/.test(s)){d.salt={level:'low',quote:s};hit=true}
+    const av=s.match(/(?:ممنوع|تجنّب|تجنب|لا يأكل)\s+(.+)/); if(av){av[1].split(/\s+و(?=\S)|،/).map(x=>x.trim()).filter(Boolean).forEach(x=>d.avoid.push({text:x,quote:s}));hit=true}
+    const pr=s.match(/(?:يأكل|اختر|يُفضّل|يفضل|أنصح ب)\s*(.+)/); if(pr&&!av){pr[1].split(/\s+و(?=\S)|،/).map(x=>x.trim()).filter(Boolean).forEach(x=>d.prefer.push({text:x,quote:s}));hit=true}
+    if(/تحليل|متابعة|موعد/.test(s)&&/بعد|خلال|كل/.test(s)){d.nextTest={text:s,quote:s};hit=true}
+    if(!hit) d.unclear.push(s)}
+  d.noteToPatient=[...d.decisions.filter(x=>x.decision==='approve').map(x=>trf('اتبع طعام «{0}».',LD_NAME[x.diet])),d.salt?(d.salt.level==='no_salt'?'لا تستعمل الملح، والخبز بلا ملح أيضًا.':'قلّل الملح.'):'',d.avoid.length?'تجنّب '+d.avoid.map(x=>x.text).join('، ')+'.':''].filter(Boolean).join(' ');
+  return d}
+/* Patient: the request and the answers. */
+SCREENS.extReq={title:'طبيب التغذية الخاص بي',tab:'hnut',html:()=>{const list=extReqs(), mk=store.get('extMade',null);
+  list.filter(r=>r.status==='answered'&&!r.read).forEach(r=>{r.read=true; extPut(r)});
+  const form=mk?'<div class="card extready"><h3 style="margin:0">'+tr('الرابط جاهز')+'</h3><p style="font-size:1.4rem;font-weight:800;margin:.4rem 0" class="extcode" dir="ltr">'+esc(mk.code)+'</p><p class="muted">'+tr('أرسل الرمز منفصلًا عن الرابط. من يجد الرابط وحده لا يستطيع فتحه. يبقى الرابط 7 أيام ويُستعمل مرة واحدة.')+'</p>'+
+     '<p class="note" dir="ltr" style="word-break:break-all">https://oxylife.app/review/'+esc(mk.id)+'…</p><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-act="extTryDoc" data-id="'+mk.id+'">'+tr('جرّب كطبيب (محاكاة)')+'</button><button class="btn ghost" data-act="extNew">'+tr('رابط جديد')+'</button></div></div>'
+    :'<div class="card extform"><p>'+tr('اختر ما يراه طبيبك. ستحصل على رابط ورمز من 6 أرقام. أرسل الرابط، ثم أرسل الرمز وحده.')+'</p>'+Object.entries(EXT_ITEMS).map(([k,t])=>'<label class="tgl"><input type="checkbox" class="extit" value="'+k+'" checked><span>'+tr(t)+'</span></label>').join('')+
+     '<p><input id="ext-dn" placeholder="'+tr('اسم طبيبك (اختياري)')+'" maxlength="120" style="width:100%"></p><p><textarea id="ext-q" placeholder="'+tr('سؤالك لطبيبك (اختياري)')+'" maxlength="500" style="width:100%"></textarea></p><button class="btn" data-act="extCreate">'+tr('جهّز الرابط')+'</button></div>';
+  const hist=list.length?list.map(r=>'<div class="card extitem" data-id="'+r.id+'"><b>'+tr(EXT_ST[r.status]||r.status)+'</b> <small class="muted">'+esc(fmtD(r.at,{day:'numeric',month:'long'}))+'</small>'+(r.answer?extAnswerHtml(r):'')+
+      (r.status!=='answered'&&r.status!=='revoked'?'<div><button class="btn ghost sm" data-act="extRevoke" data-id="'+r.id+'">'+tr('إلغاء الرابط')+'</button></div>':'')+'</div>').join(''):'<p class="muted">'+tr('لم ترسل أي طلب بعد.')+'</p>';
+  return form+'<h3>'+tr('الطلبات السابقة')+'</h3>'+hist}};
+function extAnswerHtml(r){const a=r.answer;
+  return '<div class="extans"><b>'+esc(trf('من {0}',r.doctorName||'—'))+'</b>'+(a.noteToPatient?'<p>«'+esc(a.noteToPatient)+'»</p>':'')+
+   a.decisions.map(d=>'<p style="margin:.1rem 0">'+(d.decision==='approve'?'✓ '+esc(trf('وافق: {0}',LD_NAME[d.diet])):'✕ '+esc(trf('لم يوافق: {0}',LD_NAME[d.diet])))+'</p>').join('')+
+   (a.salt?'<p>'+esc(trf('الملح: {0}',{none:'لا تعليمات خاصة',low:'ملح قليل',no_salt:'بلا ملح، والخبز بلا ملح أيضًا'}[a.salt]))+'</p>':'')+
+   (a.avoid.length?'<div class="ldav"><b>✕ '+tr('تجنّب')+'</b> '+a.avoid.map(esc).join('، ')+'</div>':'')+(a.prefer.length?'<div class="ldpr"><b>✓ '+tr('اختر')+'</b> '+a.prefer.map(esc).join('، ')+'</div>':'')+
+   (a.nextTest?'<p>'+esc(trf('المتابعة: {0}',a.nextTest))+'</p>':'')+'<p class="muted" style="font-size:.85rem">'+tr('نسخة من الجواب وصلت لفريقك الطبي.')+'</p></div>'}
+ACT.extCreate=()=>{const items=[...document.querySelectorAll('.extit:checked')].map(x=>x.value); if(!items.length){toast(tr('اختر شيئًا واحدًا على الأقل.'));return}
+  const r={id:'r'+Date.now().toString(36),code:String(Math.floor(100000+Math.random()*900000)),items,doctorName:($('#ext-dn')||{}).value||'',question:($('#ext-q')||{}).value||'',status:'sent',at:TODAY,answer:null};
+  extSave([r,...extReqs()]); store.set('extMade',{id:r.id,code:r.code}); rerender()};
+ACT.extNew=()=>{store.set('extMade',null); rerender()};
+ACT.extRevoke=b=>{const r=extGet(b.dataset.id); if(r){r.status='revoked'; extPut(r)} rerender()};
+ACT.extTryDoc=b=>{EXT={doc:b.dataset.id,unlocked:false,draft:null,heard:''}; go('extDoc',b.dataset.id)};
+/* The doctor's page (simulation). */
+SCREENS.extDoc={title:'طلب رأي طبيب التغذية',tab:'hnut',html:(id)=>{const r=extGet(id);
+  if(!r||r.status==='answered'||r.status==='revoked') return '<div class="card"><p>'+tr('هذا الرابط غير صالح: انتهت مدته، أو ألغاه المريض، أو وصل الجواب من قبل.')+'</p></div>';
+  const head='<p class="note">'+tr('محاكاة لصفحة الطبيب: في التطبيق الحقيقي يفتحها طبيبك من الرابط على هاتفه.')+'</p>';
+  if(!EXT.unlocked) return head+'<div class="card"><h3>'+tr('أدخل الرمز')+'</h3><p class="muted">'+tr('الرمز من 6 أرقام، يعطيك إياه المريض منفصلًا عن الرابط.')+'</p><input id="ext-code" inputmode="numeric" maxlength="6" dir="ltr" style="width:100%"><p></p><button class="btn" data-act="extUnlock" data-id="'+id+'">'+tr('فتح')+'</button></div>';
+  if(r.status==='sent'){r.status='opened'; extPut(r)}
+  const L=ldLatest('p1'), props=ldPropose('p1'), act=Object.keys(ldOrders('p1'));
+  let h=head+'<div class="card"><h3>'+esc(trf('المريض: {0}',(meP()||{}).name||'—'))+'</h3>'+(r.question?'<p><b>'+tr('سؤال المريض:')+'</b> '+esc(r.question)+'</p>':'')+'</div>';
+  if(r.items.includes('labs')) h+='<div class="card"><h3>'+tr('آخر التحاليل المعتمدة')+'</h3><ul class="ldevs">'+Object.values(L).map(ldEv).join('')+'</ul></div>';
+  if(r.items.includes('diets')) h+='<div class="card"><h3>'+tr('الطعام المقترح من التحاليل')+'</h3>'+(props.length?props.map(p=>'<div class="ldone"><b>'+esc(LD_NAME[p.diet])+'</b>'+(p.urgent?' <span class="ldurg">'+tr('عاجل')+'</span>':'')+'<ul class="ldevs">'+p.ev.map(ldEv).join('')+'</ul>'+ldFoods(p.diet)+'</div>').join(''):'<p class="muted">'+tr('لا اقتراح من التحاليل.')+'</p>')+'</div>';
+  const sr=window.SpeechRecognition||window.webkitSpeechRecognition;
+  h+='<div class="card extdocans"><h3>'+tr('جوابك')+'</h3><p class="muted">'+tr('تكلّم بصوتك أو اكتب. سنكتب كلامك ونرتّبه، ثم تراجعه وتصححه قبل الإرسال.')+'</p>'+
+    (sr?'<button class="btn" data-act="extListen" style="background:var(--urgent)">● '+tr('تكلّم')+'</button>':'<p class="note">'+tr('التعرف على الصوت غير متاح في هذا المتصفح. اكتب جوابك.')+'</p>')+
+    '<p><textarea id="ext-txt" style="width:100%;min-height:90px" placeholder="'+tr('مثال: أوافق على تقليل البوتاسيوم. بدون ملح نهائيًا. ممنوع الموز. أعيدوا تحليل البوتاسيوم بعد أسبوعين.')+'">'+esc(EXT.heard)+'</textarea></p><button class="btn" data-act="extOrder" data-id="'+id+'">'+tr('اكتب ورتّب')+'</button></div>';
+  if(EXT.draft){const d=EXT.draft, keys=[...props.map(p=>p.diet),...act.filter(k=>!props.some(p=>p.diet===k))];
+    h+='<div class="card extconfirm"><h3>'+tr('راجع جوابك قبل الإرسال')+'</h3>'+(d.unclear.length?'<p class="note">'+esc(trf('غير واضح، صحّحه من فضلك: {0}',d.unclear.join('، ')))+'</p>':'')+
+      keys.map(k=>{const m=d.decisions.find(x=>x.diet===k); return '<div class="ldone"><b>'+esc(LD_NAME[k])+'</b><div class="row" style="gap:10px">'+[['approve','أوافق'],['reject','لا أوافق'],['','لم أقرر']].map(([v,t])=>'<label><input type="radio" name="xd-'+k+'" value="'+v+'"'+((m?m.decision:'')===v?' checked':'')+'> '+tr(t)+'</label>').join('')+'</div>'+(m?'<small class="muted">'+esc(trf('من كلامك: «{0}»',m.quote))+'</small>':'')+'</div>'}).join('')+
+      '<p><label>'+tr('الملح')+' <select id="xd-salt"><option value="">'+tr('بدون تغيير')+'</option>'+[['none','لا تعليمات خاصة'],['low','ملح قليل'],['no_salt','بلا ملح (والخبز بلا ملح)']].map(([k,t])=>'<option value="'+k+'"'+(d.salt&&d.salt.level===k?' selected':'')+'>'+tr(t)+'</option>').join('')+'</select></label></p>'+
+      '<p><textarea id="xd-avoid" style="width:100%" placeholder="'+tr('أطعمة يتجنّبها (سطر لكل طعام)')+'">'+esc(d.avoid.map(x=>x.text).join('\n'))+'</textarea></p>'+
+      '<p><textarea id="xd-prefer" style="width:100%" placeholder="'+tr('أطعمة يختارها (سطر لكل طعام)')+'">'+esc(d.prefer.map(x=>x.text).join('\n'))+'</textarea></p>'+
+      '<p><input id="xd-next" style="width:100%" placeholder="'+tr('تحليل أو متابعة قادمة')+'" value="'+esc(d.nextTest?d.nextTest.text:'')+'"></p>'+
+      '<p><textarea id="xd-note" style="width:100%" placeholder="'+tr('رسالة للمريض')+'">'+esc(d.noteToPatient||'')+'</textarea></p>'+
+      '<p><input id="xd-dn" style="width:100%" placeholder="'+tr('اسمك')+'" value="'+esc(r.doctorName||'')+'"></p><p><input id="xd-dl" style="width:100%" dir="ltr" placeholder="'+tr('رقم الترخيص أو التسجيل المهني')+'"></p>'+
+      '<label class="tgl"><input type="checkbox" id="xd-att"><span>'+tr('راجعتُ هذا الجواب، وهو قراري أنا.')+'</span></label><button class="btn" data-act="extConfirm" data-id="'+id+'">'+tr('أؤكد وأرسل للمريض')+'</button></div>'}
+  return h}};
+ACT.extUnlock=b=>{const r=extGet(b.dataset.id), c=($('#ext-code')||{}).value||''; if(!r||c.trim()!==r.code){toast(tr('الرمز غير صحيح.'));return} EXT.unlocked=true; rerender()};
+ACT.extListen=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return; try{const rec=new SR(); rec.lang='ar'; rec.interimResults=false;
+  rec.onresult=e=>{EXT.heard=[EXT.heard,[...e.results].map(x=>x[0].transcript).join(' ')].filter(Boolean).join(' '); const t=$('#ext-txt'); if(t) t.value=EXT.heard};
+  rec.onerror=()=>toast(tr('لم نسمع جيدًا. اكتب جوابك.')); rec.start(); toast(tr('تكلّم الآن…'))}catch(e){toast(tr('التعرف على الصوت غير متاح. اكتب جوابك.'))}};
+ACT.extOrder=b=>{const text=(($('#ext-txt')||{}).value||'').trim(); if(!text){toast(tr('سجّل صوتك أو اكتب جوابك.'));return} EXT.heard=text;
+  const keys=[...ldPropose('p1').map(p=>p.diet),...Object.keys(ldOrders('p1'))]; EXT.draft=extParse(text,keys); rerender()};
+ACT.extConfirm=b=>{const r=extGet(b.dataset.id); if(!r) return; if(!$('#xd-att').checked){toast(tr('أكّد أنك راجعت الجواب.'));return}
+  const dn=$('#xd-dn').value.trim(), dl=$('#xd-dl').value.trim(); if(dn.length<2||dl.length<3){toast(tr('اكتب اسمك ورقم ترخيصك.'));return}
+  const keys=[...new Set([...ldPropose('p1').map(p=>p.diet),...Object.keys(ldOrders('p1'))])];
+  const decisions=keys.map(k=>{const c=document.querySelector('input[name="xd-'+k+'"]:checked'); return c&&c.value?{diet:k,decision:c.value}:null}).filter(Boolean);
+  const lines=id=>$(id).value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,15);
+  const a={decisions,salt:$('#xd-salt').value||null,avoid:lines('#xd-avoid'),prefer:lines('#xd-prefer'),nextTest:$('#xd-next').value.trim()||null,noteToPatient:$('#xd-note').value.trim()};
+  const props=ldPropose('p1'), all=store.get('dietOrders',{})||{}, o=all.p1||(all.p1={});
+  for(const d of decisions){ if(d.decision==='approve'){ if(d.diet==='potassium_rich') delete o.low_potassium; if(d.diet==='low_potassium') delete o.potassium_rich; const p=props.find(x=>x.diet===d.diet); o[d.diet]={at:TODAY,ev:p?p.ev:[],note:a.noteToPatient,by:dn}} else delete o[d.diet]}
+  store.set('dietOrders',all);
+  if(a.salt){const so=store.get('saltOrder',{})||{}; so.p1=a.salt; store.set('saltOrder',so)}
+  /* The safety net (as the real app): an answer against the tests is delivered, and the team is alerted. */
+  const concerns=[]; const has=k=>props.some(p=>p.diet===k);
+  if(decisions.some(d=>d.diet==='potassium_rich'&&d.decision==='approve')&&has('low_potassium')) concerns.push('وافق على «غني بالبوتاسيوم» والتحليل يدل على العكس');
+  props.filter(p=>p.urgent).forEach(p=>{ if(decisions.some(d=>d.diet===p.diet&&d.decision==='reject')) concerns.push(trf('لم يوافق على «{0}» وهو عاجل حسب التحاليل',LD_NAME[p.diet]))});
+  Object.assign(r,{status:'answered',answer:a,doctorName:dn,doctorLicense:dl,answeredAt:TODAY,read:false,concerns}); extPut(r);
+  store.set('extMade',null); EXT={doc:null,unlocked:false,draft:null,heard:''};
+  toast(tr('وصل جوابك إلى تطبيق المريض، ونسخة منه للفريق الطبي.')); go('extReq',null)};
+/* Patient: a new answer on the home; the entry on «حياتي»; who confirmed a diet. */
+function extNewCard(){const r=extReqs().find(x=>x.status==='answered'&&!x.read); if(!r) return '';
+  return '<div class="card extnew" style="border:2px solid #4E9A3C"><b>'+tr('وصل جواب طبيبك عن طعامك')+'</b><div><button class="btn sm" data-act="nav" data-r="extReq">'+tr('افتح')+'</button></div></div>'}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>{const h=h0(a), c=role==='patient'?extNewCard():''; if(!c) return h; const k='<div class="card labdiet">', i=h.indexOf(k); return i<0?c+h:h.slice(0,i)+c+h.slice(i)}}
+{const h0=SCREENS.hnut.html; SCREENS.hnut.html=a=>{const h=h0(a); if(role!=='patient') return h; return h+'<div class="card extentry"><b>'+tr('اسأل طبيب التغذية الخاص بك')+'</b><p class="muted" style="margin:.2rem 0">'+tr('أرسل له رابطًا فيه تحاليلك وأدويتك. يجيبك بصوته أو بالكتابة، ويصل جوابه هنا.')+'</p><button class="btn ghost" data-act="nav" data-r="extReq">'+tr('طبيب التغذية الخاص بي')+'</button></div>'}}
+{const l0=labDietCard; labDietCard=function(){let h=l0(); const o=ldOrders('p1'); for(const d of LD_ORDER) if(o[d]&&o[d].by){const k='<b>'+esc(LD_NAME[d])+'</b>'; h=h.replace(k,k+' <small class="muted">'+esc(trf('أكده طبيبك: {0}',o[d].by))+'</small>')} return h}}
+/* Our care team: the copy, on the patient page. */
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor'||pid!=='p1') return h; const ans=extReqs().filter(r=>r.status==='answered');
+  if(!ans.length) return h; return h+'<div class="card extcopy"><h3 style="margin:0 0 6px">'+tr('أجوبة طبيب التغذية الخاص بالمريض')+'</h3>'+ans.map(r=>(r.concerns&&r.concerns.length?'<p class="alert u">'+r.concerns.map(esc).join('<br>')+'</p>':'')+extAnswerHtml(r)+'<small class="muted" dir="ltr">'+esc(r.doctorLicense||'')+'</small>').join('<hr>')+'</div>'}}
+if(['home','hnut','patient','extReq','extDoc'].includes(route)) rerender();
 </script>
