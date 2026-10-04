@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610042343';
+const APP_BUILD='202610042349';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7285,4 +7285,58 @@ function extNewCard(){const r=extReqs().find(x=>x.status==='answered'&&!x.read);
 {const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor'||pid!=='p1') return h; const ans=extReqs().filter(r=>r.status==='answered');
   if(!ans.length) return h; return h+'<div class="card extcopy"><h3 style="margin:0 0 6px">'+tr('أجوبة طبيب التغذية الخاص بالمريض')+'</h3>'+ans.map(r=>(r.concerns&&r.concerns.length?'<p class="alert u">'+r.concerns.map(esc).join('<br>')+'</p>':'')+extAnswerHtml(r)+'<small class="muted" dir="ltr">'+esc(r.doctorLicense||'')+'</small>').join('<hr>')+'</div>'}}
 if(['home','hnut','patient','extReq','extDoc'].includes(route)) rerender();
+</script>
+<script>
+/* D-111 (owner, 2026-10-04): after the voice, a short summary for the doctor to read, then «أوافق وأرسل»,
+   «أعدّل» (the full form, then back) or «أرفض وأعيد التسجيل» — so the doctor answers without long writing. */
+EXT.mode='summary'; EXT.attempt=1; EXT.dn=''; EXT.dl='';
+function extApply(r,a,dn,dl){const props=ldPropose('p1'), all=store.get('dietOrders',{})||{}, o=all.p1||(all.p1={});
+  for(const d of a.decisions){ if(d.decision==='approve'){ if(d.diet==='potassium_rich') delete o.low_potassium; if(d.diet==='low_potassium') delete o.potassium_rich; const p=props.find(x=>x.diet===d.diet); o[d.diet]={at:TODAY,ev:p?p.ev:[],note:a.noteToPatient,by:dn}} else delete o[d.diet]}
+  store.set('dietOrders',all);
+  if(a.salt){const so=store.get('saltOrder',{})||{}; so.p1=a.salt; store.set('saltOrder',so)}
+  const concerns=[]; const has=k=>props.some(p=>p.diet===k);
+  if(a.decisions.some(d=>d.diet==='potassium_rich'&&d.decision==='approve')&&has('low_potassium')) concerns.push('وافق على «غني بالبوتاسيوم» والتحليل يدل على العكس');
+  props.filter(p=>p.urgent).forEach(p=>{ if(a.decisions.some(d=>d.diet===p.diet&&d.decision==='reject')) concerns.push(trf('لم يوافق على «{0}» وهو عاجل حسب التحاليل',LD_NAME[p.diet]))});
+  Object.assign(r,{status:'answered',answer:a,doctorName:dn,doctorLicense:dl,answeredAt:TODAY,read:false,concerns}); extPut(r);
+  store.set('extMade',null); EXT={doc:null,unlocked:false,draft:null,heard:'',mode:'summary',attempt:1,dn:'',dl:''};
+  toast(tr('وصل جوابك إلى تطبيق المريض، ونسخة منه للفريق الطبي.')); go('extReq',null)}
+const extWho=(n,l)=>{n=(n||'').trim(); l=(l||'').trim(); if(n.length<2||l.length<3){toast(tr('اكتب اسمك ورقم ترخيصك.'));return null} return {n,l}};
+function extSummaryHtml(id){const d=EXT.draft, L=[];
+  d.decisions.forEach(x=>L.push('<p style="margin:.15rem 0">'+(x.decision==='approve'?'✓ '+tr('أوافق على')+' ':'✕ '+tr('لا أوافق على')+' ')+'<b>'+esc(LD_NAME[x.diet])+'</b></p>'));
+  if(d.salt) L.push('<p style="margin:.15rem 0">'+tr('الملح:')+' <b>'+tr({none:'لا تعليمات خاصة',low:'ملح قليل',no_salt:'بلا ملح (والخبز بلا ملح)'}[d.salt.level])+'</b></p>');
+  if(d.avoid.length) L.push('<div class="ldav">✕ '+tr('يتجنّب:')+' '+d.avoid.map(x=>esc(x.text)).join('، ')+'</div>');
+  if(d.prefer.length) L.push('<div class="ldpr">✓ '+tr('يختار:')+' '+d.prefer.map(x=>esc(x.text)).join('، ')+'</div>');
+  if(d.nextTest) L.push('<p>'+esc(trf('المتابعة: {0}',d.nextTest.text))+'</p>');
+  if(d.noteToPatient) L.push('<p>'+esc(trf('رسالة للمريض: «{0}»',d.noteToPatient))+'</p>');
+  if(d.unclear.length) L.push('<p class="note">'+esc(trf('لم نفهم: {0}',d.unclear.join('، ')))+'</p>');
+  const any=d.decisions.length||d.salt||d.avoid.length||d.prefer.length||d.nextTest;
+  if(!any) L.push('<p class="note">'+tr('لم نجد قرارًا واضحًا في كلامك. أعد التسجيل أو اضغط «أعدّل».')+'</p>');
+  return '<div class="card extsummary"><h3 style="margin:0">'+tr('ملخص جوابك')+'</h3><p class="muted">'+tr('هذا ما فهمناه من كلامك. اقرأه ثم اختر.')+'</p>'+L.join('')+
+    '<details><summary class="muted">'+tr('ما سمعناه كاملًا')+'</summary><p>'+esc(EXT.heard)+'</p></details>'+
+    '<p><input id="xs-dn" style="width:100%" placeholder="'+tr('اسمك')+'" value="'+esc(EXT.dn||(extGet(id)||{}).doctorName||'')+'"></p><p><input id="xs-dl" style="width:100%" dir="ltr" placeholder="'+tr('رقم الترخيص أو التسجيل المهني')+'" value="'+esc(EXT.dl)+'"></p>'+
+    '<p class="muted" style="font-size:.85rem">'+tr('بالضغط على «أوافق وأرسل» تؤكد أنك راجعت الملخص وأنه قرارك أنت.')+'</p>'+
+    '<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-act="extApprove" data-id="'+id+'"'+(any?'':' disabled')+'>✓ '+tr('أوافق وأرسل')+'</button><button class="btn ghost" data-act="extEdit">✎ '+tr('أعدّل')+'</button><button class="btn ghost" data-act="extRedo">✕ '+tr('أرفض وأعيد التسجيل')+'</button></div></div>'}
+{const x0=SCREENS.extDoc.html; SCREENS.extDoc.html=id=>{let h=x0(id); const k='<div class="card extconfirm">';
+  if(EXT.attempt>1) h=h.replace('data-act="extOrder" data-id="'+id+'">'+tr('اكتب ورتّب')+'</button>','data-act="extOrder" data-id="'+id+'">'+tr('اكتب ولخّص')+'</button> <span class="muted extattempt">'+esc(trf('المحاولة {0}',EXT.attempt))+'</span>');
+  else h=h.replace('>'+tr('اكتب ورتّب')+'</button>','>'+tr('اكتب ولخّص')+'</button>');
+  h=h.replace(tr('تكلّم بصوتك أو اكتب. سنكتب كلامك ونرتّبه، ثم تراجعه وتصححه قبل الإرسال.'),tr('تكلّم بصوتك أو اكتب. سنكتب كلامك ونقدّم لك ملخصًا قصيرًا: توافق عليه وترسله، أو تعدّله، أو ترفضه وتعيد التسجيل.'));
+  const i=h.indexOf(k);
+  if(i<0) return h;
+  if(EXT.mode==='summary') return h.slice(0,i)+extSummaryHtml(id);
+  return h.slice(0,i)+h.slice(i).replace('<h3>'+tr('راجع جوابك قبل الإرسال')+'</h3>','<h3>'+tr('عدّل جوابك')+'</h3>').replace('value="'+esc((extGet(id)||{}).doctorName||'')+'"','value="'+esc(EXT.dn||(extGet(id)||{}).doctorName||'')+'"').replace('placeholder="'+tr('رقم الترخيص أو التسجيل المهني')+'">','placeholder="'+tr('رقم الترخيص أو التسجيل المهني')+'" value="'+esc(EXT.dl)+'">')+
+    '<button class="btn ghost" data-act="extBack">'+tr('رجوع إلى الملخص')+'</button>'}}
+{const o0=ACT.extOrder; ACT.extOrder=b=>{EXT.mode='summary'; o0(b)}}
+ACT.extEdit=()=>{EXT.dn=($('#xs-dn')||{}).value||EXT.dn; EXT.dl=($('#xs-dl')||{}).value||EXT.dl; EXT.mode='edit'; rerender()};
+ACT.extBack=()=>{EXT.dn=($('#xd-dn')||{}).value||EXT.dn; EXT.dl=($('#xd-dl')||{}).value||EXT.dl; EXT.mode='summary'; rerender()};
+ACT.extRedo=()=>{EXT.dn=($('#xs-dn')||{}).value||EXT.dn; EXT.dl=($('#xs-dl')||{}).value||EXT.dl; EXT.draft=null; EXT.heard=''; EXT.attempt=(EXT.attempt||1)+1; EXT.mode='summary'; rerender()};
+ACT.extApprove=b=>{const r=extGet(b.dataset.id), w=extWho(($('#xs-dn')||{}).value,($('#xs-dl')||{}).value); if(!r||!w||!EXT.draft) return; const d=EXT.draft;
+  extApply(r,{decisions:d.decisions.map(x=>({diet:x.diet,decision:x.decision})),salt:d.salt?d.salt.level:null,avoid:d.avoid.map(x=>x.text),prefer:d.prefer.map(x=>x.text),nextTest:d.nextTest?d.nextTest.text:null,noteToPatient:d.noteToPatient||''},w.n,w.l)};
+ACT.extConfirm=b=>{const r=extGet(b.dataset.id); if(!r) return; if(!$('#xd-att').checked){toast(tr('أكّد أنك راجعت الجواب.'));return}
+  const w=extWho($('#xd-dn').value,$('#xd-dl').value); if(!w) return;
+  const keys=[...new Set([...ldPropose('p1').map(p=>p.diet),...Object.keys(ldOrders('p1'))])];
+  const decisions=keys.map(k=>{const c=document.querySelector('input[name="xd-'+k+'"]:checked'); return c&&c.value?{diet:k,decision:c.value}:null}).filter(Boolean);
+  const lines=s=>$(s).value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,15);
+  extApply(r,{decisions,salt:$('#xd-salt').value||null,avoid:lines('#xd-avoid'),prefer:lines('#xd-prefer'),nextTest:$('#xd-next').value.trim()||null,noteToPatient:$('#xd-note').value.trim()},w.n,w.l)};
+{const t0=ACT.extTryDoc; ACT.extTryDoc=b=>{t0(b); Object.assign(EXT,{mode:'summary',attempt:1,dn:'',dl:''})}}
+if(route==='extDoc') rerender();
 </script>
