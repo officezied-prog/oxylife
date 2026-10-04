@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610031511';
+const APP_BUILD='202610042239';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7111,4 +7111,69 @@ if(['home','fhome','famManage','chat','life','patient'].includes(route)) rerende
     exitAt=now; toast('اضغط رجوع مرة أخرى للخروج'); guard();
   });
 })();
+</script>
+<script>
+/* D-109 (owner, 2026-10-04): «الطعام حسب التحاليل». As in the real app (D-109): the rules read only the
+   APPROVED tests (latest value of each, converted to one unit) and PROPOSE a diet to the doctor; the doctor
+   confirms it, and only then does the patient see «طعامك حسب تحاليلك» with the test, its value and date,
+   what to avoid (red) and what to prefer (green), and the recipe ideas follow it. Never a diagnosis. */
+const LD_NAME={"low_potassium":"قليل البوتاسيوم","potassium_rich":"غني بالبوتاسيوم","renal":"طعام يريح الكلى","low_phosphate":"قليل الفوسفات","low_sugar":"قليل السكر","food_safety":"سلامة الطعام (مناعة منخفضة)","soft_bleeding":"طعام طري (صفائح منخفضة)","consistent_vitamin_k":"فيتامين K ثابت (دواء مميّع)","liver_care":"طعام يريح الكبد","protein_energy":"بروتين وطاقة أكثر","iron_rich":"غني بالحديد","no_calcium_supplements":"بدون مكمّلات الكالسيوم","low_purine":"قليل البيورين (حمض اليوريك)","heart_healthy_fats":"دهون صحية للقلب"};
+const LD_FOOD={"banana":"الموز","dates_dried_fruit":"التمر والفواكه المجففة","orange_juice":"عصير البرتقال","potato_unleached":"البطاطا بدون نقع وسلق","tomato_paste":"معجون الطماطم","avocado":"الأفوكادو","coconut_water":"ماء جوز الهند","salt_substitute":"بديل الملح (فيه بوتاسيوم)","apple_pear":"التفاح والإجاص","rice_pasta_white_bread":"الأرز والمعكرونة والخبز الأبيض","cucumber_cabbage":"الخيار والملفوف","veg_boiled_water_discarded":"خضار مسلوقة مع رمي ماء السلق","orange":"البرتقال","potato":"البطاطا","tomato":"الطماطم","yogurt":"اللبن الزبادي","lentils":"العدس","star_fruit":"فاكهة النجمة (خطيرة على الكلى)","herbal_remedies":"الأعشاب والخلطات","processed_foods":"الأطعمة المصنعة","big_protein_portions":"كميات لحم كبيرة","home_cooked_low_salt":"طبخ البيت بملح قليل","portions_by_dietitian":"الكميات كما حددها أخصائي التغذية","cola":"الكولا","processed_cheese":"الجبن المطبوخ","processed_meat":"اللحوم المصنعة","phosphate_additives":"المواد المضافة (فوسفات)","many_nuts_dairy":"الكثير من المكسرات والألبان","fresh_meat_portion":"لحم طازج بكمية معتدلة","fresh_vegetables":"الخضار الطازجة","sugary_drinks_juices":"المشروبات المحلاة والعصائر","sweets":"الحلويات","big_white_bread":"الكثير من الخبز الأبيض","honey_dates_large":"العسل والتمر بكميات كبيرة","wholegrains":"الحبوب الكاملة","legumes":"البقوليات","vegetables":"الخضار","water":"الماء","spread_carbs":"النشويات موزعة على الوجبات","raw_meat_eggs_fish":"اللحم والبيض والسمك النيء","unpasteurized_dairy":"الحليب والجبن غير المبستر","outside_salads":"السلطات من خارج البيت","old_leftovers":"بقايا الطعام القديمة","street_food":"طعام الشارع","well_cooked":"طعام مطبوخ جيدًا","pasteurized_dairy":"ألبان مبسترة","washed_peeled_fruit":"فواكه مغسولة ومقشرة","freshly_cooked":"طعام مطبوخ الآن","hard_crunchy":"الأطعمة القاسية والمقرمشة","very_hot_drinks":"المشروبات الساخنة جدًا","alcohol":"الكحول","bleeding_supplements":"مكملات تزيد النزيف (مثل زيت السمك بكثرة)","soft_foods":"أطعمة طرية","lukewarm_drinks":"مشروبات فاترة","sudden_greens_change":"تغيير كمية الخضار الورقية فجأة","cranberry_grapefruit":"التوت البري والجريب فروت","same_greens_daily":"نفس كمية الخضار الورقية كل يوم","raw_shellfish":"المحار النيء","very_fatty_fried":"المقالي والدهون الكثيرة","balanced_home_meals":"وجبات بيتية متوازنة","protein_each_meal":"بروتين في كل وجبة","eggs_well_cooked":"بيض مطبوخ جيدًا","chicken_fish":"الدجاج والسمك","yogurt_milk":"اللبن والحليب","small_frequent_meals":"وجبات صغيرة متكررة","tea_coffee_with_meals":"الشاي والقهوة مع الأكل","red_meat_moderate":"اللحم الأحمر باعتدال","greens_with_lemon":"الخضار الورقية مع الليمون","calcium_vitd_supplements":"حبوب الكالسيوم وفيتامين د","calcium_antacids":"مضادات الحموضة التي فيها كالسيوم","enough_water_unless_limited":"ماء كافٍ (إلا إذا حدّد الطبيب كمية)","organ_meats":"الكبدة والكلاوي","sardines_anchovies":"السردين والأنشوجة","shellfish":"ثمار البحر","low_fat_dairy":"ألبان قليلة الدسم","fried_food":"المقالي","ghee_butter_large":"السمن والزبدة بكثرة","fatty_red_meat":"اللحم الأحمر الدهني","olive_oil":"زيت الزيتون","fish":"السمك","oats":"الشوفان"};
+const LD_FOODS={"low_potassium":{"avoid":["banana","dates_dried_fruit","orange_juice","potato_unleached","tomato_paste","avocado","coconut_water","salt_substitute"],"prefer":["apple_pear","rice_pasta_white_bread","cucumber_cabbage","veg_boiled_water_discarded"]},"potassium_rich":{"avoid":[],"prefer":["banana","orange","potato","tomato","yogurt","lentils"]},"renal":{"avoid":["star_fruit","salt_substitute","herbal_remedies","processed_foods","big_protein_portions"],"prefer":["home_cooked_low_salt","portions_by_dietitian"]},"low_phosphate":{"avoid":["cola","processed_cheese","processed_meat","phosphate_additives","many_nuts_dairy"],"prefer":["fresh_meat_portion","rice_pasta_white_bread","fresh_vegetables"]},"low_sugar":{"avoid":["sugary_drinks_juices","sweets","big_white_bread","honey_dates_large"],"prefer":["wholegrains","legumes","vegetables","water","spread_carbs"]},"food_safety":{"avoid":["raw_meat_eggs_fish","unpasteurized_dairy","outside_salads","old_leftovers","street_food"],"prefer":["well_cooked","pasteurized_dairy","washed_peeled_fruit","freshly_cooked"]},"soft_bleeding":{"avoid":["hard_crunchy","very_hot_drinks","alcohol","bleeding_supplements"],"prefer":["soft_foods","lukewarm_drinks"]},"consistent_vitamin_k":{"avoid":["sudden_greens_change","cranberry_grapefruit","herbal_remedies"],"prefer":["same_greens_daily"]},"liver_care":{"avoid":["alcohol","herbal_remedies","raw_shellfish","very_fatty_fried"],"prefer":["balanced_home_meals"]},"protein_energy":{"avoid":[],"prefer":["protein_each_meal","eggs_well_cooked","lentils","chicken_fish","yogurt_milk","small_frequent_meals"]},"iron_rich":{"avoid":["tea_coffee_with_meals"],"prefer":["red_meat_moderate","lentils","greens_with_lemon"]},"no_calcium_supplements":{"avoid":["calcium_vitd_supplements","calcium_antacids"],"prefer":["enough_water_unless_limited"]},"low_purine":{"avoid":["organ_meats","sardines_anchovies","shellfish","sugary_drinks_juices","alcohol"],"prefer":["water","low_fat_dairy","vegetables"]},"heart_healthy_fats":{"avoid":["fried_food","ghee_butter_large","fatty_red_meat","processed_meat","sugary_drinks_juices"],"prefer":["olive_oil","fish","oats","legumes","vegetables"]}};
+const LD_ORDER=["low_potassium","potassium_rich","renal","low_phosphate","low_sugar","food_safety","soft_bleeding","consistent_vitamin_k","liver_care","protein_energy","iron_rich","no_calcium_supplements","low_purine","heart_healthy_fats"];
+/* The prototype prints SI units: convert to the reference unit before the thresholds. */
+const LD_FX={kal:1,creat:1/88.4,phos:3.097,glu:18.016,hba1c:1,anc:1,plt:1,inr:1,alt:1,ast:1,bili:1/17.1,alb:0.1,hgb:0.1,ferritin:1,iron:5.585,ca:4.008,uric:1/59.48,ldl:38.67,tg:88.57};
+const LD_DEFU={kal:'mmol/L',creat:'µmol/L',phos:'mmol/L',glu:'mmol/L',hba1c:'%',anc:'x10⁹/L',plt:'x10⁹/L',inr:'',alt:'U/L',ast:'U/L',bili:'µmol/L',alb:'g/L',hgb:'g/L',ferritin:'µg/L',iron:'µmol/L',ca:'mmol/L',uric:'µmol/L',ldl:'mmol/L',tg:'mmol/L'};
+function ldLatest(pid){const by={}; [...approvedOf(pid)].sort((a,b)=>a.date<b.date?-1:1).forEach(r=>r.rows.forEach(x=>{ if(x.v===''||x.v==null||isNaN(+x.v)||!(x.k in LD_FX)) return; const i=info(x);
+  if((i.u||'')!==LD_DEFU[x.k]) return; /* a unit we cannot convert is left out, never guessed */
+  const f=LD_FX[x.k]; by[x.k]={k:x.k,raw:+x.v,u:i.u,v:+x.v*f,lo:i.lo==null?null:i.lo*f,hi:i.hi==null?null:i.hi*f,date:r.date,ar:i.ar||i.n}}));
+  return by}
+function ldPropose(pid){const L=ldLatest(pid), out={}, today=TODAY;
+  const add=(diet,ls,urgent)=>{const o=out[diet]||(out[diet]={diet,urgent:false,ev:[]}); o.urgent=o.urgent||!!urgent; ls.forEach(l=>o.ev.push(l))};
+  const hi=(l,f)=>l.hi??f, lo=(l,f)=>l.lo??f;
+  const {kal:k,creat,phos,glu,hba1c:a1c,anc,plt,alt,ast,bili,alb,hgb,ferritin,iron,ca,uric,ldl,tg}=L;
+  const kidney=creat?creat.v>hi(creat,1.2):false;
+  if(k&&k.v>hi(k,5.0)) add('low_potassium',[k],k.v>=6.0);
+  if(k&&k.v<lo(k,3.5)&&!kidney) add('potassium_rich',[k],k.v<3.0);
+  if(creat&&creat.v>hi(creat,1.2)) add('renal',[creat],creat.v>=2*hi(creat,1.2));
+  if(phos&&phos.v>hi(phos,4.5)) add('low_phosphate',[phos]);
+  if(glu&&glu.v>=126) add('low_sugar',[glu],glu.v>=300);
+  if(a1c&&a1c.v>=6.5) add('low_sugar',[a1c]);
+  if(anc&&anc.v<1.5) add('food_safety',[anc],anc.v<0.5);
+  if(plt&&plt.v<50) add('soft_bleeding',[plt],plt.v<20);
+  const liver=[alt,ast].filter(l=>l&&l.v>3*hi(l,40)); if(bili&&bili.v>hi(bili,1.2)) liver.push(bili); if(liver.length) add('liver_care',liver);
+  if(alb&&alb.v<lo(alb,3.5)) add('protein_energy',[alb],alb.v<2.5);
+  const ironLow=[ferritin,iron].filter(l=>l&&l.v<lo(l,l.k==='ferritin'?15:60)); if(hgb&&hgb.v<lo(hgb,12)&&ironLow.length) add('iron_rich',[hgb,...ironLow]);
+  if(ca&&ca.v>hi(ca,10.5)) add('no_calcium_supplements',[ca],ca.v>=12);
+  if(uric&&uric.v>hi(uric,7)) add('low_purine',[uric]);
+  const fats=[ldl,tg].filter(l=>l&&l.v>hi(l,l.k==='ldl'?130:150)); if(fats.length) add('heart_healthy_fats',fats);
+  return Object.values(out).map(o=>({...o,stale:o.ev.every(e=>(new Date(today)-new Date(e.date))/864e5>90)})).sort((a,b)=>(b.urgent-a.urgent)||LD_ORDER.indexOf(a.diet)-LD_ORDER.indexOf(b.diet))}
+const ldOrders=pid=>(store.get('dietOrders',{})||{})[pid]||{};
+const ldEv=e=>'<li class="ldev">'+esc(e.ar)+' = <span dir="ltr">'+esc(String(e.raw))+' '+esc(e.u||'')+'</span> <small class="muted">('+esc(fmtD(e.date,{day:'numeric',month:'long',year:'numeric'}))+')</small></li>';
+const ldFoods=d=>{const f=LD_FOODS[d]||{avoid:[],prefer:[]}; return (f.avoid.length?'<div class="ldav"><b>✕ '+tr('تجنّب')+'</b> '+f.avoid.map(k=>esc(LD_FOOD[k]||k)).join('، ')+'</div>':'')+(f.prefer.length?'<div class="ldpr"><b>✓ '+tr('اختر')+'</b> '+f.prefer.map(k=>esc(LD_FOOD[k]||k)).join('، ')+'</div>':'')};
+function labDietCard(){const o=ldOrders('p1'), ds=LD_ORDER.filter(d=>o[d]); if(!ds.length) return '';
+  return '<div class="card labdiet"><h3 style="margin:0">'+tr('طعامك حسب تحاليلك')+'</h3><p class="muted" style="margin:.2rem 0 .4rem">'+tr('طبيبك أو أخصائي التغذية راجع تحاليلك واختار لك هذا الطعام. لا تغيّر شيئًا قبل أن تسأله.')+'</p>'+
+    ds.map(d=>'<div class="ldone"><b>'+esc(LD_NAME[d])+'</b><ul class="ldevs">'+(o[d].ev||[]).map(ldEv).join('')+'</ul>'+(o[d].note?'<p class="muted" style="margin:0">'+esc(o[d].note)+'</p>':'')+ldFoods(d)+'</div>').join('')+'</div>'}
+ACT.ldConfirm=b=>{const pid=b.dataset.pid, d=b.dataset.val, p=ldPropose(pid).find(x=>x.diet===d), all=store.get('dietOrders',{})||{}, o=all[pid]||(all[pid]={});
+  if(d==='potassium_rich') delete o.low_potassium; if(d==='low_potassium') delete o.potassium_rich;
+  o[d]={at:TODAY,ev:p?p.ev:[],note:($('#ldnote-'+d)||{}).value||''}; store.set('dietOrders',all); toast(tr('أُكّد الطعام. يراه المريض الآن.')); rerender()};
+ACT.ldLift=b=>{const all=store.get('dietOrders',{})||{}; if(all[b.dataset.pid]) delete all[b.dataset.pid][b.dataset.val]; store.set('dietOrders',all); toast(tr('أُوقف.')); rerender()};
+/* Doctor: proposals from the approved tests, and the confirmed diets. */
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor') return h; const o=ldOrders(pid), props=ldPropose(pid).filter(p=>!o[p.diet]);
+  const box='<div class="card labdietdoc"><h3 style="margin:0 0 6px">'+tr('الطعام حسب التحاليل')+'</h3><p class="muted" style="margin:0 0 8px">'+tr('اقتراحات من آخر التحاليل المعتمدة فقط. لا يرى المريض أي حمية قبل أن تؤكدها، وبعد التأكيد تتبعها اقتراحات الوصفات.')+'</p>'+
+    (props.length?props.map(p=>'<div class="ldone"><b>'+esc(LD_NAME[p.diet])+'</b>'+(p.urgent?' <span class="ldurg">'+tr('عاجل')+'</span>':'')+(p.stale?' <span class="ldold">'+tr('التحليل أقدم من 90 يومًا')+'</span>':'')+'<ul class="ldevs">'+p.ev.map(ldEv).join('')+'</ul>'+ldFoods(p.diet)+
+      '<div class="row" style="gap:6px;margin-top:6px"><input id="ldnote-'+p.diet+'" maxlength="200" placeholder="'+tr('ملاحظة للمريض (اختياري)')+'" style="flex:1"><button class="btn sm" data-act="ldConfirm" data-pid="'+pid+'" data-val="'+p.diet+'">'+tr('تأكيد')+'</button></div></div>').join(''):'<p class="muted">'+tr('لا اقتراح جديد من التحاليل المعتمدة.')+'</p>')+
+    LD_ORDER.filter(d=>o[d]).map(d=>'<div class="ldone ldon"><b>✓ '+esc(LD_NAME[d])+'</b> <button class="btn ghost sm" data-act="ldLift" data-pid="'+pid+'" data-val="'+d+'">'+tr('إيقاف')+'</button></div>').join('')+'</div>';
+  return h+box}}
+/* Patient: on the home, «حياتي» and the recipes. */
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>{const h=h0(a), c=role==='patient'?labDietCard():''; if(!c) return h;
+  /* After the salt card when there is one, else after the greeting (where the salt card goes). */
+  const k='<div class="card saltcard">', i=h.indexOf(k); if(i>=0){let d=0,x=i; const re=/<(\/?)div\b/g; re.lastIndex=i; let m; while((m=re.exec(h))){d+=m[1]?-1:1; if(!d){x=h.indexOf('>',m.index)+1; break}} return h.slice(0,x)+c+h.slice(x)}
+  const g=h.indexOf('</div>\n   <button class="ib" data-act="goHProfile"'), j=g<0?-1:h.indexOf('</div>',g+6); return j<0?c+h:h.slice(0,j+6)+c+h.slice(j+6)}}
+for(const s of ['hnut','life']) if(SCREENS[s]){const h0=SCREENS[s].html; SCREENS[s].html=a=>(role==='patient'?labDietCard():'')+h0(a)}
+{const s0=ckSuggest; ckSuggest=function(){const r=s0(), o=ldOrders('p1'), map={low_potassium:['lowk'],renal:['lowk','lowna'],low_sugar:['sugar'],food_safety:['immune'],soft_bleeding:['soft'],protein_energy:['protein','energy']};
+  for(const d of LD_ORDER) if(o[d]) for(const n of map[d]||[]){ if(!r.needs.includes(n)) r.needs.push(n); (r.why[n]=r.why[n]||[]).push(trf('أكده طبيبك: {0}',LD_NAME[d]))}
+  return r}}
+document.head.insertAdjacentHTML('beforeend','<style>.labdiet,.labdietdoc{border:2px solid #4E9A3C}.ldone{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}.ldevs{list-style:none;padding:0;margin:.2rem 0}.ldev{font-size:.9rem}.ldav{background:#FCE4E1;color:#9B1C14;border:1px solid #E58C84;border-radius:10px;padding:6px 8px;margin-top:6px}.ldpr{background:#E4F3E9;color:#1E6B3E;border:1px solid #9CCFB0;border-radius:10px;padding:6px 8px;margin-top:6px}.ldurg{background:#9B1C14;color:#fff;border-radius:8px;padding:0 6px;font-size:.8rem}.ldold{background:#FFF6D1;color:#6B5200;border-radius:8px;padding:0 6px;font-size:.8rem}</style>');
+if(['home','hnut','life','patient','hrecipes'].includes(route)) rerender();
 </script>
