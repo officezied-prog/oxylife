@@ -6957,7 +6957,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610042349';
+const APP_BUILD='202610050217';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7339,4 +7339,41 @@ ACT.extConfirm=b=>{const r=extGet(b.dataset.id); if(!r) return; if(!$('#xd-att')
   extApply(r,{decisions,salt:$('#xd-salt').value||null,avoid:lines('#xd-avoid'),prefer:lines('#xd-prefer'),nextTest:$('#xd-next').value.trim()||null,noteToPatient:$('#xd-note').value.trim()},w.n,w.l)};
 {const t0=ACT.extTryDoc; ACT.extTryDoc=b=>{t0(b); Object.assign(EXT,{mode:'summary',attempt:1,dn:'',dl:''})}}
 if(route==='extDoc') rerender();
+</script>
+<script>
+/* D-112 (owner, 2026-10-05): «يمكن تنزيل أو تحميل أي ملف PDF للتحاليل أو التقارير الطبية». The trial version keeps
+   the PDF files on this device only (the browser's own storage); the real app keeps them encrypted on the
+   server, and every download is recorded. The patient adds a PDF and can open or download it; the doctor
+   can download it from the patient page. */
+const PDF_DB='oxylife-pdfs', PDF_MAX=15*1024*1024;
+const PDF_KIND={lab:'تحليل',report:'تقرير طبي',radiology:'أشعة'};
+function pdfDb(){return new Promise((ok,no)=>{try{const r=indexedDB.open(PDF_DB,1); r.onupgradeneeded=()=>r.result.createObjectStore('f',{keyPath:'id'}); r.onsuccess=()=>ok(r.result); r.onerror=()=>no(r.error)}catch(e){no(e)}})}
+async function pdfTx(mode,fn){const db=await pdfDb(); return new Promise((ok,no)=>{const t=db.transaction('f',mode), s=t.objectStore('f'), r=fn(s); t.oncomplete=()=>ok(r&&r.result); t.onerror=()=>no(t.error)})}
+const pdfList=()=>store.get('pdfFiles',[])||[];
+async function pdfAdd(files,kind){let n=0;
+  for(const f of files){
+    const head=new Uint8Array(await f.slice(0,5).arrayBuffer()); const isPdf=String.fromCharCode(...head)==='%PDF-';
+    if(!isPdf){toast(trf('«{0}» ليس ملف PDF.',f.name));continue}
+    if(f.size>PDF_MAX){toast(trf('«{0}» أكبر من 15 ميغابايت.',f.name));continue}
+    const id='pdf'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    try{await pdfTx('readwrite',s=>s.put({id,blob:f}))}catch(e){toast(tr('لم نستطع حفظ الملف على هذا الجهاز.'));continue}
+    store.set('pdfFiles',[{id,name:f.name.slice(0,120),size:f.size,kind,at:TODAY},...pdfList()]); n++}
+  if(n) toast(trf('أُضيف {0} ملف PDF.',n)); rerender()}
+async function pdfBlob(id){const r=await pdfTx('readonly',s=>s.get(id)); return r&&r.blob}
+const pdfName=x=>'OxyLife-'+({lab:'lab',report:'report',radiology:'radiology'}[x.kind]||'document')+'-'+x.at+'.pdf';
+ACT.pdfOpen=async b=>{const bl=await pdfBlob(b.dataset.id); if(!bl){toast(tr('الملف غير موجود على هذا الجهاز.'));return} const u=URL.createObjectURL(bl); const w=window.open(u,'_blank'); if(!w) toast(tr('افتح الملف بزر «تنزيل».')); setTimeout(()=>URL.revokeObjectURL(u),60000)};
+ACT.pdfDownload=async b=>{const x=pdfList().find(y=>y.id===b.dataset.id), bl=await pdfBlob(b.dataset.id); if(!x||!bl){toast(tr('الملف غير موجود على هذا الجهاز.'));return}
+  const u=URL.createObjectURL(bl), a=document.createElement('a'); a.href=u; a.download=pdfName(x); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),60000); toast(tr('بدأ التنزيل.'))};
+ACT.pdfDel=async b=>{if(!confirm(tr('حذف هذا الملف من هذا الجهاز؟'))) return; try{await pdfTx('readwrite',s=>s.delete(b.dataset.id))}catch(e){} store.set('pdfFiles',pdfList().filter(x=>x.id!==b.dataset.id)); rerender()};
+const pdfSize=n=>n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+function pdfRows(canDelete){const l=pdfList(); if(!l.length) return '<p class="muted">'+tr('لا توجد ملفات PDF بعد.')+'</p>';
+  return '<ul class="pdflist">'+l.map(x=>'<li class="pdfrow" data-id="'+x.id+'"><b>📄 '+esc(x.name)+'</b><small class="muted"> '+tr(PDF_KIND[x.kind]||'ملف')+' · '+esc(fmtD(x.at,{day:'numeric',month:'long',year:'numeric'}))+' · <span dir="ltr">'+pdfSize(x.size)+'</span></small>'+
+    '<div class="row" style="gap:6px;margin-top:4px;flex-wrap:wrap"><button class="btn ghost sm" data-act="pdfOpen" data-id="'+x.id+'">'+tr('فتح')+'</button><button class="btn sm" data-act="pdfDownload" data-id="'+x.id+'">⬇ '+tr('تنزيل')+'</button>'+(canDelete?'<button class="btn ghost sm" data-act="pdfDel" data-id="'+x.id+'">'+tr('حذف')+'</button>':'')+'</div></li>').join('')+'</ul>'}
+function pdfCard(){return '<div class="card pdfcard"><h3 style="margin:0">'+tr('ملفات PDF للتحاليل والتقارير')+'</h3><p class="muted">'+tr('أضف ملف PDF وصلك من المختبر أو المستشفى، وافتحه أو نزّله متى أردت.')+'</p>'+
+  '<div class="row" style="gap:6px;flex-wrap:wrap">'+Object.entries(PDF_KIND).map(([k,t])=>'<label class="btn ghost sm" style="cursor:pointer">+ '+tr(t)+'<input type="file" accept="application/pdf" multiple class="vh pdf-in" data-kind="'+k+'"></label>').join('')+'</div>'+pdfRows(true)+'</div>'}
+main.addEventListener('change',e=>{ if(e.target.classList&&e.target.classList.contains('pdf-in')){const fs=[...e.target.files]; const k=e.target.dataset.kind; e.target.value=''; if(fs.length) pdfAdd(fs,k)}});
+{const l0=SCREENS.labs.html; SCREENS.labs.html=a=>{const h=l0(a); return role==='patient'?h+pdfCard():h}}
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor'||pid!=='p1') return h; return h+'<div class="card pdfdoc"><h3 style="margin:0 0 6px">'+tr('ملفات PDF التي أضافها المريض')+'</h3>'+pdfRows(false)+'</div>'}}
+document.head.insertAdjacentHTML('beforeend','<style>.pdflist{list-style:none;padding:0;margin:.5rem 0 0}.pdfrow{padding:8px 0;border-bottom:1px solid var(--line)}</style>');
+if(['labs','patient'].includes(route)) rerender();
 </script>
