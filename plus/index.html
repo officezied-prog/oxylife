@@ -6951,7 +6951,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610071755';
+const APP_BUILD='202610071805';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7372,4 +7372,71 @@ delete TABS.finance; delete TABS.fctl;
 SCREENS.home.title='OxyLife Plus'; SCREENS.login.title='OxyLife Plus';
 document.head.insertAdjacentHTML('beforeend','<style>.logo.brand::after{content:"PLUS";font-weight:800;letter-spacing:.25em;color:#4E9A3C;font-size:.95rem}</style>');
 if(typeof rerender==='function') rerender();
+</script>
+<script>
+/* D-114 (owner, 2026-10-07): «طلب العلاج والدواء» — the treating doctor orders every medicine. When the doctor
+   sends a medicine, the form asks: the dose, how many times a day (and at what times), before or after food and
+   by how long — or with food, on an empty stomach, or it does not matter — and for how many days. The patient
+   sees each dose with its food instruction, the reminders say it too, and the doctor can stop a medicine. */
+const RX_FOOD={before:'قبل الأكل',after:'بعد الأكل',with:'مع الأكل',empty:'على معدة فارغة',any:'لا يهم'};
+const RX_MIN=[[15,'15 دقيقة'],[30,'30 دقيقة'],[60,'ساعة'],[120,'ساعتان']];
+const RX_TIMES={1:['08:00'],2:['08:00','20:00'],3:['08:00','14:00','20:00'],4:['08:00','12:00','16:00','20:00']};
+function rxFoodText(m){ if(!m||!m.food) return ''; if((m.food==='before'||m.food==='after')&&m.foodMin){const x=RX_MIN.find(r=>r[0]===m.foodMin); return trf('{0} بـ{1}',RX_FOOD[m.food],x?x[1]:m.foodMin+' دقيقة')} return RX_FOOD[m.food]||''}
+let RX={};
+function rxSheet(){const chips=(name,opts,cur)=>'<div class="chips rxchips" data-name="'+name+'">'+opts.map(([v,t])=>'<button type="button" class="chip'+(String(cur)===String(v)?' on':'')+'" data-act="rxPick" data-name="'+name+'" data-val="'+v+'">'+tr(t)+'</button>').join('')+'</div>';
+  const needMin=RX.food==='before'||RX.food==='after';
+  sheet('<h3>'+tr('وصف دواء')+'</h3><p class="muted">'+tr('يصل للمريض فورًا مع تذكير في كل موعد.')+'</p>'+
+   '<label class="field"><span>'+tr('اسم الدواء')+'</span><input id="rx-n" dir="auto" maxlength="120" value="'+esc(RX.n||'')+'" placeholder="Paracetamol"></label>'+
+   '<label class="field"><span>'+tr('لماذا (بكلمات بسيطة للمريض)')+'</span><input id="rx-ar" maxlength="80" value="'+esc(RX.ar||'')+'" placeholder="'+tr('مسكّن للألم')+'"></label>'+
+   '<label class="field"><span>'+tr('كم الجرعة؟')+'</span><input id="rx-dose" dir="auto" maxlength="60" value="'+esc(RX.dose||'')+'" placeholder="500 mg · '+tr('حبة واحدة')+'"></label>'+
+   '<b>'+tr('كم مرة في اليوم؟')+'</b>'+chips('per',[[1,'مرة'],[2,'مرتان'],[3,'3 مرات'],[4,'4 مرات'],['prn','عند الحاجة']],RX.per)+
+   (RX.per&&RX.per!=='prn'?'<label class="field"><span>'+tr('في أي ساعات؟')+'</span><input id="rx-times" dir="ltr" value="'+esc((RX.times||RX_TIMES[RX.per]).join(', '))+'"></label>':'')+
+   '<b>'+tr('مع الأكل؟')+'</b>'+chips('food',Object.entries(RX_FOOD),RX.food)+
+   (needMin?'<b>'+tr(RX.food==='before'?'قبل الأكل بكم؟':'بعد الأكل بكم؟')+'</b>'+chips('min',RX_MIN,RX.foodMin):'')+
+   '<label class="field"><span>'+tr('كم يومًا؟ (اتركه فارغًا إن كان مستمرًا)')+'</span><input id="rx-days" inputmode="numeric" maxlength="3" value="'+esc(RX.days||'')+'"></label>'+
+   '<label class="field"><span>'+tr('ملاحظة للمريض (اختياري)')+'</span><input id="rx-note" maxlength="200" value="'+esc(RX.note||'')+'"></label>'+
+   '<p class="note" id="rx-err" hidden></p><button class="btn" data-act="rxSave">'+tr('أرسل للمريض')+'</button>')}
+function rxKeep(){const v=id=>{const e=$(id); return e?e.value.trim():undefined}; const n=v('#rx-n'); if(n!==undefined){RX.n=n; RX.ar=v('#rx-ar'); RX.dose=v('#rx-dose'); RX.days=v('#rx-days'); RX.note=v('#rx-note'); const t=v('#rx-times'); if(t!==undefined) RX.times=t.split(/[,،\s]+/).filter(Boolean)}}
+ACT.rxOpen=()=>{RX={}; rxSheet()};
+ACT.rxPick=b=>{rxKeep(); const n=b.dataset.name, v=b.dataset.val;
+  if(n==='per'){RX.per=v==='prn'?'prn':+v; RX.times=v==='prn'?[]:RX_TIMES[v].slice()}
+  if(n==='food'){RX.food=v; if(v!=='before'&&v!=='after') delete RX.foodMin}
+  if(n==='min') RX.foodMin=+v; rxSheet()};
+ACT.rxSave=()=>{rxKeep(); const err=t=>{const e=$('#rx-err'); e.textContent=tr(t); e.hidden=false};
+  if(!RX.n||RX.n.length<2) return err('اكتب اسم الدواء.');
+  if(!RX.dose) return err('اكتب الجرعة.');
+  if(!RX.per) return err('اختر كم مرة في اليوم.');
+  const times=RX.per==='prn'?[]:(RX.times||[]).filter(t=>/^\d{2}:\d{2}$/.test(t));
+  if(RX.per!=='prn'&&times.length!==RX.per) return err('اكتب الساعات بعدد المرات، مثل 08:00, 20:00.');
+  if(!RX.food) return err('اختر: قبل الأكل، بعد الأكل، مع الأكل، على معدة فارغة، أو لا يهم.');
+  if((RX.food==='before'||RX.food==='after')&&!RX.foodMin) return err('اختر بكم وقت.');
+  const days=RX.days?+RX.days:null; if(RX.days&&!(days>=1&&days<=365)) return err('عدد الأيام بين 1 و365.');
+  const doc=(TEAMN.t1||{}).name||'الطبيب المعالج';
+  const m={id:'rx'+Date.now().toString(36),n:RX.n,ar:RX.ar||tr('وصفه طبيبك'),dose:RX.dose,times,prn:RX.per==='prn',food:RX.food,foodMin:RX.foodMin||null,days,start:TODAY,by:doc,note:RX.note||'',rx:true,seen:false};
+  store.set('meds',[...S.meds,m]);
+  const L=msgs('p1'); L.push({from:'d',at:TODAY+' '+nowHM(),text:trf('وصفتُ لك {0} {1}: {2}، {3}.',m.n,m.dose,m.prn?tr('عند الحاجة'):trf('{0} مرة في اليوم',times.length),rxFoodText(m))+(m.note?' '+m.note:'')}); store.set('msgs',L);
+  $('#sheet').hidden=true; toast(tr('وصل الدواء إلى المريض مع تذكيراته.')); rerender()};
+ACT.rxStop=b=>{ if(!confirm(tr('إيقاف هذا الدواء؟ يختفي من مواعيد المريض.'))) return; store.set('meds',S.meds.filter(m=>m.id!==b.dataset.id)); toast(tr('أُوقف الدواء.')); rerender()};
+ACT.rxSeen=()=>{store.set('meds',S.meds.map(m=>m.rx&&!m.seen?{...m,seen:true}:m)); rerender()};
+/* The doctor: «طلب العلاج والدواء» on the patient page (the «العلاج» section), and a button on the overview. */
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{let h=p0(pid); if(role!=='doctor') return h;
+  h=h.replace('>العلاج</button>','>'+tr('العلاج والأدوية')+'</button>');
+  if(pid!=='p1') return h;
+  const box='<div class="card rxdoc"><div class="row sp"><h3 style="margin:0">'+tr('طلب العلاج والدواء')+'</h3><button class="btn sm" data-act="rxOpen">+ '+tr('وصف دواء')+'</button></div>'+
+   '<p class="muted">'+tr('أنت وحدك تصف الأدوية: الجرعة، وكم مرة، وعلاقتها بالأكل، والمدة.')+'</p>'+
+   S.meds.map(m=>'<div class="dose"><span class="m"><b dir="ltr" style="unicode-bidi:plaintext">'+esc(m.n)+' '+esc(m.dose)+'</b><small>'+esc(m.prn?tr('عند الحاجة'):m.times.join('، '))+(rxFoodText(m)?' · '+esc(tr(rxFoodText(m))):'')+(m.days?' · '+esc(trf('{0} يومًا',m.days)):'')+'</small></span><button class="btn sm ghost" data-act="rxStop" data-id="'+m.id+'">'+tr('إيقاف')+'</button></div>').join('')+'</div>';
+  const i=h.indexOf('<div class="card"><h3>الالتزام بالأدوية</h3>');
+  return i<0?h+box:h.slice(0,i)+box+h.slice(i)}}
+/* The patient: each dose says the food instruction; a new medicine from the doctor is announced on the home. */
+{const m0=SCREENS.meds.html; SCREENS.meds.html=a=>{let h=m0(a);
+  for(const m of S.meds){const f=rxFoodText(m); if(!f&&!m.prn) continue; const k='<small>'+esc(m.ar)+'</small>'; h=h.split(k).join('<small>'+esc(m.ar)+(f?' · <b class="rxfood">'+esc(tr(f))+'</b>':'')+(m.days?' · '+esc(trf('لمدة {0} يومًا',m.days)):'')+'</small>')}
+  const prn=S.meds.filter(m=>m.prn);
+  if(prn.length) h+= '<div class="card"><h3>'+tr('عند الحاجة')+'</h3>'+prn.map(m=>'<div class="dose"><span class="m"><b dir="ltr" style="unicode-bidi:plaintext">'+esc(m.n)+' '+esc(m.dose)+'</b><small>'+esc(m.ar)+(rxFoodText(m)?' · '+esc(tr(rxFoodText(m))):'')+'</small></span></div>').join('')+'</div>';
+  return h}}
+{const e0=events; events=function(){return e0().map(e=>{ if(e.kind!=='meds') return e; const m=S.meds.find(x=>e.mk&&e.mk.startsWith(x.id+'@')); const f=m&&rxFoodText(m); return f?{...e,label:e.label+' · '+tr(f)}:e})}}
+function rxNewCard(){const n=S.meds.filter(m=>m.rx&&!m.seen); if(!n.length||role!=='patient') return '';
+  return '<div class="card rxnew" style="border:2px solid var(--accent)"><b>'+esc(trf('دواء جديد من طبيبك: {0}',n.map(m=>m.n).join('، ')))+'</b><p class="muted" style="margin:.2rem 0">'+esc(n.map(m=>m.dose+' · '+(m.prn?tr('عند الحاجة'):trf('{0} مرة في اليوم',m.times.length))+(rxFoodText(m)?' · '+tr(rxFoodText(m)):'')).join(' — '))+'</p><div class="row" style="gap:6px"><button class="btn sm" data-act="nav" data-r="meds">'+tr('افتح أدويتي')+'</button><button class="btn sm ghost" data-act="rxSeen">'+tr('فهمت')+'</button></div></div>'}
+{const h0=SCREENS.home.html; SCREENS.home.html=a=>{const h=h0(a), c=rxNewCard(); if(!c) return h; const k='<div class="hsecs">', i=h.indexOf(k); return i<0?c+h:h.slice(0,i)+c+h.slice(i)}}
+document.head.insertAdjacentHTML('beforeend','<style>.rxchips{margin:.3rem 0 .6rem}.rxchips .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}.rxfood{color:var(--accent)}</style>');
+if(['patient','meds','home'].includes(route)) rerender();
 </script>
