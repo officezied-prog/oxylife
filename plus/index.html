@@ -6951,7 +6951,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610071805';
+const APP_BUILD='202610071815';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7439,4 +7439,34 @@ function rxNewCard(){const n=S.meds.filter(m=>m.rx&&!m.seen); if(!n.length||role
 {const h0=SCREENS.home.html; SCREENS.home.html=a=>{const h=h0(a), c=rxNewCard(); if(!c) return h; const k='<div class="hsecs">', i=h.indexOf(k); return i<0?c+h:h.slice(0,i)+c+h.slice(i)}}
 document.head.insertAdjacentHTML('beforeend','<style>.rxchips{margin:.3rem 0 .6rem}.rxchips .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}.rxfood{color:var(--accent)}</style>');
 if(['patient','meds','home'].includes(route)) rerender();
+</script>
+<script>
+/* D-115 (owner, 2026-10-07: «لم أرَ مكان طلب الدواء والعلاج»): the doctor's medicine order is now in plain
+   sight — a «الدواء» tab in the doctor's bar (every patient, «+ وصف دواء»), a «💊 وصف دواء» button at the
+   top of every patient page, and a large button on the patients page. Any patient can receive a medicine. */
+const rxOf=pid=>pid==='p1'?S.meds:(store.get('rxmeds.'+pid,[])||[]);
+const rxSet=(pid,L)=>{ if(pid==='p1') store.set('meds',L); else store.set('rxmeds.'+pid,L)};
+{const o0=ACT.rxOpen; ACT.rxOpen=b=>{const pid=(b&&b.dataset&&b.dataset.pid)||(route==='patient'&&arg)||'p1'; o0(b); RX.pid=pid; rxSheet()}}
+{const s0=rxSheet; rxSheet=function(){s0(); const p=allPatients().find(x=>x.id===(RX.pid||'p1')); const h=$('#sheetPanel h3'); if(h&&p) h.textContent=trf('وصف دواء لـ{0}',p.name)}}
+{const v0=ACT.rxSave; ACT.rxSave=()=>{const pid=RX.pid||'p1'; if(pid==='p1') return v0();
+  /* Another patient (trial data): the same checks, kept for the doctor's list. */
+  const before=S.meds.length, keep=store.get('meds',null); v0(); const L=S.meds; if(L.length===before) return;
+  const m=L[L.length-1]; store.set('meds',keep===null?DEFAULT_MEDS:keep); rxSet(pid,[...rxOf(pid),{...m,seen:true}]); rerender()}}
+{const t0=ACT.rxStop; ACT.rxStop=b=>{const pid=b.dataset.pid||'p1'; if(pid==='p1') return t0(b); if(!confirm(tr('إيقاف هذا الدواء؟'))) return; rxSet(pid,rxOf(pid).filter(m=>m.id!==b.dataset.id)); toast(tr('أُوقف الدواء.')); rerender()}}
+const rxRows=(pid)=>rxOf(pid).map(m=>'<div class="dose"><span class="m"><b dir="ltr" style="unicode-bidi:plaintext">'+esc(m.n)+' '+esc(m.dose)+'</b><small>'+esc(m.prn?tr('عند الحاجة'):(m.times||[]).join('، '))+(rxFoodText(m)?' · '+esc(tr(rxFoodText(m))):'')+(m.days?' · '+esc(trf('{0} يومًا',m.days)):'')+'</small></span><button class="btn sm ghost" data-act="rxStop" data-pid="'+pid+'" data-id="'+m.id+'">'+tr('إيقاف')+'</button></div>').join('')||'<p class="muted">'+tr('لا أدوية موصوفة بعد.')+'</p>';
+SCREENS.rxorder={title:'طلب العلاج والدواء',tab:'rxorder',html:()=>{ if(role!=='doctor') return '<p class="muted">'+tr('هذه الصفحة للطبيب.')+'</p>';
+  return '<div class="card" style="background:var(--accent-soft)"><h3 style="margin:0">'+tr('طلب العلاج والدواء')+'</h3><p class="muted" style="margin:.3rem 0 0">'+tr('أنت وحدك تصف الأدوية. لكل دواء: الجرعة، وكم مرة في اليوم، وقبل الأكل أو بعده وبكم وقت أو لا يهم، والمدة.')+'</p></div>'+
+   allPatients().map(p=>'<div class="card rxpt" data-pid="'+p.id+'"><div class="row sp"><b>'+esc(p.name)+'</b><button class="btn sm" data-act="rxOpen" data-pid="'+p.id+'">💊 '+tr('وصف دواء')+'</button></div>'+rxRows(p.id)+'</div>').join('')}};
+TABS.doctor=[['patients','المرضى',I.users],['rxorder','الدواء',I.pill],['daily','التقارير',I.day],['review','المراجعة',I.check],['requests','الطلبات',I.lab],['team','الفريق',I.life]];
+/* A button at the top of every patient page, and on the patients page. */
+{const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor') return h;
+  return '<button class="btn rxtop" data-act="rxOpen" data-pid="'+esc(pid)+'" style="width:100%;margin-bottom:10px">💊 '+tr('وصف دواء لهذا المريض')+'</button>'+h}}
+{const s0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=s0(a); if(role!=='doctor') return h;
+  return '<button class="btn rxbig" data-act="nav" data-r="rxorder" style="width:100%;margin-bottom:10px">💊 '+tr('طلب العلاج والدواء')+'</button>'+h}}
+/* The doctor's list on the patient page shows the right patient's medicines. */
+{const p1=SCREENS.patient.html; SCREENS.patient.html=pid=>{let h=p1(pid); if(role!=='doctor'||pid==='p1') return h;
+  const i=h.indexOf('<div class="card"><h3>الالتزام بالأدوية</h3>'); if(i<0) return h;
+  const box='<div class="card rxdoc"><div class="row sp"><h3 style="margin:0">'+tr('طلب العلاج والدواء')+'</h3><button class="btn sm" data-act="rxOpen" data-pid="'+esc(pid)+'">+ '+tr('وصف دواء')+'</button></div>'+rxRows(pid)+'</div>';
+  return h.slice(0,i)+box+h.slice(i)}}
+if(['patients','patient','rxorder'].includes(route)) rerender();
 </script>
