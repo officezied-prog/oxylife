@@ -1780,11 +1780,11 @@ SCREENS.signin={title:r=>r==='doctor'?'دخول الطبيب':'دخول المر
     <p class="note" id="l-err" hidden>اكتب رمزًا من 6 أرقام.</p>
     <button class="btn ghost" data-act="faceLogin">${I.face} الدخول بالوجه</button>
   </div>
-  <!-- TEMP_TEST_LOGIN: زر الدخول السريع وقبول أي رمز من 6 أرقام للتجربة فقط. يجب حذفهما قبل الإطلاق. -->
-  <div class="card" style="background:var(--accent-soft)">
+  <!-- TEST_LOGIN: الدخول السريع للتجربة فقط — يختفي في نسخة الإطلاق (RELEASE) وفي وضع الخادم. -->
+  ${TEST_LOGIN && !API.on ? `<div class="card" style="background:var(--accent-soft)">
     <button class="btn sm" data-act="quick" data-r="${r}">دخول سريع للتجربة</button>
-    <p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق. كل البيانات هنا اصطناعية.</p>
-  </div>
+    <p class="note">مؤقت للتجربة فقط، ويُحذف في نسخة الإطلاق. كل البيانات هنا اصطناعية.</p>
+  </div>` : ''}
   <button class="lnk" data-act="srvOpen" style="align-self:center;font-size:12.5px">وضع الخادم</button>`};
 const SLIDES=[
   ['OxyLife يرافقك كل يوم','تسجّل يومك في دقيقة، ويصل كل شيء إلى طبيبك.','<circle cx="75" cy="75" r="52" fill="var(--accent-soft)"/><circle cx="68" cy="72" r="30" fill="none" stroke="var(--accent)" stroke-width="8"/><circle cx="112" cy="116" r="13" fill="var(--accent)"/>'],
@@ -1824,8 +1824,8 @@ SCREENS.profile={title:'بياناتي',bare:false,html:()=>{const p=S.profile||
     <p class="note" id="pf-err" hidden>أكمل الحقول الضرورية: الاسم، الجنس، الدولة، رقم الهاتف، المرض، هاتف العائلة، والموافقة.</p>
     ${p.fileNo?'<div class="alert i">رقم ملفك: <b dir="ltr">'+esc(p.fileNo)+'</b> · المتابِعة: '+esc((TEAMN[assignOf().p1]||{}).name||'')+'</div>':''}
     <button class="btn" data-act="saveProfile">حفظ</button>
-    <!-- TEMP_TEST_LOGIN: تخطّي البيانات للتجربة فقط؛ يُحذف قبل الإطلاق. -->
-    <button class="lnk" data-act="skipProfile" style="align-self:center">تخطٍّ مؤقت (للتجربة)</button>
+    <!-- TEST_LOGIN: تخطّي البيانات للتجربة فقط؛ يختفي في نسخة الإطلاق. -->
+    ${TEST_LOGIN ? '<button class="lnk" data-act="skipProfile" style="align-self:center">تخطٍّ مؤقت (للتجربة)</button>' : ''}
   </div>`}};
 
 SCREENS.home={title:'OxyLife',tab:'home',html:()=>{const p=meP(), lt=lifeToday(), c=classify(p), pr=p.prod;
@@ -2758,8 +2758,11 @@ function runBrief(){const box=$('#agentOut'); box.hidden=false; box.className='a
 
 /* ============ الأحداث ============ */
 const ACT={
-  login(b){const c=$('#l-code').value.trim(); if(!/^\d{6}$/.test(c)){ $('#l-err').hidden=false; return } enter(b.dataset.r)},
-  quick(b){enter(b.dataset.r)}, // TEMP_TEST_LOGIN
+  login(b){ const e=$('#l-err');
+    // نسخة الإطلاق: لا يُقبل أي رمز محليًا — لا بدّ من خادم حقيقي يُرسل الرمز ويتحقّق منه.
+    if(RELEASE){ if(e){e.textContent='للدخول في نسخة الإطلاق، فعّل وضع الخادم واطلب رمزًا حقيقيًا.'; e.hidden=false;} return }
+    const c=$('#l-code').value.trim(); if(!/^\d{6}$/.test(c)){ if(e) e.hidden=false; return } enter(b.dataset.r)},
+  quick(b){ if(!TEST_LOGIN) return; enter(b.dataset.r)}, // TEST_LOGIN only
   wnext(){ if(welcomeIdx<SLIDES.length-1){welcomeIdx++; rerender()} else afterWelcome()},
   wprev(){ if(welcomeIdx){welcomeIdx--; rerender()}},
   wskip(){afterWelcome()},
@@ -2770,7 +2773,7 @@ const ACT={
   chip(b){ $$('.chip',b.parentElement).forEach(x=>x.setAttribute('aria-pressed',x===b)); b.parentElement.dataset.val=b.dataset.val},
   saveProfile(){const sx=$('#pf-sex [aria-pressed="true"]'), v={name:$('#pf-name').value.trim(),sex:sx&&sx.dataset.val,dob:$('#pf-dob').value,h:$('#pf-h').value.trim(),dx:$('#pf-dx').value,treat:$('#pf-treat').value.trim(),doc:$('#pf-doc').value.trim(),fam:$('#pf-fam').value.trim(),country:$('#pf-country').value,city:$('#pf-city').value.trim(),phone:$('#pf-phone').value.trim(),consent:$('#pf-consent').checked,all:$('#pf-all').value.trim(),tx:$$('#pf-tx [aria-pressed="true"]').map(b=>b.dataset.val)};
     if(!v.name||!v.sex||!v.dx||!v.fam||!v.country||!v.phone||!v.consent){ $('#pf-err').hidden=false; return } const old=S.profile||{}; v.fileNo=old.fileNo||('HY-'+new Date().getFullYear()+'-'+String(1000+Math.floor(Math.random()*9000))); S.profile=v; toast(old.fileNo?'حُفظت بياناتك':trf('اكتمل تسجيلك. رقم ملفك {0}',v.fileNo)); stack=[]; go('home',null,false)},
-  skipProfile(){stack=[]; go('home',null,false)}, // TEMP_TEST_LOGIN
+  skipProfile(){ if(!TEST_LOGIN) return; stack=[]; go('home',null,false)}, // TEST_LOGIN only
   goProfile(){go('profile')},
   nav(b){go(b.dataset.r)},
   meal(b){saveLife(t=>{t.meals=t.meals||{}; t.meals[b.dataset.k]=b.dataset.val}); rerender()},
@@ -3061,7 +3064,7 @@ function amalRoleBtns(){return '<button class="rolebtn sm" data-act="pickRole" d
   return '<div class="row sp"><h2 style="margin:0">'+(r==='finance'?'دخول المسؤول المالي':'دخول المدير')+'</h2><button class="lnk" data-act="pickRole" data-r="admin">رجوع</button></div>'+
    '<p class="muted">'+(r==='finance'?'يؤكّد وصول التحويلات البنكية ويُرسل الطلبات. لا يرى أي بيانات طبية.':'إعدادات الدول، ملصقات القوارير، والمبيعات.')+'</p>'+
    (API.on?'<div class="card"><h3>الدخول في بيئة التطوير</h3><button class="btn ghost" data-act="srvDev" data-u="'+u+'"><span dir="ltr">'+esc(n)+'</span></button><p class="note">حساب اصطناعي. في الإطلاق يكون الدخول بحساب شخصي مع التحقّق بخطوتين.</p></div>':'')+
-   '<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق. كل البيانات هنا اصطناعية.</p></div>'}}
+   (TEST_LOGIN?'<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف في نسخة الإطلاق. كل البيانات هنا اصطناعية.</p></div>':'')}}
 {const sp0=srvPreload; srvPreload=function(){ if(!srvLive()) return; if(role==='finance'||role==='owner'){amalStaffLoad(); return} sp0(); if(role==='patient') amalPatientLoad(); else if(role==='doctor') amalDoctorLoad()}}
 async function amalPatientLoad(){ if(!srvPatientOn()) return; const sp=API.cfg.sess.patientId;
   try{SRV.region=await api('GET','v1/patients/'+sp+'/region')}catch(e){SRV.region={country:regionCode(),profile:null}}
@@ -3915,7 +3918,7 @@ ROLE_T.family='فرد من العائلة';
    '<p class="muted">لأفراد عائلة المريض: ترسل رسائل تشجيع فقط، ولا ترى أي بيانات طبية.</p>'+
    '<div class="card"><h3>عندي رمز دعوة</h3>'+famCodeForm().replace('id="fc-code"','id="fc-code" value="'+esc(code)+'"')+(API.on?'<p class="note">سجّل الدخول برقم هاتفك أولًا، ثم أدخل الرمز.</p>':'')+'</div>'+
    (API.on?'<div class="card"><h3>الدخول في بيئة التطوير</h3>'+FAM_SEED_USERS.map(([u,n])=>'<button class="btn ghost" data-act="srvDev" data-u="'+u+'"><span dir="ltr">'+esc(n)+'</span></button>').join('')+'<p class="note">حسابات اصطناعية.</p></div>':'')+
-   '<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="family">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق. كل البيانات هنا اصطناعية.</p></div>'}}
+   (TEST_LOGIN?'<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="family">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف في نسخة الإطلاق. كل البيانات هنا اصطناعية.</p></div>':'')}}
 /* حسابات العائلة الاصطناعية في بيئة التطوير (من packages/db SEED). */
 const FAM_SEED_USERS=[['20000000-0000-4000-8000-000000000021','Ayu (synthetic), daughter'],['20000000-0000-4000-8000-000000000022','Budi (synthetic), spouse'],['20000000-0000-4000-8000-000000000023','Dewi (synthetic), sibling']];
 {const e0=enter; enter=function(r){ if(r!=='family') return e0(r); role='family'; stack=[];
@@ -5150,8 +5153,13 @@ main.addEventListener('change',async e=>{ if(e.target.id!=='hl-lowimm') return; 
   else store.set('hLowImm',on); toast(on?'فُعّل وضع نقص المناعة':'أُوقف وضع نقص المناعة')});
 
 function enter(r){role=r; stack=[]; if(r==='patient') afterWelcome(); else go(r==='finance'?'fpay':r==='owner'?'ocountries':'patients',null,false)}
-/* PROFILE_OFF: صفحة «بياناتي» موقوفة مؤقتًا لنسخة التجربة التي تُرسل إلى الطبيب. تُعاد في النسخة الأخيرة (PROFILE_ON=true). */
-const PROFILE_ON=false;
+/* النسخة الأخيرة: صفحة «بياناتي» مُعادة (PROFILE_ON=true). */
+const PROFILE_ON=true;
+/* مفتاح الإطلاق (D-117): في الرابط التجريبي يبقى @@RELEASE@@ كما هو فيكون RELEASE=false (الدخول السريع وقبول أي رمز متاحان).
+   نسخة الإطلاق النظيفة تُبنى باستبدال @@RELEASE@@ بـ true، فتختفي كل اختصارات التجربة ويُطلب دخول حقيقي من الخادم.
+   وكإجراء احتياطي، تختفي الاختصارات تلقائيًا في وضع الخادم (API.on) أيًّا كانت قيمة المفتاح. */
+const RELEASE=('@@RELEASE@@'==='true');
+const TEST_LOGIN=!RELEASE;
 function afterWelcome(){stack=[]; store.set('seenIntro',true); if(!role){go('login',null,false); return} const p=S.profile; if(!PROFILE_ON||(p&&p.name&&p.sex&&p.dx)) go(needRegion()?'region':'home',null,false); else go('profile',null,false)}
 main.addEventListener('click',e=>{const b=e.target.closest('[data-act]'); if(b&&ACT[b.dataset.act]){e.preventDefault(); ACT[b.dataset.act](b,e)}});
 $('#title').addEventListener('click',e=>{const b=e.target.closest('[data-act]'); if(b&&ACT[b.dataset.act]) ACT[b.dataset.act](b,e)});
@@ -5987,7 +5995,7 @@ SCREENS.pgate={title:'المريض وعائلته',bare:true,html:()=>
   '<button class="gate gate-f" data-act="pickRole" data-r="family"><span class="gi">'+I.users+'</span><span class="m"><b>العائلة</b><small>مكان خاص بالعائلة: رسائل تشجيع للمريض، ووصف حالته، والتواصل مع الطبيب.</small></span></button>'+
   '<p class="note">العائلة لا ترى تطبيق المريض ولا بياناته الطبية.</p>'+
   /* TEMP_TEST_LOGIN: الدخول السريع للتجربة فقط، يُحذف في آخر مرحلة عندما يطلب المدير ذلك. */
-  '<div class="card" style="background:var(--accent-soft)"><b>دخول سريع للتجربة</b><div class="gquick"><button class="btn sm" data-act="quick" data-r="patient">مريض بالغ</button><button class="btn sm" data-act="quickAud" data-aud="preg">امرأة حامل</button><button class="btn sm" data-act="quickAud" data-aud="child">طفل</button></div><p class="note">مؤقت للتجربة فقط. كل البيانات هنا اصطناعية.</p></div>'};
+  (TEST_LOGIN?'<div class="card" style="background:var(--accent-soft)"><b>دخول سريع للتجربة</b><div class="gquick"><button class="btn sm" data-act="quick" data-r="patient">مريض بالغ</button><button class="btn sm" data-act="quickAud" data-aud="preg">امرأة حامل</button><button class="btn sm" data-act="quickAud" data-aud="child">طفل</button></div><p class="note">مؤقت للتجربة فقط. كل البيانات هنا اصطناعية.</p></div>':'')};
 {const p0=ACT.pickRole; ACT.pickRole=b=>{ if(route==='login'&&b.dataset.r==='patient'){go('pgate'); return} p0(b)}}
 /* صفحة الدخول بعد البوابة: بلا مفتاح «المريض / من عائلة المريض» (صار بوابتين). */
 {const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{let h=h0(r).replace(/<div class="seg" role="group" aria-label="أدخل بصفتي">[\s\S]*?<\/div>/,'');
@@ -6075,7 +6083,7 @@ const audPickHTML=()=>'<div class="card audcard"><h3>من يستعمل التط�
 {const h0=SCREENS.signin.html; SCREENS.signin.html=r=>{const h=h0(r); if(r!=='patient') return h; const i=h.indexOf('<div class="card">'); return i<0?audPickHTML()+h:h.slice(0,i)+audPickHTML()+h.slice(i)}}
 Object.assign(ACT,{
   audPick(b){store.set('hAud',b.dataset.val); rerender()},
-  quickAud(b){store.set('hAud',b.dataset.aud); enter('patient')},
+  quickAud(b){ if(!TEST_LOGIN) return; store.set('hAud',b.dataset.aud); enter('patient')},
   pregWk(b){store.set('hPregWeek',pregWeek()+(+b.dataset.d)); rerender()},
   kidParent(b){store.set('kidParent',b.dataset.on==='1'); go('home',null,false)},
 });
@@ -6354,7 +6362,7 @@ function audit(act,target){const L=auditAll(); L.push({at:new Date().toISOString
    '<div class="admpick">'+ADM_ROLES.map(([k,t,ic,d])=>'<button class="admrole" data-act="pickRole" data-r="'+k+'"><span class="ri">'+ic+'</span><span class="m"><b>'+t+'</b><small>'+d+'</small></span></button>').join('')+'</div>'+
    '<p class="note">في الإطلاق: حساب لكل موظف، وتحقّق بخطوتين، وكل دخول مسجّل.</p>';
   if(['fctl','legal','mkt'].includes(r)) return '<div class="row sp"><h2 style="margin:0">دخول '+ROLE_T[r]+'</h2><button class="lnk" data-act="pickRole" data-r="admin">رجوع</button></div>'+
-   '<p class="muted">'+ADM_ROLES.find(x=>x[0]===r)[3]+'.</p><div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف قبل الإطلاق.</p></div>';
+   '<p class="muted">'+ADM_ROLES.find(x=>x[0]===r)[3]+'.</p>'+(TEST_LOGIN?'<div class="card" style="background:var(--accent-soft)"><button class="btn sm" data-act="quick" data-r="'+r+'">دخول سريع للتجربة</button><p class="note">مؤقت للتجربة فقط، ويُحذف في نسخة الإطلاق.</p></div>':'');
   return h0(r)}}
 {const e0=enter; enter=function(r){ if(['owner','finance','fctl','legal','mkt'].includes(r)) audit('دخول',ROLE_T[r]);
   if(r==='owner'){role=r; stack=[]; go('odash',null,false); return} if(r==='fctl'){role=r; stack=[]; go('fcdash',null,false); return}
@@ -6954,7 +6962,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610080228';
+const APP_BUILD='202610081604';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7468,8 +7476,8 @@ TABS.doctor=[['patients','المرضى',I.users],['rxorder','الدواء',I.pil
 /* A button at the top of every patient page, and on the patients page. */
 {const p0=SCREENS.patient.html; SCREENS.patient.html=pid=>{const h=p0(pid); if(role!=='doctor') return h;
   return '<button class="btn rxtop" data-act="rxOpen" data-pid="'+esc(pid)+'" style="width:100%;margin-bottom:10px">💊 '+tr('وصف دواء لهذا المريض')+'</button>'+h}}
-{const s0=SCREENS.patients.html; SCREENS.patients.html=a=>{const h=s0(a); if(role!=='doctor') return h;
-  return '<button class="btn rxbig" data-act="nav" data-r="rxorder" style="width:100%;margin-bottom:10px">💊 '+tr('طلب العلاج والدواء')+'</button>'+h}}
+/* أُلغي الزرّ الكبير «طلب العلاج والدواء» من صفحة قائمة المرضى بطلب المالك (2026-10-08).
+   يبقى الوصول واضحًا: تبويب «الدواء» في شريط الطبيب، وزرّ «💊 وصف دواء لهذا المريض» أعلى صفحة كل مريض. */
 /* The doctor's list on the patient page shows the right patient's medicines. */
 {const p1=SCREENS.patient.html; SCREENS.patient.html=pid=>{let h=p1(pid); if(role!=='doctor'||pid==='p1') return h;
   const i=h.indexOf('<div class="card"><h3>الالتزام بالأدوية</h3>'); if(i<0) return h;
