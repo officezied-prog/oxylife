@@ -5172,7 +5172,10 @@ main.addEventListener('change',e=>{
 main.addEventListener('focusout',e=>{ if(e.target.dataset.row!=null&&route==='reviewOne') collectRows(arg)});
 {const app=$('#app'); app.dir=LANG==='ar'?'rtl':'ltr'; app.lang=LANG; $('#langBtn').textContent={ar:'ع',en:'EN',id:'ID'}[LANG]}
 {let q=null; try{q=new URLSearchParams(location.search).get('api')}catch(e){}
- if(q!=null){ if(/^(off|demo)$/i.test(q)) API.off(); else {const b=normBase(q); if(b) API.setBase(b)}}
+ // D-116: a link that points the app at a server must never apply silently. `off`/`demo` are
+ // harmless; a server address is shown in full and applied only if the person explicitly agrees,
+ // so a crafted `?api=https://attacker` link cannot quietly redirect the patient's data.
+ if(q!=null){ if(/^(off|demo)$/i.test(q)) API.off(); else {const b=normBase(q); if(b && confirm('سيُربط التطبيق بخادم جديد:\n'+b+'\n\nلا توافق إلا إذا كنت تثق بهذا العنوان تمامًا. هل تريد المتابعة؟')) API.setBase(b)}}
  if(q!=null) try{const u=new URL(location.href); u.searchParams.delete('api'); history.replaceState(null,'',u.pathname+u.search+u.hash)}catch(e){} // العنوان محفوظ؛ نُزيله من الرابط
  if(srvLive()&&API.cfg.sess){role=API.cfg.sess.role; stack=[]; route=role==='patient'?'home':role==='finance'?'fpay':role==='owner'?'ocountries':'patients'; arg=null}}
 {const all=store.get('reports',null); if(all&&(all.p1||[]).some(r=>r.status==='reading')){all.p1.forEach(r=>{ if(r.status==='reading'){r.status='pending'; r.ai={error:'لم تعمل القراءة على الهاتف.'}}}); store.set('reports',all)}}
@@ -6951,7 +6954,7 @@ if(['patients','patient','psum'].includes(route)) rerender();
    المتصفحات (خاصة مع تبويبات كثيرة مفتوحة) قد تعيد عرض نسخة قديمة محفوظة من التبويب بدل تحميل الجديدة.
    عند فتح الصفحة، وعند الرجوع إلى التبويب، يسأل التطبيق الموقع (دون ذاكرة مؤقتة) عن رقم النسخة؛ إن تغيّر يعيد التحميل مرة واحدة.
    لا يعمل في ملف محلي ولا داخل نافذة معاينة؛ وأي خطأ في الشبكة يُتجاهَل. */
-const APP_BUILD='202610071815';
+const APP_BUILD='202610080228';
 (function(){
   if(!/^https?:$/.test(location.protocol)||/@@/.test(APP_BUILD)) return;
   let busy=false, last=0;
@@ -7328,10 +7331,14 @@ const pdfList=()=>store.get('pdfFiles',[])||[];
 async function pdfAdd(files,kind){let n=0;
   for(const f of files){
     const head=new Uint8Array(await f.slice(0,5).arrayBuffer()); const isPdf=String.fromCharCode(...head)==='%PDF-';
-    if(!isPdf){toast(trf('«{0}» ليس ملف PDF.',f.name));continue}
+    // D-116: accept only a real PDF — the magic bytes AND a PDF (or blank) MIME. A file such as
+    // `lab.html` that merely starts with `%PDF-` is rejected, and we re-wrap the blob as
+    // application/pdf so opening it can never render HTML/script in the app's origin.
+    if(!isPdf||(f.type&&f.type!=='application/pdf')){toast(trf('«{0}» ليس ملف PDF.',f.name));continue}
     if(f.size>PDF_MAX){toast(trf('«{0}» أكبر من 15 ميغابايت.',f.name));continue}
     const id='pdf'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-    try{await pdfTx('readwrite',s=>s.put({id,blob:f}))}catch(e){toast(tr('لم نستطع حفظ الملف على هذا الجهاز.'));continue}
+    const blob=new Blob([f],{type:'application/pdf'});
+    try{await pdfTx('readwrite',s=>s.put({id,blob}))}catch(e){toast(tr('لم نستطع حفظ الملف على هذا الجهاز.'));continue}
     store.set('pdfFiles',[{id,name:f.name.slice(0,120),size:f.size,kind,at:TODAY},...pdfList()]); n++}
   if(n) toast(trf('أُضيف {0} ملف PDF.',n)); rerender()}
 async function pdfBlob(id){const r=await pdfTx('readonly',s=>s.get(id)); return r&&r.blob}
